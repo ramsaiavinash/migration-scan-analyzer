@@ -720,10 +720,16 @@ async function handleFile(file){
     allUsers=buildAllUsers(rawRows);
     currentWaveName=detectWaveName(file.name);
     setProgress(100,'Done!','');
+    // Save to session store for instant reload
+    const sessionKey = currentWaveName+'_'+file.name;
+    sessionStore[sessionKey]={rawRows:[...rawRows],waveName:currentWaveName,fileName:file.name};
     saveToHistory(file.name,currentWaveName,allUsers);
-    sessionStore[currentWaveName+'_'+Date.now().toString().slice(-6)]={rawRows:[...rawRows],waveName:currentWaveName,fileName:file.name};
     await tick(300);
-    showUserSelect();
+    // Go back to home and show the wave card
+    hide('progress-section');
+    show('landing-section');
+    renderWaveCards();
+    showToast('Scan report uploaded — click the wave card to view users');
   }catch(err){
     hide('progress-section');show('landing-section');
     showToast('Error: '+err.message);
@@ -849,29 +855,48 @@ function renderWaveCards(){
 function loadFromHistory(id){
   const history=getHistory();
   const entry=history.find(h=>h.id==id);
-  // Try session store first (current session data)
-  const sessionKey=Object.keys(sessionStore).find(k=>sessionStore[k].waveName===entry.waveName&&sessionStore[k].fileName===entry.fileName);
-  if(sessionKey){
+  if(!entry){ showToast('Entry not found'); return; }
+
+  // 1. Try session store using waveName+fileName key
+  const sessionKey=entry.waveName+'_'+entry.fileName;
+  if(sessionStore[sessionKey]){
     rawRows=sessionStore[sessionKey].rawRows;
     allUsers=buildAllUsers(rawRows);
     currentWaveName=entry.waveName;
+    hide('landing-section');
     document.getElementById('back-home-btn').style.display='inline-flex';
     document.getElementById('history-nav-btn').style.display='inline-flex';
     showUserSelect();
     return;
   }
-  // Try localStorage rawData
-  if(entry&&entry.rawData&&entry.rawData.length){
+
+  // 2. Try any session store entry matching waveName
+  const anyKey=Object.keys(sessionStore).find(k=>sessionStore[k].waveName===entry.waveName);
+  if(anyKey){
+    rawRows=sessionStore[anyKey].rawRows;
+    allUsers=buildAllUsers(rawRows);
+    currentWaveName=entry.waveName;
+    hide('landing-section');
+    document.getElementById('back-home-btn').style.display='inline-flex';
+    document.getElementById('history-nav-btn').style.display='inline-flex';
+    showUserSelect();
+    return;
+  }
+
+  // 3. Try localStorage rawData
+  if(entry.rawData&&entry.rawData.length){
     rawRows=entry.rawData;
     allUsers=buildAllUsers(rawRows);
     currentWaveName=entry.waveName;
+    hide('landing-section');
     document.getElementById('back-home-btn').style.display='inline-flex';
     document.getElementById('history-nav-btn').style.display='inline-flex';
     showUserSelect();
     return;
   }
-  // No data available - ask to re-upload
-  showToast('Please re-upload this scan report to view it again');
+
+  // 4. Nothing available
+  showToast('Please re-upload this scan report to view it');
 }
 
 // ── APP ──────────────────────────────────────
