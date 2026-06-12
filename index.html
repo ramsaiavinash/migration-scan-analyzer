@@ -660,6 +660,7 @@ function getCategory(ext){const e=(ext||'').toLowerCase();for(const[c,s]of Objec
 
 // ── STATE ──────────────────────────────────
 let rawRows=[],allUsers={},globalStats=null,currentWaveName='';
+const sessionStore={}; // keeps parsed data in memory during session
 let donutChart=null,barChart=null,barChartMode='size';
 let allFormatsData=[],sortMode='size',sortDir={};
 let gridApi=null,viewTab='all';
@@ -720,6 +721,7 @@ async function handleFile(file){
     currentWaveName=detectWaveName(file.name);
     setProgress(100,'Done!','');
     saveToHistory(file.name,currentWaveName,allUsers);
+    sessionStore[currentWaveName+'_'+Date.now().toString().slice(-6)]={rawRows:[...rawRows],waveName:currentWaveName,fileName:file.name};
     await tick(300);
     showUserSelect();
   }catch(err){
@@ -817,7 +819,10 @@ function renderWaveCards(){
   grid.innerHTML=history.map(h=>{
     const isPilot=h.waveName.toLowerCase().includes('pilot');
     const icon=getWaveIcon(h.waveName);
-    return`<div class="wave-card" onclick="loadFromHistory('${h.id}')">
+    // Check if this wave is available in session
+    const hasSession=Object.keys(sessionStore).some(k=>sessionStore[k].waveName===h.waveName&&sessionStore[k].fileName===h.fileName);
+    const available=hasSession||(h.rawData&&h.rawData.length>0);
+    return`<div class="wave-card" onclick="loadFromHistory('${h.id}')" style="${available?'':'opacity:0.7'}">
       <div class="wave-card-top">
         <div>
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
@@ -833,7 +838,10 @@ function renderWaveCards(){
         <div class="wave-stat"><div class="wave-stat-val">${fmt(h.totalSize)}</div><div class="wave-stat-label">Total size</div></div>
         <div class="wave-stat"><div class="wave-stat-val">${fmtN(h.totalFiles)}</div><div class="wave-stat-label">Files</div></div>
       </div>
-      <div class="wave-card-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;">
+        <span id="sess-${h.id}" style="font-size:10px;font-weight:600;color:var(--success);">${hasSession?'● In session':available?'● Available':'○ Re-upload needed'}</span>
+        <div class="wave-card-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+      </div>
     </div>`;
   }).join('');
 }
@@ -841,14 +849,29 @@ function renderWaveCards(){
 function loadFromHistory(id){
   const history=getHistory();
   const entry=history.find(h=>h.id==id);
-  if(!entry||!entry.rawData){
-    showToast('Raw data not available — please re-upload the scan report');
+  // Try session store first (current session data)
+  const sessionKey=Object.keys(sessionStore).find(k=>sessionStore[k].waveName===entry.waveName&&sessionStore[k].fileName===entry.fileName);
+  if(sessionKey){
+    rawRows=sessionStore[sessionKey].rawRows;
+    allUsers=buildAllUsers(rawRows);
+    currentWaveName=entry.waveName;
+    document.getElementById('back-home-btn').style.display='inline-flex';
+    document.getElementById('history-nav-btn').style.display='inline-flex';
+    showUserSelect();
     return;
   }
-  rawRows=entry.rawData;
-  allUsers=buildAllUsers(rawRows);
-  currentWaveName=entry.waveName;
-  showUserSelect();
+  // Try localStorage rawData
+  if(entry&&entry.rawData&&entry.rawData.length){
+    rawRows=entry.rawData;
+    allUsers=buildAllUsers(rawRows);
+    currentWaveName=entry.waveName;
+    document.getElementById('back-home-btn').style.display='inline-flex';
+    document.getElementById('history-nav-btn').style.display='inline-flex';
+    showUserSelect();
+    return;
+  }
+  // No data available - ask to re-upload
+  showToast('Please re-upload this scan report to view it again');
 }
 
 // ── APP ──────────────────────────────────────
@@ -1133,7 +1156,7 @@ function goHome(){
   show('landing-section');
   document.getElementById('back-home-btn').style.display='none';
   document.getElementById('history-nav-btn').style.display='none';
-  rawRows=[];allUsers={};globalStats=null;
+  globalStats=null;
   if(gridApi){gridApi.destroy();gridApi=null;}
   if(donutChart){donutChart.destroy();donutChart=null;}
   if(barChart){barChart.destroy();barChart=null;}
