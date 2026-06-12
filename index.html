@@ -1641,6 +1641,73 @@ function exportToExcel(){
     if(btn){btn.innerHTML='<svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg> Export Excel';btn.disabled=false;}
   },80);
 }
+
+const SP_BASE = 'https://cognizantonline-my.sharepoint.com/personal/2389039_cognizant_com';
+const SP_LIST = 'ScanAnalyzerHistory';
+const SP_API  = SP_BASE + "/_api/lists/getbytitle('" + SP_LIST + "')/items";
+
+async function getSPDigest(){
+  try{
+    const r=await fetch(SP_BASE+'/_api/contextinfo',{method:'POST',headers:{'Accept':'application/json;odata=verbose'}});
+    const d=await r.json();
+    return d.d.GetContextWebInformation.FormDigestValue;
+  }catch(e){return null;}
+}
+
+async function saveToSharePoint(entry){
+  try{
+    const digest=await getSPDigest();
+    if(!digest)return false;
+    const body={
+      __metadata:{type:"SP.Data.ScanAnalyzerHistoryListItem"},
+      Title:entry.waveName,WaveName:entry.waveName,FileName:entry.fileName,
+      TotalUsers:entry.totalUsers,TotalSize:entry.totalSize+' GB',
+      TotalFiles:entry.totalFiles,TotalItems:entry.totalItems||0,
+      UploadedBy:entry.uploadedBy||'Team',Users:(entry.users||[]).join(', ')
+    };
+    const r=await fetch(SP_API,{
+      method:'POST',
+      headers:{'Accept':'application/json;odata=verbose','Content-Type':'application/json;odata=verbose','X-RequestDigest':digest},
+      body:JSON.stringify(body)
+    });
+    return r.ok;
+  }catch(e){return false;}
+}
+
+async function loadFromSharePoint(){
+  try{
+    const r=await fetch(SP_API+'?$orderby=Created desc&$top=50',{headers:{'Accept':'application/json;odata=verbose'}});
+    const d=await r.json();
+    return (d.d.results||[]).map(function(item){
+      return {
+        id:item.ID||item.Id,spId:item.ID||item.Id,
+        waveName:item.WaveName||item.Title||'',
+        fileName:item.FileName||'',
+        totalUsers:item.TotalUsers||0,
+        totalSize:item.TotalSize||'0 GB',
+        totalFiles:item.TotalFiles||0,
+        totalItems:item.TotalItems||0,
+        uploadedBy:item.UploadedBy||'',
+        users:item.Users?item.Users.split(', '):[],
+        date:item.Created?new Date(item.Created).toLocaleString():'',
+        source:'sharepoint'
+      };
+    });
+  }catch(e){return [];}
+}
+
+async function deleteFromSharePoint(spId){
+  try{
+    const digest=await getSPDigest();
+    if(!digest)return false;
+    const r=await fetch(SP_API+'('+spId+')',{
+      method:'DELETE',
+      headers:{'Accept':'application/json;odata=verbose','X-RequestDigest':digest,'IF-MATCH':'*'}
+    });
+    return r.ok;
+  }catch(e){return false;}
+}
+
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
 </script>
 </body>
