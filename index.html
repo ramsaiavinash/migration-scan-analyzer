@@ -1465,6 +1465,19 @@ function saveToHistory(fileName,waveName,users){
     var slim=history.map(function(h){var nh=Object.assign({},h);delete nh.rawData;return nh;});
     try{localStorage.setItem('msa-history',JSON.stringify(slim.slice(0,5)));}catch(e2){}
   }
+  // Save to SharePoint via Power Automate
+  saveToSharePoint({
+    waveName:   waveName,
+    fileName:   fileName,
+    totalUsers: entry.totalUsers,
+    totalSize:  entry.totalSize,
+    totalFiles: entry.totalFiles,
+    totalItems: entry.totalItems||0,
+    uploadedBy: '2389039@cognizant.com'
+  }).then(function(ok){
+    if(ok) showToast('Saved to SharePoint — visible to your team');
+    else showToast('Saved locally — SharePoint sync failed');
+  });
 }
 function getHistory(){try{var h=JSON.parse(localStorage.getItem('msa-history')||'[]');if(!Array.isArray(h))return[];return h.filter(function(e){return e&&e.waveName&&e.fileName&&e.id;});}catch(e){localStorage.removeItem('msa-history');return[];}}
 
