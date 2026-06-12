@@ -1106,6 +1106,104 @@ function switchViewTab(tab){
   if(gridApi)gridApi.setGridOption('quickFilterText','');
 }
 
+
+class SetFilter {
+  init(params) {
+    this.params = params;
+    this.selectedValues = new Set();
+    this.allValues = [];
+    this.filterActive = false;
+    var allRows = [];
+    params.api.forEachNode(function(node) { allRows.push(node.data); });
+    var unique = new Set(allRows.map(function(row) {
+      var val = row[params.colDef.field];
+      return (val === null || val === undefined || val === '') ? '(Blanks)' : String(val);
+    }));
+    this.allValues = Array.from(unique).sort();
+    this.selectedValues = new Set(this.allValues);
+    this.gui = document.createElement('div');
+    this.gui.style.cssText = 'padding:8px;min-width:180px;max-width:280px;font-family:-apple-system,sans-serif;font-size:12px;';
+    var searchWrap = document.createElement('div');
+    searchWrap.style.cssText = 'position:relative;margin-bottom:8px;';
+    this.searchInput = document.createElement('input');
+    this.searchInput.type = 'text';
+    this.searchInput.placeholder = 'Search...';
+    this.searchInput.style.cssText = 'width:100%;padding:5px 8px;border:1px solid #CBD5E0;border-radius:4px;font-size:12px;outline:none;box-sizing:border-box;';
+    var self = this;
+    this.searchInput.addEventListener('input', function() { self.renderList(); });
+    searchWrap.appendChild(this.searchInput);
+    this.gui.appendChild(searchWrap);
+    var btnRow = document.createElement('div');
+    btnRow.style.cssText = 'display:flex;gap:6px;margin-bottom:6px;';
+    var selAll = document.createElement('button');
+    selAll.textContent = 'Select All';
+    selAll.style.cssText = 'flex:1;padding:3px 6px;font-size:11px;cursor:pointer;border:1px solid #CBD5E0;border-radius:3px;background:#F7FAFC;';
+    selAll.onclick = function() { self.selectedValues = new Set(self.getFilteredValues()); self.renderList(); self.params.filterChangedCallback(); };
+    var deselAll = document.createElement('button');
+    deselAll.textContent = 'Clear';
+    deselAll.style.cssText = 'flex:1;padding:3px 6px;font-size:11px;cursor:pointer;border:1px solid #CBD5E0;border-radius:3px;background:#F7FAFC;';
+    deselAll.onclick = function() { self.selectedValues = new Set(); self.renderList(); self.params.filterChangedCallback(); };
+    btnRow.appendChild(selAll); btnRow.appendChild(deselAll);
+    this.gui.appendChild(btnRow);
+    this.countLabel = document.createElement('div');
+    this.countLabel.style.cssText = 'font-size:10px;color:#9AA5B4;margin-bottom:4px;';
+    this.gui.appendChild(this.countLabel);
+    this.listContainer = document.createElement('div');
+    this.listContainer.style.cssText = 'max-height:200px;overflow-y:auto;border:1px solid #E2E8F0;border-radius:4px;';
+    this.gui.appendChild(this.listContainer);
+    this.renderList();
+  }
+  getFilteredValues() {
+    var q = (this.searchInput ? this.searchInput.value : '').toLowerCase();
+    if (!q) return this.allValues;
+    return this.allValues.filter(function(v) { return v.toLowerCase().includes(q); });
+  }
+  renderList() {
+    var self = this;
+    var filtered = this.getFilteredValues();
+    this.countLabel.textContent = filtered.length + ' of ' + this.allValues.length + ' values';
+    this.listContainer.innerHTML = '';
+    filtered.forEach(function(val) {
+      var row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;gap:7px;padding:5px 8px;cursor:pointer;border-bottom:1px solid #F0F4F8;';
+      row.onmouseover = function() { this.style.background='#F0EFFF'; };
+      row.onmouseout = function() { this.style.background=''; };
+      var cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.checked = self.selectedValues.has(val);
+      cb.style.cssText = 'cursor:pointer;accent-color:#5B5BD6;';
+      cb.addEventListener('change', function() {
+        if (this.checked) self.selectedValues.add(val);
+        else self.selectedValues.delete(val);
+        self.filterActive = self.selectedValues.size !== self.allValues.length;
+        self.params.filterChangedCallback();
+      });
+      var label = document.createElement('span');
+      label.textContent = val;
+      label.style.cssText = 'font-size:12px;color:#1A202C;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
+      if (val === '(Blanks)') label.style.color = '#9AA5B4';
+      row.appendChild(cb); row.appendChild(label);
+      row.addEventListener('click', function(e) { if (e.target !== cb) { cb.checked = !cb.checked; cb.dispatchEvent(new Event('change')); } });
+      self.listContainer.appendChild(row);
+    });
+  }
+  getGui() { return this.gui; }
+  doesFilterPass(params) {
+    if (!this.filterActive) return true;
+    var val = params.data[this.params.colDef.field];
+    var strVal = (val === null || val === undefined || val === '') ? '(Blanks)' : String(val);
+    return this.selectedValues.has(strVal);
+  }
+  isFilterActive() { return this.filterActive; }
+  getModel() { if (!this.filterActive) return null; return { values: Array.from(this.selectedValues) }; }
+  setModel(model) {
+    if (model && model.values) { this.selectedValues = new Set(model.values); this.filterActive = true; }
+    else { this.selectedValues = new Set(this.allValues); this.filterActive = false; }
+    if (this.listContainer) this.renderList();
+  }
+  destroy() {}
+}
+
 function initGrid(data){
   if(!data.length)return;
   const el=document.getElementById('data-grid');
@@ -1126,22 +1224,12 @@ function initGrid(data){
       movable: true,
       minWidth: 80,
       width: Math.min(220, Math.max(100, key.length * 9 + 20)),
-      filter: isNumeric ? 'agNumberColumnFilter' : 'agSetColumnFilter',
+      filter: isNumeric ? 'agNumberColumnFilter' : SetFilter,
       filterParams: isNumeric ? {
         buttons: ['reset','apply'],
         closeOnApply: true,
         filterOptions: ['equals','notEqual','greaterThan','greaterThanOrEqual','lessThan','lessThanOrEqual','inRange'],
-      } : {
-        buttons: ['reset','apply'],
-        closeOnApply: true,
-        suppressSorting: false,
-        suppressMiniFilter: false,
-        cellRenderer: function(params){
-          if(params.value === null || params.value === undefined || params.value === '') return '(Blanks)';
-          return params.value;
-        },
-      },
-      floatingFilterComponentParams: { suppressFilterButton: false },
+      } : {},
       floatingFilter: false,
       enableValue: true,
       enableRowGroup: false,
