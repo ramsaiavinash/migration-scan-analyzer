@@ -838,7 +838,7 @@ function showUserSelect(){
   document.getElementById('history-nav-btn').style.display='inline-flex';
   document.getElementById('back-home-btn').style.display='inline-flex';
 
-  const users=Object.values(allUsers||{}).sort(function(a,b){return b.totalSize-a.totalSize;});
+  var users=Object.values(allUsers||{}).sort(function(a,b){return b.totalSize-a.totalSize;});
   if(!users.length){show('landing-section');hide('user-select-section');showToast('No users found in scan report');return;}
   const totalSize=users.reduce((s,u)=>s+u.totalSize,0);
   const icon=getWaveIcon(currentWaveName);
@@ -883,7 +883,7 @@ function selectUser(userName){
 
 // ── WAVE CARDS ON LANDING ───────────────────
 function renderWaveCards(){
-  const history=getHistory();
+  var history=getHistory();
   const grid=document.getElementById('waves-grid');
   const title=document.getElementById('waves-title');
   if(!history.length){
@@ -927,7 +927,7 @@ function renderWaveCards(){
 }
 
 function loadFromHistory(id){
-  const history=getHistory();
+  var history=getHistory();
   const entry=history.find(h=>h.id==id);
   if(!entry){ showToast('Entry not found'); return; }
 
@@ -1353,7 +1353,7 @@ function copyEmail(){var s=document.getElementById('email-subject-display').text
 
 // ── HISTORY ─────────────────────────────────────
 function saveToHistory(fileName,waveName,users){
-  const history=getHistory();
+  var history=getHistory();
   const entry={
     id:Date.now(),fileName,waveName,date:new Date().toLocaleString(),
     totalUsers:Object.keys(users).length,
@@ -1378,8 +1378,8 @@ function getHistory(){try{var h=JSON.parse(localStorage.getItem('msa-history')||
 function showHistory(){
   hide('landing-section');hide('user-select-section');hide('app-section');hide('email-section');
   show('history-section');
-  const history=getHistory();
-  const list=document.getElementById('history-list');
+  var history=getHistory();
+  var list=document.getElementById('history-list');
   if(!history.length){
     list.innerHTML='<div style="text-align:center;padding:56px 20px;color:var(--text-3);"><div style="font-size:48px;margin-bottom:16px;">📂</div><div style="font-size:15px;font-weight:600;margin-bottom:8px;">No history yet</div><div style="font-size:13px;">Upload a scan report to get started</div></div>';
     return;
@@ -1478,11 +1478,11 @@ function updateCustomWave(val){
 }
 
 function enableWaveConfirm(){
-  const btn=document.getElementById('wave-confirm-btn');
+  var btn=document.getElementById('wave-confirm-btn');
   btn.disabled=false;btn.style.opacity='1';btn.style.cursor='pointer';
 }
 function disableWaveConfirm(){
-  const btn=document.getElementById('wave-confirm-btn');
+  var btn=document.getElementById('wave-confirm-btn');
   btn.disabled=true;btn.style.opacity='0.5';btn.style.cursor='not-allowed';
 }
 
