@@ -4,14 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ScanAnalyzer — Migration Tool</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@31.3.2/styles/ag-grid.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@31.3.2/styles/ag-theme-alpine.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@31.3.2/styles/ag-theme-alpine-dark.min.css">
-<script src="https://cdn.jsdelivr.net/npm/ag-grid-community@31.3.2/dist/ag-grid-community.min.js"></script>
 <style>
 :root{
   --bg:#F0F4F8;--bg2:#E2E8F0;--surface:#FFFFFF;--surface2:#F7FAFC;
@@ -718,7 +710,7 @@ function showUserSelect(){
   document.getElementById('users-grid').innerHTML=users.map((u,i)=>{
     const badge=u.totalSize>100e9?'badge-heavy" >Heavy':u.totalSize>10e9?'badge-medium">Medium':'badge-normal">Normal';
     const ac=AVATAR_COLORS[i%AVATAR_COLORS.length];
-    return`<div class="user-card" onclick="selectUser('${u.userName.replace(/\/g,'\\').replace(/'/g,"\'")}')">
+    return`<div class="user-card" data-idx="${i}" onclick="selectUserByIndex(this.getAttribute('data-idx'))">
       <span class="uc-rank">#${i+1}</span>
       <div class="user-card-top">
         <div class="uc-avatar" style="background:${ac}">${u.initials}</div>
@@ -734,6 +726,10 @@ function showUserSelect(){
   }).join('');
 }
 
+function selectUserByIndex(idx){
+  const users=Object.values(allUsers).sort((a,b)=>b.totalSize-a.totalSize);
+  if(users[idx]) selectUser(users[idx].userName);
+}
 function selectUser(userName){
   globalStats=allUsers[userName];
   renderApp(globalStats);
@@ -972,67 +968,48 @@ function refreshGridTheme(){const el=document.getElementById('data-grid');el.cla
 // ── EMAIL ──────────────────────────────────────
 function renderEmail(s){
   const estH=Math.max(1,Math.round((s.totalSize/1e9)/10));
-  const rows=s.extList.slice(0,15).map(i=>'  .'+i.ext.toUpperCase().padEnd(12)+'| '+fmtN(i.count).padStart(8)+' files | '+fmt(i.size).padStart(10)).join('
-');
-  document.getElementById('email-subject-display').textContent=currentWaveName+' – Scan Report & File Inventory | '+s.userName;
-  document.getElementById('email-body-display').textContent='Hello Dylan, Riley,
-
-In '+currentWaveName+' we have completed the scan for the following user. Please find the full file inventory below.
-
-Could you please share this report with the user and confirm which data needs to be migrated to OneDrive?
-
-──────────────────────────────────────────────
-Wave: '+currentWaveName+'
-User Name: '+s.userName+'
-Total Data Size: '+fmt(s.totalSize)+'
-Total Items: '+fmtN(s.totalItems)+' ('+fmtN(s.totalFiles)+' files, '+fmtN(s.totalFolders)+' folders)
-Unique File Formats: '+s.uniqueFormats+'
-Estimated Migration Time: ~'+estH+' hours
-──────────────────────────────────────────────
-
-File Format Breakdown (Top 15 by size):
-
-  Extension     |    Count    |       Size
-  ─────────────────────────────────────────
-'+rows+'
-  ─────────────────────────────────────────
-
-Please review the full list of '+s.uniqueFormats+' file formats with the user and confirm:
-  1. Which file types should be included in the migration
-  2. Any data that can be cleaned up at the source before migration
-
-Thanks & Regards,
-[Your Name]
-[Your Team]';
+  const rows=s.extList.slice(0,15).map(function(i){
+    return '  .'+i.ext.toUpperCase().padEnd(12)+'| '+fmtN(i.count).padStart(8)+' files | '+fmt(i.size).padStart(10);
+  }).join('\n');
+  const subj=currentWaveName+' - Scan Report & File Inventory | '+s.userName;
+  const line='──────────────────────────────────────────────';
+  const body=[
+    'Hello Dylan, Riley,',
+    '',
+    'In '+currentWaveName+' we have completed the scan for the following user.',
+    'Please find the full file inventory below.',
+    '',
+    'Could you please share this report with the user and confirm which data needs to be migrated to OneDrive?',
+    '',
+    line,
+    'Wave: '+currentWaveName,
+    'User Name: '+s.userName,
+    'Total Data Size: '+fmt(s.totalSize),
+    'Total Items: '+fmtN(s.totalItems)+' ('+fmtN(s.totalFiles)+' files, '+fmtN(s.totalFolders)+' folders)',
+    'Unique File Formats: '+s.uniqueFormats,
+    'Estimated Migration Time: ~'+estH+' hours',
+    line,
+    '',
+    'File Format Breakdown (Top 15 by size):',
+    '',
+    '  Extension     |    Count    |       Size',
+    '  '+line.slice(0,41),
+    rows,
+    '  '+line.slice(0,41),
+    '',
+    'Please review the full list of '+s.uniqueFormats+' file formats with the user and confirm:',
+    '  1. Which file types should be included in the migration',
+    '  2. Any data that can be cleaned up at the source before migration',
+    '',
+    'Thanks & Regards,',
+    '[Your Name]',
+    '[Your Team]'
+  ].join('\n');
+  document.getElementById('email-subject-display').textContent=subj;
+  document.getElementById('email-body-display').textContent=body;
 }
 function toggleEmail(){const el=document.getElementById('email-section');el.style.display=(el.style.display==='none'||!el.style.display)?'block':'none';if(el.style.display==='block')el.scrollIntoView({behavior:'smooth',block:'start'});}
-function copyEmail(){const s=document.getElementById('email-subject-display').textContent,b=document.getElementById('email-body-display').textContent;navigator.clipboard.writeText('Subject: '+s+'
-
-'+b).then(()=>showToast('✓ Email copied')).catch(()=>showToast('Copy failed'));}
-
-// ── EXPORT ─────────────────────────────────────
-function exportToExcel(){
-  if(!globalStats)return;
-  const btn=document.getElementById('export-btn');btn.textContent='Preparing…';btn.disabled=true;
-  setTimeout(()=>{
-    try{
-      const wb=XLSX.utils.book_new(),s=globalStats;
-      const mkSheet=rows=>{const sh=XLSX.utils.json_to_sheet(rows);sh['!freeze']={xSplit:0,ySplit:1};sh['!cols']=Object.keys(rows[0]||{}).map(k=>({wch:Math.min(40,Math.max(12,k.length+4))}));return sh;};
-      XLSX.utils.book_append_sheet(wb,mkSheet(s.rows),'Raw Scan Data');
-      const sumData=[['Extension','Category','File Count','Total Size (Bytes)','Total Size (GB)','Avg Size (MB)','% of Total'],...s.extList.map(e=>['.'+(e.ext).toUpperCase(),CAT_LABEL[e.category]||'Other',e.count,e.size,+(e.size/1e9).toFixed(3),+(e.avg/1e6).toFixed(2),+((e.size/s.totalSize)*100).toFixed(2)])];
-      const sumSh=XLSX.utils.aoa_to_sheet(sumData);sumSh['!cols']=[{wch:16},{wch:16},{wch:14},{wch:22},{wch:18},{wch:18},{wch:14}];sumSh['!freeze']={xSplit:0,ySplit:1};
-      XLSX.utils.book_append_sheet(wb,sumSh,'Format Summary');
-      XLSX.utils.book_append_sheet(wb,mkSheet(s.files),'Files Only');
-      if(s.folders.length)XLSX.utils.book_append_sheet(wb,mkSheet(s.folders),'Folders Only');
-      const ovSh=XLSX.utils.aoa_to_sheet([['Wave',currentWaveName],['User',s.userName],['Total Size (GB)',+(s.totalSize/1e9).toFixed(2)],['Total Items',s.totalItems],['Files',s.totalFiles],['Folders',s.totalFolders],['Formats',s.uniqueFormats],['Generated',new Date().toLocaleString()]]);
-      ovSh['!cols']=[{wch:28},{wch:40}];XLSX.utils.book_append_sheet(wb,ovSh,'Overview');
-      XLSX.writeFile(wb,'ScanReport_'+currentWaveName.replace(/\s+/g,'_')+'_'+s.userName.replace(/[^a-z0-9]/gi,'_').slice(0,20)+'_'+new Date().toISOString().slice(0,10)+'.xlsx');
-      showToast('✓ Excel downloaded');
-    }catch(e){showToast('Export failed: '+e.message);}
-    btn.innerHTML='<svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg> Export Excel';
-    btn.disabled=false;
-  },60);
-}
+function copyEmail(){var s=document.getElementById('email-subject-display').textContent;var b=document.getElementById('email-body-display').textContent;var txt='Subject: '+s+'\n\n'+b;navigator.clipboard.writeText(txt).then(function(){showToast('Email copied');}).catch(function(){showToast('Copy failed');});}
 
 // ── HISTORY ─────────────────────────────────────
 function saveToHistory(fileName,waveName,users){
