@@ -1835,34 +1835,51 @@ async function saveToSharePoint(entry){
 // Load history directly from SharePoint REST API
 async function loadFromSharePoint(){
   try{
-    // Use Power Automate GET flow - no CORS issues
     var r = await fetch(PA_GET_URL, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({action: 'getHistory'})
     });
-    if(!r.ok){
-      console.error('PA GET flow error:', r.status);
-      return [];
-    }
+    if(!r.ok){ console.error('PA GET error:', r.status); return []; }
     var text = await r.text();
-    if(!text||!text.trim()){return [];}
-    // Parse the response
-    var data;
-    try{ data = JSON.parse(text); }
-    catch(e){
-      // Try to extract JSON from response
-      var match = text.match(/\[.*\]/s);
-      if(match){ data = JSON.parse(match[0]); }
-      else { return []; }
+    console.log('PA GET raw:', text.slice(0,200));
+    if(!text||!text.trim()){ return []; }
+
+    // Try multiple parse strategies
+    var items = [];
+    try{
+      var data = JSON.parse(text);
+      // Strategy 1: direct array
+      if(Array.isArray(data)) items = data;
+      // Strategy 2: {value: [...]}
+      else if(data.value && Array.isArray(data.value)) items = data.value;
+      // Strategy 3: {d: {results: [...]}}
+      else if(data.d && data.d.results) items = data.d.results;
+      // Strategy 4: {body: {d: {results: [...]}}}
+      else if(data.body && data.body.d) items = data.body.d.results||[];
+      // Strategy 5: {outputs: {body: {...}}}
+      else if(data.outputs){ 
+        var b = data.outputs.body||data.outputs;
+        items = b.value||b.d&&b.d.results||[];
+      }
+      else{
+        // Try to find array anywhere in response
+        var str = JSON.stringify(data);
+        var match = str.match(/"results":\s*(\[.*?\])/);
+        if(match) items = JSON.parse(match[1]);
+      }
+    }catch(parseErr){
+      // Try to extract JSON array from text
+      var match = text.match(/\[\s*\{.*\}\s*\]/s);
+      if(match){ try{ items = JSON.parse(match[0]); }catch(e){} }
     }
-    // Handle different response formats
-    var items = Array.isArray(data) ? data : (data.value || data.body || []);
+
+    console.log('PA GET items found:', items.length);
     return items.map(function(item){
       return {
         id:         item.ID||item.Id||item.id||Date.now(),
         spId:       item.ID||item.Id||item.id,
-        waveName:   item.WaveName||item.waveName||item.Title||'',
+        waveName:   item.WaveName||item.waveName||item.Title||item.title||'',
         fileName:   item.FileName||item.fileName||'',
         totalUsers: parseInt(item.TotalUsers||item.totalUsers||0),
         totalSize:  item.TotalSize||item.totalSize||'0 GB',
@@ -1873,7 +1890,7 @@ async function loadFromSharePoint(){
         date:       item.Created?new Date(item.Created).toLocaleString():(item.date||''),
         source:     'sharepoint'
       };
-    }).filter(function(item){return item.waveName&&item.fileName;});
+    }).filter(function(item){ return item.waveName&&item.fileName; });
   }catch(e){
     console.error('SP load error:', e);
     return [];
