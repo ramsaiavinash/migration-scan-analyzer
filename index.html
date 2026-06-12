@@ -1136,8 +1136,13 @@ function initGrid(data){
         closeOnApply: true,
         suppressSorting: false,
         suppressMiniFilter: false,
+        cellRenderer: function(params){
+          if(params.value === null || params.value === undefined || params.value === '') return '(Blanks)';
+          return params.value;
+        },
       },
-      floatingFilter: true,
+      floatingFilterComponentParams: { suppressFilterButton: false },
+      floatingFilter: false,
       enableValue: true,
       enableRowGroup: false,
       cellStyle: function(params){
@@ -1178,7 +1183,7 @@ function initGrid(data){
       filter: true,
       resizable: true,
       editable: true,
-      floatingFilter: true,
+      floatingFilter: false,
       minWidth: 80,
     },
     // Excel-like features
