@@ -629,9 +629,7 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
         <div class="modal-sub">Which wave does this scan report belong to?</div>
       </div>
     </div>
-    <div class="wave-opts" id="wave-options-grid"></div>
-    <div class="modal-divider"><div class="modal-divider-line"></div><div class="modal-divider-text">or type custom</div><div class="modal-divider-line"></div></div>
-    <input id="custom-wave-input" type="text" placeholder="Custom wave name..." style="width:100%;padding:8px 12px;border:1px solid var(--border2);border-radius:var(--r-sm);font-size:13px;background:var(--surface2);color:var(--text-1);outline:none;font-family:inherit;" oninput="updateCustomWave(this.value)">
+    <input id="custom-wave-input" type="text" placeholder="e.g. Pilot Wave, Wave 1, Wave 3..." style="width:100%;padding:10px 14px;border:1.5px solid var(--border2);border-radius:var(--r-sm);font-size:14px;background:var(--surface2);color:var(--text-1);outline:none;font-family:inherit;transition:border-color .15s;margin-top:8px;" oninput="updateCustomWave(this.value)" onkeydown="if(event.key==='Enter')confirmWaveAndUpload()">
     <div class="modal-footer">
       <button class="btn btn-sm btn-ghost" onclick="closeWaveModal()">Cancel</button>
       <button class="btn btn-primary btn-sm" id="wave-confirm-btn" onclick="confirmWaveAndUpload()" disabled style="opacity:.5;cursor:not-allowed;">
@@ -1173,7 +1171,7 @@ function saveToHistory(fileName,waveName,users){
 function getHistory(){try{const h=JSON.parse(localStorage.getItem('msa-history')||'[]');return h.filter(e=>e&&e.waveName&&e.fileName);}catch{return[];}}
 
 function showHistory(){
-  hide('landing-section');hide('user-select-section');hide('app-section');
+  hide('landing-section');hide('user-select-section');hide('app-section');hide('email-section');
   show('history-section');
   const history=getHistory();
   const list=document.getElementById('history-list');
@@ -1195,9 +1193,18 @@ function showHistory(){
       <div class="hc-users">${h.users.map(u=>'<span class="hc-user-tag">'+u+'</span>').join('')}${h.totalUsersCount>8?'<span class="hc-user-tag">+'+(h.totalUsersCount-8)+' more</span>':''}</div>
     </div>`).join('')+'</div>';
 }
-function deleteHistory(id,e){e.stopPropagation();const h=getHistory().filter(x=>x.id!==id);localStorage.setItem('msa-history',JSON.stringify(h));showHistory();renderWaveCards();showToast('Entry deleted');}
+function deleteHistory(id,e){e.stopPropagation();if(!confirm('Delete this scan report from history?'))return;const h=getHistory().filter(x=>x.id!==id);localStorage.setItem('msa-history',JSON.stringify(h));showHistory();renderWaveCards();showToast('Entry deleted');}
 function clearAllHistory(){if(!confirm('Clear all scan history?'))return;localStorage.removeItem('msa-history');showHistory();renderWaveCards();showToast('History cleared');}
-function backFromHistory(){hide('history-section');if(Object.keys(allUsers).length)showUserSelect();else{show('landing-section');}}
+function backFromHistory(){
+  hide('history-section');
+  // Always go back to landing page - user can click wave card to get to users
+  show('landing-section');
+  renderWaveCards();
+  if(!Object.keys(allUsers).length){
+    document.getElementById('back-home-btn').style.display='none';
+    document.getElementById('history-nav-btn').style.display='none';
+  }
+}
 
 // ── NAV ──────────────────────────────────────────
 function backToUsers(){hide('app-section');if(gridApi){gridApi.destroy();gridApi=null;}showUserSelect();}
@@ -1229,18 +1236,9 @@ let selectedWaveName='';
 function openWaveModal(){
   selectedWaveName='';
   document.getElementById('custom-wave-input').value='';
-  document.getElementById('wave-confirm-btn').disabled=true;
-  document.getElementById('wave-confirm-btn').style.opacity='0.5';
-  document.getElementById('wave-confirm-btn').style.cursor='not-allowed';
-  // Render wave option buttons
-  document.getElementById('wave-options-grid').innerHTML=WAVE_OPTIONS.map(w=>`
-    <button onclick="selectWaveOption('${w.name}')" id="wopt-${w.name.replace(/\s/g,'-')}"
-      style="display:flex;align-items:center;gap:10px;padding:12px 14px;border:2px solid var(--border);border-radius:var(--radius);background:var(--surface2);cursor:pointer;transition:all .15s;font-family:inherit;text-align:left;">
-      <span style="font-size:20px;">${w.icon}</span>
-      <span style="font-size:13px;font-weight:600;color:var(--text-1);">${w.name}</span>
-    </button>
-  `).join('');
+  disableWaveConfirm();
   document.getElementById('wave-modal').style.display='flex';
+  setTimeout(function(){document.getElementById('custom-wave-input').focus();},100);
 }
 
 function selectWaveOption(name){
