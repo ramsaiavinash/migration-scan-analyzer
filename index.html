@@ -792,7 +792,7 @@ async function handleFile(file){
     rawRows=result.data;
     setProgress(85,'Building user breakdown…',fmtN(rawRows.length)+' rows');await tick();
     allUsers=buildAllUsers(rawRows);
-    currentWaveName=detectWaveName(file.name);
+    if(!currentWaveName) currentWaveName=detectWaveName(file.name);
     setProgress(100,'Done!','');
     // Save to session store for instant reload
     const sessionKey = currentWaveName+'_'+file.name;
@@ -1489,6 +1489,7 @@ function disableWaveConfirm(){
 function closeWaveModal(){
   document.getElementById('wave-modal').style.display='none';
   selectedWaveName='';
+  currentWaveName='';
 }
 
 function confirmWaveAndUpload(){
