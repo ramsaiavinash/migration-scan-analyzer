@@ -822,9 +822,9 @@ function renderWaveCards(){
     return;
   }
   title.textContent='Recent scan reports ('+history.length+')';
-  grid.innerHTML=history.map(h=>{
+  grid.innerHTML=history.filter(h=>h&&h.waveName).map(h=>{
     const isPilot=h.waveName.toLowerCase().includes('pilot');
-    const icon=getWaveIcon(h.waveName);
+    const icon=getWaveIcon(h.waveName||'Scan');
     // Check if this wave is available in session
     const hasSession=Object.keys(sessionStore).some(k=>sessionStore[k].waveName===h.waveName&&sessionStore[k].fileName===h.fileName);
     const available=hasSession||(h.rawData&&h.rawData.length>0);
@@ -1145,7 +1145,7 @@ function saveToHistory(fileName,waveName,users){
     try{localStorage.setItem('msa-history',JSON.stringify(slim));}catch(e2){}
   }
 }
-function getHistory(){try{return JSON.parse(localStorage.getItem('msa-history')||'[]');}catch{return[];}}
+function getHistory(){try{const h=JSON.parse(localStorage.getItem('msa-history')||'[]');return h.filter(e=>e&&e.waveName&&e.fileName);}catch{return[];}}
 
 function showHistory(){
   hide('landing-section');hide('user-select-section');hide('app-section');
