@@ -496,7 +496,7 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
         <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>Export Excel
       </button>
       <button class="btn btn-sm" onclick="toggleEmail()">
-        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Email
+        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Generate Email
       </button>
     </div>
   </div>
@@ -642,10 +642,10 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
         <div style="display:flex;gap:6px;"><button class="btn btn-sm" onclick="copyEmail()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button><button class="btn btn-sm btn-ghost" onclick="toggleEmail()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
       </div>
       <div class="email-meta">
-        <div class="email-meta-row"><span class="email-meta-label">To</span><span>Dylan, Riley</span></div>
-        <div class="email-meta-row"><span class="email-meta-label">Subject</span><span id="email-subject-display" style="font-weight:600;">—</span></div>
+        <div class="email-meta-row"><span class="email-meta-label">To</span><input type="text" placeholder="Enter recipient email(s)..." style="flex:1;border:none;outline:none;background:transparent;font-size:12px;color:var(--text-1);font-family:inherit;"></div>
+        <div class="email-meta-row"><span class="email-meta-label">Subject</span><input type="text" id="email-subject-display" style="flex:1;border:none;outline:none;background:transparent;font-size:12px;font-weight:600;color:var(--text-1);font-family:inherit;" value="—"></div>
       </div>
-      <div class="email-body" id="email-body-display">—</div>
+      <textarea class="email-body" id="email-body-display" style="width:100%;resize:vertical;min-height:360px;border:none;outline:none;background:transparent;font-family:inherit;font-size:12px;line-height:1.75;padding:18px;color:var(--text-1);cursor:text;" spellcheck="false">—</textarea>
       <div class="email-footer"><button class="btn btn-primary btn-sm" onclick="copyEmail()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy email</button><button class="btn btn-sm" onclick="toggleEmail()">Close</button></div>
     </div>
   </div>
@@ -1407,7 +1407,7 @@ function renderEmail(s){
   const subj=currentWaveName+' - Scan Report & File Inventory | '+s.userName;
   const line='──────────────────────────────────────────────';
   const body=[
-    'Hello Dylan, Riley,',
+    'Hello,',
     '',
     'In '+currentWaveName+' we have completed the scan for the following user.',
     'Please find the full file inventory below.',
@@ -1438,11 +1438,11 @@ function renderEmail(s){
     '[Your Name]',
     '[Your Team]'
   ].join('\n');
-  document.getElementById('email-subject-display').textContent=subj;
-  document.getElementById('email-body-display').textContent=body;
+  document.getElementById('email-subject-display').value=subj;
+  document.getElementById('email-body-display').value=body;
 }
 function toggleEmail(){const el=document.getElementById('email-section');el.style.display=(el.style.display==='none'||!el.style.display)?'block':'none';if(el.style.display==='block')el.scrollIntoView({behavior:'smooth',block:'start'});}
-function copyEmail(){var s=document.getElementById('email-subject-display').textContent;var b=document.getElementById('email-body-display').textContent;var txt='Subject: '+s+'\n\n'+b;navigator.clipboard.writeText(txt).then(function(){showToast('Email copied');}).catch(function(){showToast('Copy failed');});}
+function copyEmail(){var s=document.getElementById('email-subject-display').value||document.getElementById('email-subject-display').textContent;var b=document.getElementById('email-body-display').value||document.getElementById('email-body-display').textContent;var txt='Subject: '+s+'\n\n'+b;navigator.clipboard.writeText(txt).then(function(){showToast('Email copied');}).catch(function(){showToast('Copy failed');});}
 
 // ── HISTORY ─────────────────────────────────────
 function saveToHistory(fileName,waveName,users){
