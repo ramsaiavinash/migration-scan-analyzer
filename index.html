@@ -156,6 +156,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
 .uc-email{font-size:13px;font-weight:600;color:var(--text-1);word-break:break-all;}
 .uc-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-top:3px;display:inline-block;letter-spacing:.2px;}
 .badge-heavy{background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-border);}
+.badge-medium-high{background:#FFF3E0;color:#E65100;border:1px solid #FFCC80;}
+[data-theme="dark"] .badge-medium-high{background:#2D1A00;color:#FFB74D;border:1px solid #E65100;}
 .badge-medium{background:var(--warning-bg);color:var(--warning);border:1px solid var(--warning-border);}
 .badge-normal{background:var(--success-bg);color:var(--success);border:1px solid var(--success-border);}
 .uc-rank{position:absolute;top:12px;right:14px;font-size:11px;font-weight:600;color:var(--text-3);}
@@ -809,7 +811,10 @@ function showUserSelect(){
   document.getElementById('wave-info-stats').innerHTML=`<div class="wi-stat"><div class="wi-stat-val">${users.length}</div><div class="wi-stat-label">Users</div></div><div class="wi-stat"><div class="wi-stat-val">${fmt(totalSize)}</div><div class="wi-stat-label">Total size</div></div><div class="wi-stat"><div class="wi-stat-val">${fmtN(rawRows.length)}</div><div class="wi-stat-label">Items</div></div>`;
 
   document.getElementById('users-grid').innerHTML=users.map((u,i)=>{
-    const badge=u.totalSize>100e9?'badge-heavy" >Heavy':u.totalSize>10e9?'badge-medium">Medium':'badge-normal">Normal';
+    const isHeavy     = u.totalSize > 50e9  && u.totalFiles > 100000;
+    const isMediumHigh = (u.totalSize > 50e9  || u.totalFiles > 100000) && !isHeavy;
+    const isMedium     = !isHeavy && !isMediumHigh && (u.totalSize > 10e9 || u.totalFiles > 25000);
+    const badge = isHeavy ? 'badge-heavy">Heavy' : isMediumHigh ? 'badge-medium-high">Medium-High' : isMedium ? 'badge-medium">Medium' : 'badge-normal">Normal';
     const ac=AVATAR_COLORS[i%AVATAR_COLORS.length];
     return`<div class="user-card" data-idx="${i}" onclick="selectUserByIndex(this.getAttribute('data-idx'))">
       <span class="uc-rank">#${i+1}</span>
