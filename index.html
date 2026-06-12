@@ -1125,13 +1125,16 @@ function initGrid(data){
       movable: true,
       minWidth: 80,
       width: Math.min(220, Math.max(100, key.length * 9 + 20)),
-      filter: isNumeric ? 'agNumberColumnFilter' : isDate ? 'agDateColumnFilter' : 'agTextColumnFilter',
-      filterParams: {
+      filter: isNumeric ? 'agNumberColumnFilter' : 'agSetColumnFilter',
+      filterParams: isNumeric ? {
         buttons: ['reset','apply'],
         closeOnApply: true,
-        filterOptions: isNumeric
-          ? ['equals','notEqual','greaterThan','greaterThanOrEqual','lessThan','lessThanOrEqual','inRange']
-          : ['contains','notContains','equals','notEqual','startsWith','endsWith'],
+        filterOptions: ['equals','notEqual','greaterThan','greaterThanOrEqual','lessThan','lessThanOrEqual','inRange'],
+      } : {
+        buttons: ['reset','apply'],
+        closeOnApply: true,
+        suppressSorting: false,
+        suppressMiniFilter: false,
       },
       floatingFilter: true,
       enableValue: true,
