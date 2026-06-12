@@ -396,15 +396,15 @@ const EXT_CAT={
   data:new Set(['db','sqlite','mdb','accdb','log','dat','bak','tmp'])
 };
 const GW_CONVERSION={
-  gdoc:   {icon:'📄', converts:'Google Doc → Word (.docx)',    color:'#2563EB'},
-  gsheet: {icon:'📊', converts:'Google Sheet → Excel (.xlsx)', color:'#16A34A'},
+  gdoc:   {icon:'📄', converts:'Google Doc → Word (.docx)',         color:'#2563EB'},
+  gsheet: {icon:'📊', converts:'Google Sheet → Excel (.xlsx)',      color:'#16A34A'},
   gslide: {icon:'📽️', converts:'Google Slide → PowerPoint (.pptx)', color:'#D97706'},
-  gform:  {icon:'📋', converts:'Google Form → (review needed)', color:'#7C3AED'},
-  gdraw:  {icon:'🎨', converts:'Google Drawing → (review needed)', color:'#0891B2'},
-  gsite:  {icon:'🌐', converts:'Google Site → (not migrated by default)', color:'#DC2626'},
-  gjam:   {icon:'🎵', converts:'Google Jamboard → (review needed)', color:'#EA580C'},
-  gscript:{icon:'⚙️', converts:'Apps Script → (not migrated)', color:'#6B7280'},
-  gshortcut:{icon:'🔗',converts:'Google Shortcut → (skipped)', color:'#9CA3AF'},
+  gform:  {icon:'📋', converts:'Google Form → Microsoft Forms',     color:'#7C3AED'},
+  gdraw:  {icon:'🎨', converts:'Google Drawing → Export as PDF/PNG first', color:'#0891B2'},
+  gsite:  {icon:'🌐', converts:'Google Site → SharePoint (separate project)', color:'#DC2626'},
+  gjam:   {icon:'🎵', converts:'Google Jamboard → Whiteboard (manual)', color:'#EA580C'},
+  gscript:{icon:'⚙️', converts:'Apps Script → Power Automate (manual rebuild)', color:'#6B7280'},
+  gshortcut:{icon:'🔗',converts:'Google Shortcut → skipped during migration', color:'#9CA3AF'},
 };
 const CAT_LABEL={gworkspace:'Google Workspace',document:'Document',image:'Image',video:'Video',archive:'Archive',code:'Code',system:'System',data:'Data',other:'Other'};
 const CAT_COLOR={gworkspace:'#4285F4',document:'#3B82F6',image:'#10B981',video:'#8B5CF6',archive:'#F59E0B',code:'#06B6D4',system:'#EF4444',data:'#EC4899',other:'#9CA3AF'};
