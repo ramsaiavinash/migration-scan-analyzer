@@ -521,7 +521,8 @@ function renderDonut(s){
   const labels=[...top8.map(e=>'.'+e.ext.toUpperCase()),'Others'];
   const data=[...top8.map(e=>e.size),othersSize];
   const colors=[...PALETTE.slice(0,8),'#64748B'];
-  donutChart=new Chart(document.getElementById('donut-chart').getContext('2d'),{type:'doughnut',data:{labels,datasets:[{data,backgroundColor:colors,borderWidth:0,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{display:false},tooltip:{...ttOpts(),callbacks:{label:ctx=>'  '+fmt(ctx.raw)+' ('+((ctx.raw/s.totalSize)*100).toFixed(1)+'%)'}}}}}});
+  const ttLabel=ctx=>{ const pct=((ctx.raw/s.totalSize)*100).toFixed(1); return '  '+fmt(ctx.raw)+' ('+pct+'%)'; };
+  donutChart=new Chart(document.getElementById('donut-chart').getContext('2d'),{type:'doughnut',data:{labels,datasets:[{data,backgroundColor:colors,borderWidth:0,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{display:false},tooltip:{...ttOpts(),callbacks:{label:ttLabel}}}}});
   document.getElementById('donut-legend').innerHTML=labels.map((l,i)=>`<div class="legend-item"><div class="legend-dot" style="background:${colors[i]}"></div><span style="flex:1;color:var(--text-2)">${l}</span><span style="font-weight:600;font-size:12px">${fmt(data[i])}</span></div>`).join('');
 }
 
