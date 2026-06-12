@@ -883,49 +883,66 @@ function selectUser(userName){
 
 // ── WAVE CARDS ON LANDING ───────────────────
 function renderWaveCards(){
-  var history=getHistory();
-  const grid=document.getElementById('waves-grid');
-  const title=document.getElementById('waves-title');
-  if(!history.length){
-    grid.innerHTML=`<div class="waves-empty">
-      <div class="waves-empty-icon">📂</div>
-      <div class="waves-empty-title">No scan reports yet</div>
-      <div class="waves-empty-sub">Upload your first scan report using the button above</div>
-    </div>`;
+  var grid=document.getElementById('waves-grid');
+  var title=document.getElementById('waves-title');
+  if(!grid||!title)return;
+
+  // Show local history first instantly
+  var localHistory=getHistory();
+  renderWaveCardsData(localHistory);
+
+  // Then load from SharePoint and merge
+  loadFromSharePoint().then(function(spItems){
+    if(!spItems||!spItems.length){
+      renderWaveCardsData(localHistory);
+      return;
+    }
+    // Merge SP + local (SP takes priority)
+    var spFileNames=spItems.map(function(i){return i.fileName;});
+    var localOnly=localHistory.filter(function(h){return !spFileNames.includes(h.fileName);});
+    var merged=spItems.concat(localOnly);
+    merged.sort(function(a,b){return new Date(b.date)-new Date(a.date);});
+    renderWaveCardsData(merged);
+    title.textContent='Recent scan reports ('+merged.length+') — from SharePoint';
+  }).catch(function(){
+    renderWaveCardsData(localHistory);
+  });
+}
+
+function renderWaveCardsData(history){
+  var grid=document.getElementById('waves-grid');
+  var title=document.getElementById('waves-title');
+  if(!history||!history.length){
+    grid.innerHTML='<div class="waves-empty"><div class="waves-empty-icon">📂</div><div class="waves-empty-title">No scan reports yet</div><div class="waves-empty-sub">Upload your first scan report using the button above</div></div>';
     title.textContent='Recent scan reports';
     return;
   }
   title.textContent='Recent scan reports ('+history.length+')';
-  grid.innerHTML=history.filter(h=>h&&h.waveName).map(h=>{
-    const isPilot=h.waveName.toLowerCase().includes('pilot');
-    const icon=getWaveIcon(h.waveName||'Scan');
-    // Check if this wave is available in session
-    const hasSession=Object.keys(sessionStore).some(k=>sessionStore[k].waveName===h.waveName&&sessionStore[k].fileName===h.fileName);
-    const available=hasSession||(h.rawData&&h.rawData.length>0);
-    return`<div class="wave-card" onclick="loadFromHistory('${h.id}')" style="${available?'':'opacity:0.7'}">
-      <div class="wave-card-top">
-        <div>
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-            <span style="font-size:20px;">${icon}</span>
-            <span class="wave-badge ${isPilot?'wave-badge-pilot':'wave-badge-wave'}">${h.waveName}</span>
-          </div>
-          <div class="wave-date">${h.date}</div>
-        </div>
-      </div>
-      <div class="wave-filename">${h.fileName}</div>
-      <div class="wave-stats">
-        <div class="wave-stat"><div class="wave-stat-val">${h.totalUsers}</div><div class="wave-stat-label">Users</div></div>
-        <div class="wave-stat"><div class="wave-stat-val">${fmt(h.totalSize)}</div><div class="wave-stat-label">Total size</div></div>
-        <div class="wave-stat"><div class="wave-stat-val">${fmtN(h.totalFiles)}</div><div class="wave-stat-label">Files</div></div>
-      </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;">
-        <span id="sess-${h.id}" style="font-size:10px;font-weight:600;color:var(--success);">${hasSession?'● In session':available?'● Available':'○ Re-upload needed'}</span>
-        <div class="wave-card-arr"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
-      </div>
-    </div>`;
+  grid.innerHTML=history.filter(function(h){return h&&h.waveName;}).map(function(h){
+    var isPilot=h.waveName.toLowerCase().includes('pilot');
+    var icon=getWaveIcon(h.waveName||'Scan');
+    var hasSession=Object.keys(sessionStore).some(function(k){return sessionStore[k].waveName===h.waveName&&sessionStore[k].fileName===h.fileName;});
+    var available=hasSession||(h.rawData&&h.rawData.length>0);
+    var spBadge=h.source==='sharepoint'?'<span style="font-size:10px;color:#0078D4;font-weight:600;margin-left:6px;">● SharePoint</span>':'';
+    return '<div class="wave-card" onclick="loadFromHistory(''+h.id+'')" style="'+(available?'':'opacity:0.85')+'">'
+      +'<div class="wave-card-stripe"></div>'
+      +'<div class="wave-card-header">'
+      +'<div><div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;"><span style="font-size:18px;">'+icon+'</span>'
+      +'<span class="wave-badge '+(isPilot?'wave-badge-pilot':'wave-badge-wave')+'">'+h.waveName+'</span>'+spBadge+'</div>'
+      +'<div class="wave-date">'+h.date+'</div></div></div>'
+      +'<div class="wave-filename">'+(h.fileName||'')+'</div>'
+      +'<div class="wave-stats">'
+      +'<div class="wave-stat"><div class="wave-stat-val">'+(h.totalUsers||0)+'</div><div class="wave-stat-label">Users</div></div>'
+      +'<div class="wave-stat"><div class="wave-stat-val">'+(typeof h.totalSize==='number'?fmt(h.totalSize):h.totalSize||'0')+'</div><div class="wave-stat-label">Total size</div></div>'
+      +'<div class="wave-stat"><div class="wave-stat-val">'+(h.totalFiles?fmtN(h.totalFiles):'0')+'</div><div class="wave-stat-label">Files</div></div>'
+      +'</div>'
+      +'<div class="wave-card-footer">'
+      +'<span style="font-size:10px;font-weight:600;color:'+(hasSession?'var(--success)':available?'var(--success)':'var(--text-3)')+';">'+(hasSession?'● In session':available?'● Available':'○ Re-upload to view')+'</span>'
+      +'<div class="wave-card-arr"><svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2.5"><polyline points="9 18 15 12 9 6"/></svg></div>'
+      +'</div>'
+      +'</div>';
   }).join('');
 }
-
 function loadFromHistory(id){
   var history=getHistory();
   const entry=history.find(h=>h.id==id);
@@ -1482,6 +1499,24 @@ function saveToHistory(fileName,waveName,users){
 function getHistory(){try{var h=JSON.parse(localStorage.getItem('msa-history')||'[]');if(!Array.isArray(h))return[];return h.filter(function(e){return e&&e.waveName&&e.fileName&&e.id;});}catch(e){localStorage.removeItem('msa-history');return[];}}
 
 function showHistory(){
+  hide('landing-section');hide('user-select-section');hide('app-section');hide('email-section');
+  show('history-section');
+  var list=document.getElementById('history-list');
+  list.innerHTML='<div style="text-align:center;padding:28px;color:var(--text-3);font-size:13px;">⏳ Loading from SharePoint...</div>';
+  loadFromSharePoint().then(function(spItems){
+    var localHistory=getHistory();
+    var spFileNames=spItems.map(function(i){return i.fileName;});
+    var localOnly=localHistory.filter(function(h){return !spFileNames.includes(h.fileName);});
+    var merged=spItems.concat(localOnly);
+    merged.sort(function(a,b){return new Date(b.date)-new Date(a.date);});
+    renderHistoryList(merged);
+  }).catch(function(){
+    renderHistoryList(getHistory());
+  });
+}
+
+function renderHistoryList(history){
+  var list=document.getElementById('history-list');
   hide('landing-section');hide('user-select-section');hide('app-section');hide('email-section');
   show('history-section');
   var history=getHistory();
