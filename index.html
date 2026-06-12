@@ -260,7 +260,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
 .vsearch svg{position:absolute;left:8px;top:50%;transform:translateY(-50%);width:12px;height:12px;stroke:var(--text-3);fill:none;stroke-width:2;pointer-events:none;}
 .vsearch input{width:100%;padding:5px 10px 5px 26px;border:1px solid var(--border2);border-radius:var(--r-sm);font-size:12px;background:var(--surface);color:var(--text-1);outline:none;font-family:inherit;}
 .vsearch input:focus{border-color:var(--accent);}
-.grid-wrap{height:480px;width:100%;}
+.grid-wrap{height:600px;width:100%;}
+.grid-toolbar{display:flex;align-items:center;gap:8px;padding:8px 16px;border-bottom:1px solid var(--border);background:var(--surface2);flex-wrap:wrap;}
+.grid-toolbar-right{margin-left:auto;display:flex;align-items:center;gap:8px;}
+.grid-stat{font-size:11px;color:var(--text-3);padding:3px 8px;background:var(--bg2);border-radius:4px;border:1px solid var(--border);}
 [data-theme="light"] .ag-theme-alpine{--ag-font-family:-apple-system,sans-serif;--ag-font-size:12px;--ag-header-background-color:#F8F9FC;--ag-header-foreground-color:#4B5568;--ag-border-color:#E8EAF0;--ag-row-hover-color:#F0EFFF;--ag-selected-row-background-color:#E8E8FF;--ag-background-color:#FFFFFF;--ag-foreground-color:#0D1117;--ag-cell-horizontal-padding:12px;}
 [data-theme="dark"] .ag-theme-alpine-dark{--ag-font-family:-apple-system,sans-serif;--ag-font-size:12px;--ag-header-background-color:#13161F;--ag-header-foreground-color:#8892A4;--ag-border-color:#252836;--ag-row-hover-color:#1A1A3E;--ag-background-color:#1A1D28;--ag-foreground-color:#F0F2F8;--ag-cell-horizontal-padding:12px;}
 
@@ -584,14 +587,50 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
     <div class="card">
       <div class="card-hdr">
         <div><div class="card-title">Full scan data</div><div class="card-sub" id="viewer-sub">—</div></div>
-        <div class="viewer-tabs"><button class="viewer-tab active" onclick="switchViewTab('all')">All rows</button><button class="viewer-tab" onclick="switchViewTab('files')">Files</button><button class="viewer-tab" onclick="switchViewTab('folders')">Folders</button></div>
+        <div class="viewer-tabs">
+          <button class="viewer-tab active" onclick="switchViewTab('all')">All rows</button>
+          <button class="viewer-tab" onclick="switchViewTab('files')">Files only</button>
+          <button class="viewer-tab" onclick="switchViewTab('folders')">Folders only</button>
+        </div>
       </div>
-      <div style="padding:8px 18px;border-bottom:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-        <div class="vsearch"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input id="grid-search" type="text" placeholder="Search all columns…" oninput="gridSearch(this.value)"></div>
-        <button class="btn btn-sm" onclick="clearGridSearch()">Clear</button>
-        <div style="font-size:11px;color:var(--text-3);margin-left:auto;" id="grid-row-count">—</div>
+      <div class="grid-toolbar">
+        <div class="vsearch">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input id="grid-search" type="text" placeholder="Quick search all columns…" oninput="gridSearch(this.value)">
+        </div>
+        <button class="btn btn-sm btn-ghost" onclick="clearGridSearch()">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Clear
+        </button>
+        <button class="btn btn-sm btn-ghost" onclick="resetGridColumns()" title="Reset column widths">
+          <svg viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18"/></svg>Reset columns
+        </button>
+        <button class="btn btn-sm btn-ghost" onclick="autoSizeGridColumns()" title="Auto-fit columns">
+          <svg viewBox="0 0 24 24"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>Auto-fit
+        </button>
+        <button class="btn btn-sm btn-ghost" onclick="clearAllGridFilters()" title="Clear all filters">
+          <svg viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/><line x1="2" y1="2" x2="22" y2="22" stroke="red" stroke-width="1.5"/></svg>Clear filters
+        </button>
+        <div class="grid-toolbar-right">
+          <button class="btn btn-sm btn-ghost" onclick="exportGridCSV()" title="Export to CSV">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>Export CSV
+          </button>
+          <span class="grid-stat" id="grid-row-count">—</span>
+          <select class="fmt-select" id="page-size-select" onchange="changePageSize(this.value)" style="padding:4px 8px;font-size:11px;">
+            <option value="100">100 rows</option>
+            <option value="250">250 rows</option>
+            <option value="500">500 rows</option>
+            <option value="1000">1000 rows</option>
+            <option value="0">All rows</option>
+          </select>
+        </div>
       </div>
       <div class="grid-wrap" id="data-grid"></div>
+      <div style="padding:6px 16px;border-top:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <span style="font-size:10px;color:var(--text-3);">
+          <b style="color:var(--text-2);">Excel shortcuts:</b>
+          Click header to sort · Click filter icon to filter · Drag column to reorder · Drag edge to resize · Right-click row for options · Ctrl+C to copy · Click cell to edit
+        </span>
+      </div>
     </div>
   </div>
 
@@ -1070,27 +1109,184 @@ function initGrid(data){
   if(!data.length)return;
   const el=document.getElementById('data-grid');
   el.className='grid-wrap '+(isDark()?'ag-theme-alpine-dark':'ag-theme-alpine');
-  const cols=Object.keys(data[0]).map(key=>({
-    field:key,headerName:key,sortable:true,
-    filter:true,
-    resizable:true,editable:true,minWidth:100,
-    width:Math.min(200,Math.max(110,key.length*9+20)),
-    cellStyle:params=>{
-      if(key==='SourceSize'||key==='DestinationSize'){const v=parseInt(params.value);if(v>1e9)return{color:isDark()?'#FC8181':'#DC2626',fontWeight:'600'};if(v>1e8)return{color:isDark()?'#FCD34D':'#D97706'};}
-      if(key==='Status'){const lc=(params.value||'').toLowerCase();if(lc==='success')return{color:isDark()?'#34D399':'#059669',fontWeight:'500'};if(lc==='failed')return{color:isDark()?'#FC8181':'#DC2626',fontWeight:'500'};}
-      return null;
-    }
-  }));
-  gridApi=agGrid.createGrid(el,{
-    columnDefs:cols,rowData:data,
-    defaultColDef:{sortable:true,filter:true,resizable:true,editable:true,floatingFilter:true},
-    animateRows:true,pagination:true,paginationPageSize:100,
-    paginationPageSizeSelector:[50,100,250,500],
-    enableCellTextSelection:true,
-    onGridReady:()=>updateRowCount(),
-    onFilterChanged:()=>updateRowCount(),
-    onPaginationChanged:()=>updateRowCount(),
+
+  // Build column definitions with Excel-like features
+  const cols=Object.keys(data[0]).map(function(key){
+    // Determine filter type based on column name/content
+    const isNumeric = key.toLowerCase().includes('size') || key.toLowerCase().includes('count') || key.toLowerCase().includes('number');
+    const isDate = key.toLowerCase().includes('date') || key.toLowerCase().includes('time');
+
+    return {
+      field: key,
+      headerName: key,
+      sortable: true,
+      resizable: true,
+      editable: true,
+      movable: true,
+      minWidth: 80,
+      width: Math.min(220, Math.max(100, key.length * 9 + 20)),
+      filter: isNumeric ? 'agNumberColumnFilter' : isDate ? 'agDateColumnFilter' : 'agTextColumnFilter',
+      filterParams: {
+        buttons: ['reset','apply'],
+        closeOnApply: true,
+        filterOptions: isNumeric
+          ? ['equals','notEqual','greaterThan','greaterThanOrEqual','lessThan','lessThanOrEqual','inRange']
+          : ['contains','notContains','equals','notEqual','startsWith','endsWith'],
+      },
+      floatingFilter: true,
+      enableValue: true,
+      enableRowGroup: false,
+      cellStyle: function(params){
+        if(key==='SourceSize'||key==='DestinationSize'){
+          const v=parseInt(params.value);
+          if(v>1e9)return{color:isDark()?'#FC8181':'#DC2626',fontWeight:'600'};
+          if(v>1e8)return{color:isDark()?'#FCD34D':'#D97706'};
+        }
+        if(key==='Status'){
+          const lc=(params.value||'').toLowerCase();
+          if(lc==='success')return{color:isDark()?'#34D399':'#059669',fontWeight:'500'};
+          if(lc==='failed')return{color:isDark()?'#FC8181':'#DC2626',fontWeight:'500'};
+        }
+        return null;
+      },
+      valueFormatter: function(params){
+        if((key==='SourceSize'||key==='DestinationSize') && params.value){
+          const v=parseInt(params.value);
+          if(!isNaN(v)) return fmt(v)+' ('+params.value+')';
+        }
+        return params.value;
+      },
+      tooltipValueGetter: function(params){ return params.value; }
+    };
   });
+
+  // Pin first column (SourcePath) like Excel freeze pane
+  if(cols.length > 0){
+    cols[0].pinned = 'left';
+    cols[0].lockPinned = false;
+  }
+
+  gridApi=agGrid.createGrid(el,{
+    columnDefs: cols,
+    rowData: data,
+    defaultColDef:{
+      sortable: true,
+      filter: true,
+      resizable: true,
+      editable: true,
+      floatingFilter: true,
+      minWidth: 80,
+    },
+    // Excel-like features
+    animateRows: true,
+    pagination: true,
+    paginationPageSize: 100,
+    paginationPageSizeSelector: [50,100,250,500,1000],
+    enableCellTextSelection: true,
+    rowSelection: 'multiple',
+    suppressRowClickSelection: true,
+    enableRangeSelection: true,
+    suppressCopyRowsToClipboard: false,
+    copyHeadersToClipboard: true,
+    suppressMovableColumns: false,
+    // Context menu like Excel right-click
+    getContextMenuItems: function(params){
+      return [
+        'copy',
+        'copyWithHeaders',
+        'copyWithGroupHeaders',
+        'separator',
+        'csvExport',
+        'excelExport',
+        'separator',
+        {
+          name: 'Auto-size this column',
+          action: function(){
+            if(params.column) gridApi.autoSizeColumns([params.column.getId()]);
+          },
+          icon: '<span style="font-size:12px;">↔</span>'
+        },
+        {
+          name: 'Auto-size all columns',
+          action: function(){ autoSizeGridColumns(); },
+          icon: '<span style="font-size:12px;">⊞</span>'
+        },
+        'separator',
+        {
+          name: 'Pin column left',
+          action: function(){
+            if(params.column) gridApi.setColumnPinned(params.column.getId(),'left');
+          },
+          icon: '<span style="font-size:12px;">📌</span>'
+        },
+        {
+          name: 'Unpin column',
+          action: function(){
+            if(params.column) gridApi.setColumnPinned(params.column.getId(),null);
+          },
+        },
+      ];
+    },
+    // Column menu with filter
+    suppressMenuHide: false,
+    onGridReady: function(){ updateRowCount(); },
+    onFilterChanged: function(){ updateRowCount(); },
+    onPaginationChanged: function(){ updateRowCount(); },
+    onSortChanged: function(){ updateRowCount(); },
+    onCellValueChanged: function(params){
+      showToast('Cell updated: '+params.colDef.field);
+    },
+    // Status bar like Excel bottom bar
+    statusBar:{
+      statusPanels:[
+        {statusPanel:'agTotalAndFilteredRowCountComponent',align:'left'},
+        {statusPanel:'agTotalRowCountComponent',align:'center'},
+        {statusPanel:'agSelectedRowCountComponent',align:'center'},
+        {statusPanel:'agAggregationComponent',align:'right'},
+      ]
+    },
+  });
+  updateRowCount();
+}
+
+function autoSizeGridColumns(){
+  if(!gridApi)return;
+  const allCols=gridApi.getColumns();
+  if(allCols) gridApi.autoSizeColumns(allCols.map(c=>c.getId()));
+}
+
+function resetGridColumns(){
+  if(!gridApi)return;
+  gridApi.resetColumnState();
+  showToast('Columns reset');
+}
+
+function clearAllGridFilters(){
+  if(!gridApi)return;
+  gridApi.setFilterModel(null);
+  updateRowCount();
+  showToast('All filters cleared');
+}
+
+function exportGridCSV(){
+  if(!gridApi)return;
+  gridApi.exportDataAsCsv({
+    fileName:'ScanData_'+currentWaveName.replace(/\s+/g,'_')+'_'+new Date().toISOString().slice(0,10)+'.csv',
+    allColumns: false,
+    onlySelected: false,
+  });
+  showToast('CSV exported');
+}
+
+function changePageSize(val){
+  if(!gridApi)return;
+  const size=parseInt(val);
+  if(size===0){
+    gridApi.setGridOption('pagination',false);
+  } else {
+    gridApi.setGridOption('pagination',true);
+    gridApi.setGridOption('paginationPageSize',size);
+  }
   updateRowCount();
 }
 
