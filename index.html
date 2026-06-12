@@ -4,1129 +4,683 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Migration Scan Analyzer</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"><\/script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"><\/script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"><\/script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"><\/script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@31.3.2/styles/ag-grid.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@31.3.2/styles/ag-theme-alpine.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@31.3.2/styles/ag-theme-alpine-dark.min.css">
-<script src="https://cdn.jsdelivr.net/npm/ag-grid-community@31.3.2/dist/ag-grid-community.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ag-grid-community@31.3.2/dist/ag-grid-community.min.js"><\/script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* ── THEME TOKENS ─────────────────────────────────────── */
-:root {
-  --bg:            #F0F2F5;
-  --bg2:           #E8EBF0;
-  --surface:       #FFFFFF;
-  --surface2:      #F7F8FA;
-  --border:        #E2E6ED;
-  --border2:       #C8CDD8;
-  --text-1:        #0F1729;
-  --text-2:        #4B5563;
-  --text-3:        #9CA3AF;
-  --accent:        #2563EB;
-  --accent2:       #1D4ED8;
-  --accent-bg:     #EFF6FF;
-  --accent-border: #BFDBFE;
-  --success:       #059669;
-  --success-bg:    #ECFDF5;
-  --warning:       #D97706;
-  --warning-bg:    #FFFBEB;
-  --danger:        #DC2626;
-  --danger-bg:     #FEF2F2;
-  --radius-sm:     6px;
-  --radius:        10px;
-  --radius-lg:     14px;
-  --shadow-sm:     0 1px 2px rgba(0,0,0,0.06);
-  --shadow:        0 1px 4px rgba(0,0,0,0.07), 0 4px 12px rgba(0,0,0,0.05);
-  --shadow-lg:     0 4px 16px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06);
-  --header-h:      60px;
-}
-[data-theme="dark"] {
-  --bg:            #0D1117;
-  --bg2:           #161B22;
-  --surface:       #1C2333;
-  --surface2:      #212840;
-  --border:        #2D3748;
-  --border2:       #3D4A60;
-  --text-1:        #E6EDF3;
-  --text-2:        #8B949E;
-  --text-3:        #556070;
-  --accent:        #58A6FF;
-  --accent2:       #79B8FF;
-  --accent-bg:     #162032;
-  --accent-border: #1F3A5A;
-  --success:       #3FB950;
-  --success-bg:    #0D2818;
-  --warning:       #E3B341;
-  --warning-bg:    #2A1F0A;
-  --danger:        #F85149;
-  --danger-bg:     #2A1010;
-  --shadow-sm:     0 1px 2px rgba(0,0,0,0.3);
-  --shadow:        0 1px 4px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2);
-  --shadow-lg:     0 4px 16px rgba(0,0,0,0.4), 0 1px 4px rgba(0,0,0,0.3);
-}
-
-/* ── RESET ────────────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: var(--bg); color: var(--text-1);
-  font-size: 14px; line-height: 1.6; min-height: 100vh;
-  transition: background 0.2s, color 0.2s;
-}
-
-/* ── HEADER ───────────────────────────────────────────── */
-.header {
-  height: var(--header-h);
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 28px;
-  position: sticky; top: 0; z-index: 200;
-  box-shadow: var(--shadow-sm);
-  transition: background 0.2s, border-color 0.2s;
-}
-.header-left { display: flex; align-items: center; gap: 12px; }
-.logo {
-  display: flex; align-items: center; gap: 8px; text-decoration: none;
-}
-.logo-icon {
-  width: 32px; height: 32px; border-radius: 8px;
-  background: linear-gradient(135deg, #2563EB, #7C3AED);
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-}
-.logo-icon svg { width: 16px; height: 16px; fill: white; }
-.logo-name { font-size: 15px; font-weight: 700; color: var(--text-1); letter-spacing: -0.3px; }
-.logo-sep { width: 1px; height: 18px; background: var(--border2); margin: 0 4px; }
-.header-badge {
-  font-size: 11px; font-weight: 600; padding: 3px 10px; letter-spacing: 0.2px;
-  background: var(--accent-bg); color: var(--accent);
-  border-radius: 20px; border: 1px solid var(--accent-border);
-}
-.header-right { display: flex; align-items: center; gap: 10px; }
-
-/* Theme toggle */
-.theme-toggle {
-  width: 56px; height: 28px; border-radius: 14px;
-  background: var(--bg2); border: 1px solid var(--border2);
-  cursor: pointer; position: relative; transition: background 0.25s;
-  display: flex; align-items: center; padding: 2px;
-  flex-shrink: 0;
-}
-.theme-toggle-knob {
-  width: 22px; height: 22px; border-radius: 50%;
-  background: var(--surface); box-shadow: var(--shadow);
-  display: flex; align-items: center; justify-content: center;
-  transition: transform 0.25s cubic-bezier(.4,0,.2,1);
-  font-size: 12px;
-}
-[data-theme="dark"] .theme-toggle { background: #1F3A5A; border-color: #2563EB44; }
-[data-theme="dark"] .theme-toggle-knob { transform: translateX(28px); }
-
-/* ── MAIN ─────────────────────────────────────────────── */
-.main { max-width: 1240px; margin: 0 auto; padding: 32px 24px 56px; }
-
-/* ── BUTTONS ──────────────────────────────────────────── */
-.btn {
-  display: inline-flex; align-items: center; gap: 7px;
-  padding: 8px 16px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500;
-  cursor: pointer; border: 1px solid var(--border2); background: var(--surface);
-  color: var(--text-1); transition: all 0.15s; white-space: nowrap;
-  font-family: inherit;
-}
-.btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; flex-shrink: 0; }
-.btn:hover { background: var(--surface2); border-color: var(--text-3); }
-.btn:active { transform: scale(0.98); }
-.btn-primary {
-  background: var(--accent); color: #fff; border-color: var(--accent);
-  box-shadow: 0 1px 3px rgba(37,99,235,0.3);
-}
-.btn-primary:hover { background: var(--accent2); border-color: var(--accent2); }
-.btn-sm { padding: 5px 11px; font-size: 12px; }
-.btn-icon { padding: 7px; gap: 0; }
-
-/* ── UPLOAD ZONE ──────────────────────────────────────── */
-#upload-section { animation: fadeUp 0.3s ease; }
-.upload-intro { margin-bottom: 28px; }
-.upload-intro h1 {
-  font-size: 24px; font-weight: 700; letter-spacing: -0.5px;
-  color: var(--text-1); margin-bottom: 8px;
-}
-.upload-intro p { color: var(--text-2); font-size: 14px; max-width: 560px; line-height: 1.65; }
-
-.upload-zone {
-  border: 2px dashed var(--border2); border-radius: var(--radius-lg);
-  background: var(--surface); padding: 64px 40px; text-align: center;
-  cursor: pointer; transition: all 0.2s; position: relative;
-}
-.upload-zone:hover, .upload-zone.drag-over {
-  border-color: var(--accent); background: var(--accent-bg);
-  box-shadow: 0 0 0 4px var(--accent-border);
-}
-.upload-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-.upload-icon {
-  width: 64px; height: 64px; border-radius: 18px;
-  background: linear-gradient(135deg, var(--accent-bg), #F3E8FF);
-  border: 1px solid var(--accent-border);
-  display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;
-}
-.upload-icon svg { width: 28px; height: 28px; stroke: var(--accent); fill: none; stroke-width: 1.5; }
-.upload-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; color: var(--text-1); }
-.upload-sub { font-size: 14px; color: var(--text-2); }
-.upload-sub span { color: var(--accent); font-weight: 600; cursor: pointer; }
-.upload-formats { display: flex; gap: 8px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
-.format-pill {
-  font-size: 11px; font-weight: 500; padding: 4px 12px;
-  border: 1px solid var(--border); border-radius: 20px;
-  color: var(--text-3); background: var(--bg);
-  font-family: 'SF Mono', 'Fira Code', monospace;
-}
-
-/* ── PROGRESS ─────────────────────────────────────────── */
-#progress-section { display: none; animation: fadeUp 0.3s ease; }
-.progress-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-lg); padding: 32px; box-shadow: var(--shadow);
-}
-.progress-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
-.spinner {
-  width: 22px; height: 22px; border: 2.5px solid var(--border2);
-  border-top-color: var(--accent); border-radius: 50%;
-  animation: spin 0.7s linear infinite; flex-shrink: 0;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-.progress-label { font-size: 15px; font-weight: 600; color: var(--text-1); }
-.progress-bar-track { height: 8px; background: var(--bg2); border-radius: 4px; overflow: hidden; }
-.progress-bar-fill {
-  height: 100%; background: linear-gradient(90deg, var(--accent), #7C3AED);
-  border-radius: 4px; transition: width 0.35s cubic-bezier(.4,0,.2,1); width: 0%;
-}
-.progress-stats { font-size: 12px; color: var(--text-3); margin-top: 10px; }
-
-/* ── DASHBOARD ────────────────────────────────────────── */
-#dashboard-section { display: none; animation: fadeUp 0.3s ease; }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-/* ── USER BANNER ──────────────────────────────────────── */
-.user-banner {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 18px 24px;
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 22px; box-shadow: var(--shadow);
-  flex-wrap: wrap; gap: 14px;
-  transition: background 0.2s, border-color 0.2s;
-}
-.user-info { display: flex; align-items: center; gap: 14px; }
-.user-avatar {
-  width: 42px; height: 42px; border-radius: 50%;
-  background: linear-gradient(135deg, #667EEA, #764BA2);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; font-weight: 700; color: white; flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(118,75,162,0.35);
-}
-.user-name { font-size: 14px; font-weight: 700; color: var(--text-1); }
-.user-email { font-size: 12px; color: var(--text-2); margin-top: 1px; }
-.banner-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-
-/* ── METRICS ──────────────────────────────────────────── */
-.metrics-grid {
-  display: grid; grid-template-columns: repeat(4, 1fr);
-  gap: 16px; margin-bottom: 22px;
-}
-@media(max-width:900px){ .metrics-grid { grid-template-columns: repeat(2,1fr); } }
-.metric-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-lg); padding: 20px 22px;
-  box-shadow: var(--shadow); position: relative; overflow: hidden;
-  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
-}
-.metric-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-1px); }
-.metric-accent-bar {
-  position: absolute; top: 0; left: 0; right: 0; height: 3px;
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-}
-.bar-blue   { background: linear-gradient(90deg, #2563EB, #7C3AED); }
-.bar-teal   { background: linear-gradient(90deg, #059669, #0891B2); }
-.bar-amber  { background: linear-gradient(90deg, #D97706, #EA580C); }
-.bar-purple { background: linear-gradient(90deg, #7C3AED, #BE185D); }
-.metric-label {
-  font-size: 11px; font-weight: 600; color: var(--text-3);
-  text-transform: uppercase; letter-spacing: 0.7px;
-  margin-bottom: 10px; margin-top: 8px;
-}
-.metric-value { font-size: 28px; font-weight: 700; line-height: 1; color: var(--text-1); margin-bottom: 5px; letter-spacing: -0.5px; }
-.metric-sub { font-size: 12px; color: var(--text-2); }
-
-/* ── CARDS ────────────────────────────────────────────── */
-.card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-lg); box-shadow: var(--shadow); overflow: hidden;
-  transition: background 0.2s, border-color 0.2s;
-}
-.card-header {
-  padding: 16px 20px; border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between; gap: 10px;
-}
-.card-title { font-size: 13px; font-weight: 700; color: var(--text-1); letter-spacing: -0.1px; }
-.card-sub { font-size: 12px; color: var(--text-2); margin-top: 2px; }
-.card-body { padding: 18px 20px; }
-
-.content-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-@media(max-width:820px){ .content-grid { grid-template-columns: 1fr; } }
-.full-card { grid-column: 1 / -1; }
-
-/* ── TABS ─────────────────────────────────────────────── */
-.tabs {
-  display: flex; gap: 2px; padding: 3px;
-  background: var(--bg2); border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-}
-.tab-btn {
-  padding: 5px 13px; font-size: 12px; font-weight: 500; border: none;
-  background: transparent; cursor: pointer; border-radius: 5px;
-  color: var(--text-2); transition: all 0.15s; font-family: inherit;
-}
-.tab-btn.active {
-  background: var(--surface); color: var(--text-1);
-  box-shadow: var(--shadow-sm); font-weight: 600;
-}
-
-/* ── FORMAT TABLE ─────────────────────────────────────── */
-.file-table { width: 100%; border-collapse: collapse; }
-.file-table th {
-  font-size: 11px; font-weight: 700; color: var(--text-3);
-  text-transform: uppercase; letter-spacing: 0.6px;
-  padding: 0 8px 12px 0; text-align: left; border-bottom: 1px solid var(--border);
-  background: var(--surface);
-}
-.file-table th:not(:first-child) { text-align: right; padding-right: 0; padding-left: 8px; }
-.file-table td { padding: 10px 8px 10px 0; border-bottom: 1px solid var(--border); vertical-align: middle; font-size: 13px; }
-.file-table tr:last-child td { border-bottom: none; }
-.file-table tr:hover td { background: var(--bg2); }
-.file-table td:not(:first-child) { text-align: right; padding-left: 8px; padding-right: 0; color: var(--text-2); }
-.ext-pill {
-  display: inline-block; font-size: 11px; font-weight: 700;
-  padding: 3px 9px; border-radius: 5px; font-family: 'SF Mono', 'Fira Code', monospace;
-  text-transform: uppercase; background: var(--bg2);
-  border: 1px solid var(--border2); color: var(--text-1);
-}
-.bar-track { height: 4px; background: var(--bg2); border-radius: 2px; margin-top: 5px; }
-.bar-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--accent), #7C3AED); opacity: 0.6; }
-
-/* ── SEARCH ───────────────────────────────────────────── */
-.search-wrap { position: relative; }
-.search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; stroke: var(--text-3); fill: none; stroke-width: 2; pointer-events: none; }
-.search-input {
-  width: 100%; padding: 7px 10px 7px 32px; border: 1px solid var(--border2);
-  border-radius: var(--radius-sm); font-size: 13px; background: var(--surface2);
-  color: var(--text-1); outline: none; transition: all 0.15s; font-family: inherit;
-}
-.search-input:focus { border-color: var(--accent); background: var(--surface); box-shadow: 0 0 0 3px var(--accent-border); }
-
-/* ── DONUT LEGEND ─────────────────────────────────────── */
-.legend-grid { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
-.legend-item { display: flex; align-items: center; gap: 10px; font-size: 12px; }
-.legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
-
-/* ── DATA VIEWER ──────────────────────────────────────── */
-#viewer-section { display: none; margin-top: 16px; }
-.viewer-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-lg); box-shadow: var(--shadow); overflow: hidden;
-}
-.viewer-header {
-  padding: 16px 20px; border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
-}
-.viewer-tabs {
-  display: flex; gap: 2px; padding: 3px;
-  background: var(--bg2); border-radius: var(--radius-sm); border: 1px solid var(--border);
-}
-.viewer-tab {
-  padding: 5px 14px; font-size: 12px; font-weight: 500; border: none;
-  background: transparent; cursor: pointer; border-radius: 5px;
-  color: var(--text-2); transition: all 0.15s; white-space: nowrap; font-family: inherit;
-}
-.viewer-tab.active { background: var(--surface); color: var(--text-1); box-shadow: var(--shadow-sm); font-weight: 600; }
-.viewer-toolbar {
-  padding: 10px 20px; border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: 10px; background: var(--bg2); flex-wrap: wrap;
-}
-.viewer-search-wrap { position: relative; flex: 1; min-width: 180px; max-width: 300px; }
-.viewer-search-wrap svg { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); width: 13px; height: 13px; stroke: var(--text-3); fill: none; stroke-width: 2; pointer-events: none; }
-.viewer-search {
-  width: 100%; padding: 6px 10px 6px 30px; border: 1px solid var(--border2);
-  border-radius: var(--radius-sm); font-size: 12px; background: var(--surface);
-  color: var(--text-1); outline: none; transition: all 0.15s; font-family: inherit;
-}
-.viewer-search:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-border); }
-.viewer-info { font-size: 12px; color: var(--text-3); margin-left: auto; }
-.grid-wrap { height: 500px; width: 100%; }
-
-/* AG Grid dark mode overrides */
-[data-theme="light"] .ag-theme-alpine {
-  --ag-font-family: 'Inter', sans-serif;
-  --ag-font-size: 12px;
-  --ag-header-background-color: #F7F8FA;
-  --ag-header-foreground-color: #6B7280;
-  --ag-border-color: #E2E6ED;
-  --ag-row-hover-color: #EFF6FF;
-  --ag-selected-row-background-color: #DBEAFE;
-  --ag-odd-row-background-color: #FAFBFC;
-  --ag-cell-horizontal-padding: 14px;
-  --ag-background-color: #FFFFFF;
-  --ag-foreground-color: #0F1729;
-}
-[data-theme="dark"] .ag-theme-alpine-dark {
-  --ag-font-family: 'Inter', sans-serif;
-  --ag-font-size: 12px;
-  --ag-header-background-color: #161B22;
-  --ag-header-foreground-color: #8B949E;
-  --ag-border-color: #2D3748;
-  --ag-row-hover-color: #1F2D3D;
-  --ag-selected-row-background-color: #162032;
-  --ag-odd-row-background-color: #1A2130;
-  --ag-cell-horizontal-padding: 14px;
-  --ag-background-color: #1C2333;
-  --ag-foreground-color: #E6EDF3;
-}
-
-/* ── EMAIL ────────────────────────────────────────────── */
-#email-section { display: none; margin-top: 16px; }
-.email-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-lg); box-shadow: var(--shadow); overflow: hidden;
-}
-.email-header {
-  padding: 16px 20px; border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between;
-  background: var(--surface2);
-}
-.email-meta { padding: 12px 20px; border-bottom: 1px solid var(--border); }
-.email-meta-row { display: flex; align-items: baseline; gap: 10px; padding: 4px 0; font-size: 13px; }
-.email-meta-label { font-size: 10px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.7px; min-width: 52px; }
-.email-body {
-  padding: 20px; font-size: 13px; line-height: 1.75; white-space: pre-wrap;
-  font-family: inherit; max-height: 520px; overflow-y: auto; color: var(--text-1);
-}
-.email-footer {
-  padding: 14px 20px; border-top: 1px solid var(--border);
-  display: flex; gap: 8px; background: var(--bg2);
-}
-
-/* ── TOAST ────────────────────────────────────────────── */
-#toast {
-  position: fixed; bottom: 28px; right: 28px; z-index: 9999;
-  background: var(--text-1); color: var(--bg);
-  padding: 11px 18px; border-radius: var(--radius); font-size: 13px; font-weight: 500;
-  opacity: 0; transform: translateY(10px); pointer-events: none;
-  transition: all 0.22s cubic-bezier(.4,0,.2,1);
-  box-shadow: var(--shadow-lg); max-width: 300px;
-}
-#toast.show { opacity: 1; transform: translateY(0); }
-
-/* ── SCROLLBAR ────────────────────────────────────────── */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--text-3); }
-
-/* ── NO RESULTS ───────────────────────────────────────── */
-#no-results { display:none; padding:24px 0; text-align:center; color:var(--text-3); font-size:13px; }
+:root{--bg:#F0F2F5;--bg2:#E4E7ED;--surface:#FFFFFF;--surface2:#F7F8FA;--border:#E2E6ED;--border2:#C8CDD8;--text-1:#0F1729;--text-2:#4B5563;--text-3:#9CA3AF;--accent:#2563EB;--accent2:#1D4ED8;--accent-bg:#EFF6FF;--accent-border:#BFDBFE;--success:#059669;--success-bg:#ECFDF5;--success-border:#A7F3D0;--warning:#D97706;--warning-bg:#FFFBEB;--warning-border:#FDE68A;--danger:#DC2626;--danger-bg:#FEF2F2;--danger-border:#FECACA;--purple:#7C3AED;--radius-sm:6px;--radius:10px;--radius-lg:14px;--shadow-sm:0 1px 2px rgba(0,0,0,0.06);--shadow:0 1px 4px rgba(0,0,0,0.07),0 4px 12px rgba(0,0,0,0.05);--shadow-lg:0 4px 16px rgba(0,0,0,0.10),0 1px 4px rgba(0,0,0,0.06);--header-h:60px;}
+[data-theme="dark"]{--bg:#0D1117;--bg2:#161B22;--surface:#1C2333;--surface2:#212840;--border:#2D3748;--border2:#3D4A60;--text-1:#E6EDF3;--text-2:#8B949E;--text-3:#556070;--accent:#58A6FF;--accent2:#79B8FF;--accent-bg:#162032;--accent-border:#1F3A5A;--success:#3FB950;--success-bg:#0D2818;--success-border:#1A4A2A;--warning:#E3B341;--warning-bg:#2A1F0A;--warning-border:#4A3510;--danger:#F85149;--danger-bg:#2A1010;--danger-border:#4A1A1A;--shadow-sm:0 1px 2px rgba(0,0,0,0.3);--shadow:0 1px 4px rgba(0,0,0,0.3),0 4px 12px rgba(0,0,0,0.2);--shadow-lg:0 4px 16px rgba(0,0,0,0.4),0 1px 4px rgba(0,0,0,0.3);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text-1);font-size:14px;line-height:1.6;min-height:100vh;transition:background .2s,color .2s;}
+.header{height:var(--header-h);background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:200;box-shadow:var(--shadow-sm);}
+.header-left{display:flex;align-items:center;gap:12px;}
+.logo-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#2563EB,#7C3AED);display:flex;align-items:center;justify-content:center;}
+.logo-icon svg{width:16px;height:16px;fill:white;}
+.logo-name{font-size:15px;font-weight:700;letter-spacing:-.3px;}
+.logo-sep{width:1px;height:18px;background:var(--border2);margin:0 4px;}
+.header-badge{font-size:11px;font-weight:600;padding:3px 10px;background:var(--accent-bg);color:var(--accent);border-radius:20px;border:1px solid var(--accent-border);}
+.header-right{display:flex;align-items:center;gap:10px;}
+.theme-toggle{width:56px;height:28px;border-radius:14px;background:var(--bg2);border:1px solid var(--border2);cursor:pointer;display:flex;align-items:center;padding:2px;transition:background .25s;}
+.theme-knob{width:22px;height:22px;border-radius:50%;background:var(--surface);box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;transition:transform .25s cubic-bezier(.4,0,.2,1);font-size:12px;}
+[data-theme="dark"] .theme-toggle{background:#1F3A5A;}
+[data-theme="dark"] .theme-knob{transform:translateX(28px);}
+.main{max-width:1280px;margin:0 auto;padding:28px 24px 56px;}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:var(--surface);color:var(--text-1);transition:all .15s;white-space:nowrap;font-family:inherit;}
+.btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0;}
+.btn:hover{background:var(--surface2);}
+.btn:active{transform:scale(.98);}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn-primary:hover{background:var(--accent2);}
+.btn-sm{padding:5px 11px;font-size:12px;}
+.btn-ghost{background:transparent;border-color:transparent;}
+.btn-ghost:hover{background:var(--bg2);border-color:var(--border);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+@keyframes spin{to{transform:rotate(360deg);}}
+/* UPLOAD */
+#upload-section{animation:fadeUp .3s ease;}
+.upload-intro{margin-bottom:28px;}
+.upload-intro h1{font-size:24px;font-weight:700;letter-spacing:-.5px;margin-bottom:8px;}
+.upload-intro p{color:var(--text-2);font-size:14px;max-width:580px;}
+.upload-zone{border:2px dashed var(--border2);border-radius:var(--radius-lg);background:var(--surface);padding:64px 40px;text-align:center;cursor:pointer;transition:all .2s;position:relative;}
+.upload-zone:hover,.upload-zone.drag-over{border-color:var(--accent);background:var(--accent-bg);box-shadow:0 0 0 4px var(--accent-border);}
+.upload-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.upload-icon{width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,var(--accent-bg),#F3E8FF);border:1px solid var(--accent-border);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;}
+.upload-icon svg{width:28px;height:28px;stroke:var(--accent);fill:none;stroke-width:1.5;}
+.upload-title{font-size:18px;font-weight:700;margin-bottom:8px;}
+.upload-sub{font-size:14px;color:var(--text-2);}
+.upload-sub span{color:var(--accent);font-weight:600;cursor:pointer;}
+.upload-formats{display:flex;gap:8px;justify-content:center;margin-top:20px;flex-wrap:wrap;}
+.format-pill{font-size:11px;font-weight:500;padding:4px 12px;border:1px solid var(--border);border-radius:20px;color:var(--text-3);background:var(--bg);}
+/* PROGRESS */
+#progress-section{display:none;animation:fadeUp .3s ease;}
+.progress-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px;box-shadow:var(--shadow);}
+.progress-header{display:flex;align-items:center;gap:14px;margin-bottom:20px;}
+.spinner{width:22px;height:22px;border:2.5px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;}
+.progress-label{font-size:15px;font-weight:600;}
+.progress-bar-track{height:8px;background:var(--bg2);border-radius:4px;overflow:hidden;}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),#7C3AED);border-radius:4px;transition:width .35s;width:0%;}
+.progress-stats{font-size:12px;color:var(--text-3);margin-top:10px;}
+/* USER SELECT */
+#user-select-section{display:none;animation:fadeUp .3s ease;}
+.us-header{margin-bottom:24px;}
+.us-header h2{font-size:20px;font-weight:700;margin-bottom:6px;}
+.us-header p{color:var(--text-2);font-size:13px;}
+.users-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:24px;}
+.user-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;cursor:pointer;transition:all .18s;box-shadow:var(--shadow-sm);position:relative;}
+.user-card:hover{border-color:var(--accent);box-shadow:var(--shadow),0 0 0 3px var(--accent-border);transform:translateY(-2px);}
+.user-card-top{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.uc-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:white;flex-shrink:0;}
+.uc-name{font-size:13px;font-weight:600;word-break:break-all;}
+.uc-badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;margin-top:3px;display:inline-block;}
+.badge-heavy{background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-border);}
+.badge-medium{background:var(--warning-bg);color:var(--warning);border:1px solid var(--warning-border);}
+.badge-normal{background:var(--success-bg);color:var(--success);border:1px solid var(--success-border);}
+.uc-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.uc-stat{background:var(--bg2);border-radius:var(--radius-sm);padding:8px 10px;}
+.uc-stat-label{font-size:10px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+.uc-stat-val{font-size:15px;font-weight:700;margin-top:2px;}
+.uc-rank{position:absolute;top:12px;right:14px;font-size:11px;font-weight:700;color:var(--text-3);}
+/* APP TABS */
+#app-section{display:none;animation:fadeUp .3s ease;}
+.app-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;}
+.back-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--text-2);cursor:pointer;padding:5px 2px;border:none;background:none;font-family:inherit;transition:color .15s;}
+.back-btn:hover{color:var(--accent);}
+.back-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;}
+.nav-sep{color:var(--text-3);}
+.current-user-pill{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:5px 12px 5px 5px;box-shadow:var(--shadow-sm);}
+.cup-avatar{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:white;}
+.cup-name{font-size:12px;font-weight:600;}
+.main-tabs{display:flex;gap:2px;padding:3px;background:var(--bg2);border-radius:var(--radius-sm);border:1px solid var(--border);}
+.main-tab{padding:7px 18px;font-size:13px;font-weight:500;border:none;background:transparent;cursor:pointer;border-radius:6px;color:var(--text-2);transition:all .15s;font-family:inherit;display:flex;align-items:center;gap:6px;}
+.main-tab svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;}
+.main-tab.active{background:var(--surface);color:var(--text-1);box-shadow:var(--shadow-sm);font-weight:600;}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+/* METRICS */
+.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px;}
+@media(max-width:900px){.metrics-grid{grid-template-columns:repeat(2,1fr);}}
+.metric-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 22px;box-shadow:var(--shadow);position:relative;overflow:hidden;transition:all .2s;}
+.metric-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-1px);}
+.metric-accent-bar{position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--radius-lg) var(--radius-lg) 0 0;}
+.bar-blue{background:linear-gradient(90deg,#2563EB,#7C3AED);}
+.bar-teal{background:linear-gradient(90deg,#059669,#0891B2);}
+.bar-amber{background:linear-gradient(90deg,#D97706,#EA580C);}
+.bar-purple{background:linear-gradient(90deg,#7C3AED,#BE185D);}
+.metric-label{font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px;margin-top:8px;}
+.metric-value{font-size:28px;font-weight:700;line-height:1;letter-spacing:-.5px;margin-bottom:5px;}
+.metric-sub{font-size:12px;color:var(--text-2);}
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow);overflow:hidden;}
+.card-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.card-title{font-size:13px;font-weight:700;}
+.card-sub{font-size:12px;color:var(--text-2);margin-top:2px;}
+.card-body{padding:18px 20px;}
+.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+@media(max-width:820px){.content-grid{grid-template-columns:1fr;}}
+/* CHART TABS */
+.tabs{display:flex;gap:2px;padding:3px;background:var(--bg2);border-radius:var(--radius-sm);border:1px solid var(--border);}
+.tab-btn{padding:5px 13px;font-size:12px;font-weight:500;border:none;background:transparent;cursor:pointer;border-radius:5px;color:var(--text-2);transition:all .15s;font-family:inherit;}
+.tab-btn.active{background:var(--surface);color:var(--text-1);box-shadow:var(--shadow-sm);font-weight:600;}
+/* FORMATS TABLE */
+.formats-toolbar{display:flex;align-items:center;gap:10px;padding:12px 20px;border-bottom:1px solid var(--border);background:var(--bg2);flex-wrap:wrap;}
+.search-wrap{position:relative;}
+.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:14px;height:14px;stroke:var(--text-3);fill:none;stroke-width:2;pointer-events:none;}
+.search-input{padding:7px 10px 7px 32px;border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:13px;background:var(--surface);color:var(--text-1);outline:none;transition:all .15s;font-family:inherit;width:220px;}
+.search-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-border);}
+.filter-select{padding:7px 10px;border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:12px;background:var(--surface);color:var(--text-1);outline:none;cursor:pointer;font-family:inherit;}
+.sort-btn{padding:6px 12px;border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:12px;font-weight:500;background:var(--surface);color:var(--text-2);cursor:pointer;display:inline-flex;align-items:center;gap:5px;font-family:inherit;transition:all .15s;}
+.sort-btn.active-sort{background:var(--accent-bg);border-color:var(--accent);color:var(--accent);}
+.sort-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;}
+.formats-count{font-size:12px;color:var(--text-3);margin-left:auto;}
+.file-table{width:100%;border-collapse:collapse;}
+.file-table th{font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.6px;padding:12px 8px 12px 0;text-align:left;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:2;}
+.file-table th:not(:first-child){text-align:right;padding-right:0;padding-left:8px;}
+.file-table td{padding:10px 8px 10px 0;border-bottom:1px solid var(--border);vertical-align:middle;font-size:13px;}
+.file-table tr:last-child td{border-bottom:none;}
+.file-table tr:hover td{background:var(--bg2);}
+.file-table td:not(:first-child){text-align:right;padding-left:8px;padding-right:0;color:var(--text-2);}
+.ext-pill{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:5px;font-family:'SF Mono','Fira Code',monospace;text-transform:uppercase;background:var(--bg2);border:1px solid var(--border2);}
+.bar-track{height:4px;background:var(--bg2);border-radius:2px;margin-top:5px;}
+.bar-fill-grad{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent),#7C3AED);opacity:.6;}
+#no-results{display:none;padding:28px 0;text-align:center;color:var(--text-3);font-size:13px;}
+/* LEGEND */
+.legend-grid{display:flex;flex-direction:column;gap:8px;margin-top:16px;}
+.legend-item{display:flex;align-items:center;gap:10px;font-size:12px;}
+.legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0;}
+/* VIEWER */
+.viewer-tabs{display:flex;gap:2px;padding:3px;background:var(--bg2);border-radius:var(--radius-sm);border:1px solid var(--border);}
+.viewer-tab{padding:5px 14px;font-size:12px;font-weight:500;border:none;background:transparent;cursor:pointer;border-radius:5px;color:var(--text-2);transition:all .15s;white-space:nowrap;font-family:inherit;}
+.viewer-tab.active{background:var(--surface);color:var(--text-1);box-shadow:var(--shadow-sm);font-weight:600;}
+.viewer-search-wrap{position:relative;flex:1;min-width:180px;max-width:300px;}
+.viewer-search-wrap svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);width:13px;height:13px;stroke:var(--text-3);fill:none;stroke-width:2;pointer-events:none;}
+.viewer-search{width:100%;padding:6px 10px 6px 30px;border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:12px;background:var(--surface);color:var(--text-1);outline:none;font-family:inherit;transition:all .15s;}
+.viewer-search:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-border);}
+.viewer-info{font-size:12px;color:var(--text-3);margin-left:auto;}
+.grid-wrap{height:500px;width:100%;}
+[data-theme="light"] .ag-theme-alpine{--ag-font-family:'Inter',sans-serif;--ag-font-size:12px;--ag-header-background-color:#F7F8FA;--ag-header-foreground-color:#6B7280;--ag-border-color:#E2E6ED;--ag-row-hover-color:#EFF6FF;--ag-selected-row-background-color:#DBEAFE;--ag-background-color:#FFFFFF;--ag-foreground-color:#0F1729;--ag-cell-horizontal-padding:14px;}
+[data-theme="dark"] .ag-theme-alpine-dark{--ag-font-family:'Inter',sans-serif;--ag-font-size:12px;--ag-header-background-color:#161B22;--ag-header-foreground-color:#8B949E;--ag-border-color:#2D3748;--ag-row-hover-color:#1F2D3D;--ag-background-color:#1C2333;--ag-foreground-color:#E6EDF3;--ag-cell-horizontal-padding:14px;}
+/* EMAIL */
+.email-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow);overflow:hidden;}
+.email-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface2);}
+.email-meta{padding:12px 20px;border-bottom:1px solid var(--border);}
+.email-meta-row{display:flex;align-items:baseline;gap:10px;padding:4px 0;font-size:13px;}
+.email-meta-label{font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.7px;min-width:52px;}
+.email-body{padding:20px;font-size:13px;line-height:1.75;white-space:pre-wrap;font-family:inherit;max-height:520px;overflow-y:auto;}
+.email-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:8px;background:var(--bg2);}
+/* HISTORY */
+#history-section{display:none;animation:fadeUp .3s ease;}
+.history-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;}
+.history-header h2{font-size:20px;font-weight:700;}
+.history-empty{text-align:center;padding:56px 20px;color:var(--text-3);}
+.history-empty svg{width:48px;height:48px;stroke:var(--border2);fill:none;stroke-width:1.5;margin:0 auto 16px;display:block;}
+.history-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;}
+.history-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;box-shadow:var(--shadow-sm);transition:all .15s;}
+.history-card:hover{border-color:var(--accent);box-shadow:var(--shadow);}
+.hc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;}
+.hc-title{font-size:13px;font-weight:700;}
+.hc-date{font-size:11px;color:var(--text-3);margin-top:3px;}
+.hc-del{background:none;border:none;cursor:pointer;color:var(--text-3);padding:2px;display:flex;transition:color .15s;}
+.hc-del:hover{color:var(--danger);}
+.hc-del svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;}
+.hc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.hc-stat{background:var(--bg2);border-radius:var(--radius-sm);padding:8px 10px;text-align:center;}
+.hc-stat-val{font-size:15px;font-weight:700;}
+.hc-stat-label{font-size:10px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-top:2px;}
+.hc-users{display:flex;gap:4px;flex-wrap:wrap;margin-top:10px;}
+.hc-user-tag{font-size:11px;padding:2px 8px;background:var(--accent-bg);color:var(--accent);border-radius:20px;border:1px solid var(--accent-border);}
+/* TOAST */
+#toast{position:fixed;bottom:28px;right:28px;z-index:9999;background:var(--text-1);color:var(--bg);padding:11px 18px;border-radius:var(--radius);font-size:13px;font-weight:500;opacity:0;transform:translateY(10px);pointer-events:none;transition:all .22s;box-shadow:var(--shadow-lg);}
+#toast.show{opacity:1;transform:translateY(0);}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
 </style>
 </head>
 <body>
-
-<!-- ── HEADER ─────────────────────────────────────────── -->
 <header class="header">
   <div class="header-left">
-    <div class="logo">
-      <div class="logo-icon">
-        <svg viewBox="0 0 16 16"><path d="M2 3h12v2H2zM2 7h8v2H2zM2 11h10v2H2z"/></svg>
-      </div>
-      <span class="logo-name">ScanAnalyzer</span>
-    </div>
+    <div class="logo-icon"><svg viewBox="0 0 16 16"><path d="M2 3h12v2H2zM2 7h8v2H2zM2 11h10v2H2z"/></svg></div>
+    <span class="logo-name">ScanAnalyzer</span>
     <div class="logo-sep"></div>
     <span class="header-badge">Google Drive → OneDrive</span>
   </div>
   <div class="header-right">
-    <button class="btn btn-sm" id="new-scan-btn" style="display:none" onclick="resetTool()">
-      <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
-      New scan
+    <button class="btn btn-sm btn-ghost" id="history-nav-btn" style="display:none" onclick="showHistory()">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>History
     </button>
-    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle light / dark mode">
-      <div class="theme-toggle-knob" id="theme-knob">☀️</div>
+    <button class="btn btn-sm btn-ghost" id="new-scan-btn" style="display:none" onclick="goHome()">
+      <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>New scan
     </button>
+    <button class="theme-toggle" onclick="toggleTheme()"><div class="theme-knob" id="theme-knob">☀️</div></button>
   </div>
 </header>
-
 <main class="main">
-
-  <!-- ── UPLOAD ──────────────────────────────────────── -->
-  <div id="upload-section">
-    <div class="upload-intro">
-      <h1>Migration scan analyzer</h1>
-      <p>Upload a Migration Manager scan report to get a full breakdown of every file type, size, and count — so your team can make informed decisions before migrating to OneDrive.</p>
+<!-- UPLOAD -->
+<div id="upload-section">
+  <div class="upload-intro"><h1>Migration scan analyzer</h1><p>Upload a Migration Manager scan report to get a full per-user breakdown of every file type, size, and count — supports multi-user scan reports.</p></div>
+  <div class="upload-zone" id="drop-zone">
+    <input type="file" id="file-input" accept=".zip,.csv">
+    <div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+    <div class="upload-title">Drop your scan report here</div>
+    <div class="upload-sub">or <span>browse files</span> to upload</div>
+    <div class="upload-formats"><span class="format-pill">.zip</span><span class="format-pill">.csv</span><span class="format-pill">Multi-user supported</span></div>
+  </div>
+</div>
+<!-- PROGRESS -->
+<div id="progress-section">
+  <div class="progress-card">
+    <div class="progress-header"><div class="spinner"></div><div class="progress-label" id="progress-label">Reading…</div></div>
+    <div class="progress-bar-track"><div class="progress-bar-fill" id="progress-bar"></div></div>
+    <div class="progress-stats" id="progress-stats"></div>
+  </div>
+</div>
+<!-- USER SELECT -->
+<div id="user-select-section">
+  <div class="us-header"><h2 id="us-title">Select a user</h2><p id="us-sub">Click any user card to view their breakdown</p></div>
+  <div class="users-grid" id="users-grid"></div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;">
+    <button class="btn btn-sm btn-ghost" onclick="goHome()"><svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>Upload new scan</button>
+    <button class="btn btn-sm btn-ghost" onclick="showHistory()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>View history</button>
+  </div>
+</div>
+<!-- APP -->
+<div id="app-section">
+  <div class="app-nav">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button class="back-btn" onclick="backToUsers()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>All users</button>
+      <span class="nav-sep">/</span>
+      <div class="current-user-pill"><div class="cup-avatar" id="cup-avatar">?</div><span class="cup-name" id="cup-name">—</span></div>
     </div>
-    <div class="upload-zone" id="drop-zone">
-      <input type="file" id="file-input" accept=".zip,.csv" />
-      <div class="upload-icon">
-        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-      </div>
-      <div class="upload-title">Drop your scan report here</div>
-      <div class="upload-sub">or <span>browse files</span> to upload</div>
-      <div class="upload-formats">
-        <span class="format-pill">.zip</span>
-        <span class="format-pill">.csv</span>
-        <span class="format-pill">TransactionItem</span>
-      </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn btn-primary btn-sm" id="export-btn" onclick="exportToExcel()"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>Export Excel</button>
+      <button class="btn btn-sm" onclick="toggleEmail()"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Email</button>
     </div>
   </div>
-
-  <!-- ── PROGRESS ────────────────────────────────────── -->
-  <div id="progress-section">
-    <div class="progress-card">
-      <div class="progress-header">
-        <div class="spinner"></div>
-        <div class="progress-label" id="progress-label">Reading file…</div>
-      </div>
-      <div class="progress-bar-track"><div class="progress-bar-fill" id="progress-bar"></div></div>
-      <div class="progress-stats" id="progress-stats"></div>
+  <div style="margin-bottom:20px;">
+    <div class="main-tabs">
+      <button class="main-tab active" onclick="switchMainTab('dashboard')" id="tab-dashboard"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</button>
+      <button class="main-tab" onclick="switchMainTab('formats')" id="tab-formats"><svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>All Formats</button>
+      <button class="main-tab" onclick="switchMainTab('data')" id="tab-data"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="9" x2="9" y2="21"/></svg>Full Data</button>
     </div>
   </div>
-
-  <!-- ── DASHBOARD ───────────────────────────────────── -->
-  <div id="dashboard-section">
-
-    <!-- User Banner -->
-    <div class="user-banner">
-      <div class="user-info">
-        <div class="user-avatar" id="user-avatar">?</div>
-        <div>
-          <div class="user-name" id="user-name-display">—</div>
-          <div class="user-email" id="user-email-display">—</div>
-        </div>
-      </div>
-      <div class="banner-actions">
-        <button class="btn btn-primary" id="export-btn" onclick="exportToExcel()">
-          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
-          Export to Excel
-        </button>
-        <button class="btn" id="view-data-btn" onclick="toggleViewer()">
-          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="9" x2="9" y2="21"/></svg>
-          View full data
-        </button>
-        <button class="btn" onclick="toggleEmail()">
-          <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          Generate email
-        </button>
-      </div>
-    </div>
-
-    <!-- Metrics -->
+  <!-- DASHBOARD TAB -->
+  <div class="tab-content active" id="content-dashboard">
     <div class="metrics-grid">
-      <div class="metric-card">
-        <div class="metric-accent-bar bar-blue"></div>
-        <div class="metric-label">Total data size</div>
-        <div class="metric-value" id="m-total-size">—</div>
-        <div class="metric-sub" id="m-total-items">—</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-accent-bar bar-teal"></div>
-        <div class="metric-label">Total files</div>
-        <div class="metric-value" id="m-total-files">—</div>
-        <div class="metric-sub" id="m-total-folders">—</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-accent-bar bar-amber"></div>
-        <div class="metric-label">Unique formats</div>
-        <div class="metric-value" id="m-formats">—</div>
-        <div class="metric-sub">distinct extensions</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-accent-bar bar-purple"></div>
-        <div class="metric-label">Est. migration time</div>
-        <div class="metric-value" id="m-time">—</div>
-        <div class="metric-sub">based on data volume</div>
-      </div>
+      <div class="metric-card"><div class="metric-accent-bar bar-blue"></div><div class="metric-label">Total data size</div><div class="metric-value" id="m-total-size">—</div><div class="metric-sub" id="m-total-items">—</div></div>
+      <div class="metric-card"><div class="metric-accent-bar bar-teal"></div><div class="metric-label">Total files</div><div class="metric-value" id="m-total-files">—</div><div class="metric-sub" id="m-total-folders">—</div></div>
+      <div class="metric-card"><div class="metric-accent-bar bar-amber"></div><div class="metric-label">Unique formats</div><div class="metric-value" id="m-formats">—</div><div class="metric-sub">distinct extensions</div></div>
+      <div class="metric-card"><div class="metric-accent-bar bar-purple"></div><div class="metric-label">Est. migration time</div><div class="metric-value" id="m-time">—</div><div class="metric-sub">based on data volume</div></div>
     </div>
-
-    <!-- Charts + Tables -->
     <div class="content-grid">
-
-      <!-- Donut -->
       <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title">Storage by format</div>
-            <div class="card-sub">Top 8 file types</div>
-          </div>
-        </div>
-        <div class="card-body">
-          <div style="position:relative;height:210px;">
-            <canvas id="donut-chart" role="img" aria-label="Storage distribution by file format"></canvas>
-          </div>
-          <div class="legend-grid" id="donut-legend"></div>
-        </div>
+        <div class="card-header"><div><div class="card-title">Storage by format</div><div class="card-sub">Top 8 file types</div></div></div>
+        <div class="card-body"><div style="position:relative;height:210px;"><canvas id="donut-chart"></canvas></div><div class="legend-grid" id="donut-legend"></div></div>
       </div>
-
-      <!-- Bar -->
       <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title">Top 10 formats</div>
-            <div class="card-sub">Ranked by selected metric</div>
-          </div>
-          <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('size')">By size</button>
-            <button class="tab-btn" onclick="switchTab('count')">By count</button>
-          </div>
-        </div>
-        <div class="card-body" style="padding:14px 18px;">
-          <div style="position:relative;height:230px;">
-            <canvas id="bar-chart" role="img" aria-label="Top 10 file formats bar chart"></canvas>
-          </div>
-        </div>
+        <div class="card-header"><div><div class="card-title">Top 10 formats</div><div class="card-sub">Ranked by selected metric</div></div><div class="tabs"><button class="tab-btn active" onclick="switchChartTab('size')">By size</button><button class="tab-btn" onclick="switchChartTab('count')">By count</button></div></div>
+        <div class="card-body" style="padding:14px 18px;"><div style="position:relative;height:230px;"><canvas id="bar-chart"></canvas></div></div>
       </div>
-
-      <!-- Full-width format table -->
-      <div class="card full-card">
-        <div class="card-header">
-          <div>
-            <div class="card-title">All file formats</div>
-            <div class="card-sub" id="format-count-sub">—</div>
-          </div>
-          <div class="search-wrap" style="width:220px;">
-            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input class="search-input" id="search-input" type="text" placeholder="Search format…" oninput="filterTable(this.value)" />
-          </div>
-        </div>
-        <div style="padding:0 20px 8px;">
+    </div>
+  </div>
+  <!-- FORMATS TAB -->
+  <div class="tab-content" id="content-formats">
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">All file formats</div><div class="card-sub" id="format-count-sub">—</div></div></div>
+      <div class="formats-toolbar">
+        <div class="search-wrap"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input class="search-input" id="fmt-search" type="text" placeholder="Search extension…" oninput="filterFormats()"></div>
+        <select class="filter-select" id="fmt-category" onchange="filterFormats()">
+          <option value="">All categories</option>
+          <option value="document">Documents</option>
+          <option value="image">Images</option>
+          <option value="video">Video</option>
+          <option value="archive">Archives</option>
+          <option value="code">Code</option>
+          <option value="system">System files</option>
+          <option value="data">Data files</option>
+          <option value="other">Other</option>
+        </select>
+        <button class="sort-btn active-sort" id="sb-size" onclick="sortFormats('size')"><svg viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="4"/><polyline points="6 10 12 4 18 10"/></svg>Size</button>
+        <button class="sort-btn" id="sb-count" onclick="sortFormats('count')"><svg viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="4"/><polyline points="6 10 12 4 18 10"/></svg>Count</button>
+        <button class="sort-btn" id="sb-name" onclick="sortFormats('name')"><svg viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="4"/><polyline points="6 10 12 4 18 10"/></svg>A–Z</button>
+        <span class="formats-count" id="fmt-count-label">—</span>
+      </div>
+      <div style="padding:0 20px 8px;">
+        <div style="max-height:520px;overflow-y:auto;">
           <table class="file-table">
-            <thead>
-              <tr>
-                <th style="padding-top:14px;padding-bottom:12px;position:sticky;top:0;background:var(--surface);z-index:2;">Extension</th>
-                <th style="position:sticky;top:0;background:var(--surface);z-index:2;">File count</th>
-                <th style="position:sticky;top:0;background:var(--surface);z-index:2;">Total size</th>
-                <th style="position:sticky;top:0;background:var(--surface);z-index:2;">Avg size</th>
-                <th style="text-align:left;padding-left:8px;position:sticky;top:0;background:var(--surface);z-index:2;">% of total</th>
-              </tr>
-            </thead>
+            <thead><tr>
+              <th style="padding-top:14px;">Extension</th>
+              <th style="text-align:right;padding-left:8px;">Category</th>
+              <th>File count</th><th>Total size</th><th>Avg size</th>
+              <th style="text-align:left;padding-left:8px;">% of total</th>
+            </tr></thead>
+            <tbody id="all-formats-body"></tbody>
           </table>
-          <div style="max-height:420px;overflow-y:auto;border-top:1px solid var(--border);">
-            <table class="file-table" style="border-top:none;">
-              <tbody id="all-formats-body"></tbody>
-            </table>
-            <div id="no-results">No formats match your search.</div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- DATA VIEWER -->
-    <div id="viewer-section">
-      <div class="viewer-card">
-        <div class="viewer-header">
-          <div>
-            <div class="card-title">Full scan data</div>
-            <div class="card-sub" id="viewer-sub">—</div>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-            <div class="viewer-tabs">
-              <button class="viewer-tab active" onclick="switchViewTab('all')">All rows</button>
-              <button class="viewer-tab" onclick="switchViewTab('files')">Files only</button>
-              <button class="viewer-tab" onclick="switchViewTab('folders')">Folders only</button>
-            </div>
-            <button class="btn btn-sm" onclick="toggleViewer()">
-              <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-              Close
-            </button>
-          </div>
-        </div>
-        <div class="viewer-toolbar">
-          <div class="viewer-search-wrap">
-            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input class="viewer-search" id="grid-search" type="text" placeholder="Search all columns…" oninput="gridSearch(this.value)" />
-          </div>
-          <button class="btn btn-sm" onclick="clearGridSearch()">Clear</button>
-          <div class="viewer-info" id="grid-row-count">—</div>
-        </div>
-        <div class="grid-wrap" id="data-grid"></div>
-      </div>
-    </div>
-
-    <!-- EMAIL -->
-    <div id="email-section">
-      <div class="email-card">
-        <div class="email-header">
-          <div>
-            <div class="card-title">Client email — scan summary</div>
-            <div class="card-sub" style="margin-top:2px;">Ready to copy and send</div>
-          </div>
-          <div style="display:flex;gap:8px;">
-            <button class="btn btn-sm" onclick="copyEmail()">
-              <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-              Copy
-            </button>
-            <button class="btn btn-sm" onclick="toggleEmail()">
-              <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
-          </div>
-        </div>
-        <div class="email-meta">
-          <div class="email-meta-row"><span class="email-meta-label">To</span><span style="color:var(--text-1)">Dylan, Riley</span></div>
-          <div class="email-meta-row"><span class="email-meta-label">Subject</span><span id="email-subject-display" style="font-weight:600;color:var(--text-1);">—</span></div>
-        </div>
-        <div class="email-body" id="email-body-display">—</div>
-        <div class="email-footer">
-          <button class="btn btn-primary" onclick="copyEmail()">
-            <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-            Copy email
-          </button>
-          <button class="btn" onclick="toggleEmail()">Close</button>
+          <div id="no-results">No formats match your filter.</div>
         </div>
       </div>
     </div>
-
-  </div><!-- /dashboard -->
+  </div>
+  <!-- DATA TAB -->
+  <div class="tab-content" id="content-data">
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">Full scan data</div><div class="card-sub" id="viewer-sub">—</div></div>
+        <div class="viewer-tabs"><button class="viewer-tab active" onclick="switchViewTab('all')">All rows</button><button class="viewer-tab" onclick="switchViewTab('files')">Files</button><button class="viewer-tab" onclick="switchViewTab('folders')">Folders</button></div>
+      </div>
+      <div style="padding:10px 20px;border-bottom:1px solid var(--border);background:var(--bg2);display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <div class="viewer-search-wrap"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input class="viewer-search" id="grid-search" type="text" placeholder="Search all columns…" oninput="gridSearch(this.value)"></div>
+        <button class="btn btn-sm" onclick="clearGridSearch()">Clear</button>
+        <div class="viewer-info" id="grid-row-count">—</div>
+      </div>
+      <div class="grid-wrap" id="data-grid"></div>
+    </div>
+  </div>
+  <!-- EMAIL -->
+  <div id="email-section" style="display:none;margin-top:16px;">
+    <div class="email-card">
+      <div class="email-header"><div><div class="card-title">Client email — scan summary</div><div class="card-sub" style="margin-top:2px;">Ready to copy and send</div></div><div style="display:flex;gap:8px;"><button class="btn btn-sm" onclick="copyEmail()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button><button class="btn btn-sm btn-ghost" onclick="toggleEmail()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div>
+      <div class="email-meta"><div class="email-meta-row"><span class="email-meta-label">To</span><span>Dylan, Riley</span></div><div class="email-meta-row"><span class="email-meta-label">Subject</span><span id="email-subject-display" style="font-weight:600;">—</span></div></div>
+      <div class="email-body" id="email-body-display">—</div>
+      <div class="email-footer"><button class="btn btn-primary" onclick="copyEmail()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy email</button><button class="btn" onclick="toggleEmail()">Close</button></div>
+    </div>
+  </div>
+</div>
+<!-- HISTORY -->
+<div id="history-section">
+  <div class="history-header">
+    <div><h2>Scan history</h2><p style="color:var(--text-2);font-size:13px;margin-top:4px;">Previously parsed scan reports — stored in your browser</p></div>
+    <div style="display:flex;gap:8px;"><button class="btn btn-sm btn-ghost" onclick="clearAllHistory()"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>Clear all</button><button class="btn btn-sm" onclick="backFromHistory()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Back</button></div>
+  </div>
+  <div id="history-list"></div>
+</div>
 </main>
-
 <div id="toast"></div>
-
 <script>
-// ── THEME ────────────────────────────────────────────────
-function toggleTheme() {
-  const html = document.documentElement;
-  const isDark = html.getAttribute('data-theme') === 'dark';
-  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
-  document.getElementById('theme-knob').textContent = isDark ? '☀️' : '🌙';
-  localStorage.setItem('theme', isDark ? 'light' : 'dark');
-  if (gridApi) refreshGridTheme();
-  if (donutChart || barChart) { if(globalStats){ renderDonut(globalStats); renderBar(globalStats); } }
+// THEME
+function toggleTheme(){const h=document.documentElement,d=h.getAttribute('data-theme')==='dark';h.setAttribute('data-theme',d?'light':'dark');document.getElementById('theme-knob').textContent=d?'☀️':'🌙';localStorage.setItem('msa-theme',d?'light':'dark');if(gridApi)refreshGridTheme();if(globalStats){renderDonut(globalStats);renderBar(globalStats);}}
+(function(){const t=localStorage.getItem('msa-theme')||'light';document.documentElement.setAttribute('data-theme',t);window.addEventListener('DOMContentLoaded',()=>{document.getElementById('theme-knob').textContent=t==='dark'?'🌙':'☀️';});})();
+function isDark(){return document.documentElement.getAttribute('data-theme')==='dark';}
+
+const PALETTE=['#3B82F6','#8B5CF6','#10B981','#F59E0B','#EF4444','#06B6D4','#EC4899','#84CC16','#F97316','#6366F1','#14B8A6','#A855F7'];
+const AVATAR_COLORS=['linear-gradient(135deg,#667EEA,#764BA2)','linear-gradient(135deg,#F97316,#EC4899)','linear-gradient(135deg,#10B981,#0891B2)','linear-gradient(135deg,#F59E0B,#EF4444)','linear-gradient(135deg,#6366F1,#8B5CF6)','linear-gradient(135deg,#14B8A6,#2563EB)'];
+const EXT_CAT={document:new Set(['pdf','doc','docx','xls','xlsx','xlsm','ppt','pptx','txt','rtf','odt','ods','odp','gdoc','gsheet','gslide','msg','eml','pages','numbers','key','csv']),image:new Set(['jpg','jpeg','png','gif','svg','webp','bmp','tiff','tif','ico','heic','raw','cr2','nef','psd','ai','eps','snag']),video:new Set(['mp4','avi','wmv','mov','mkv','flv','webm','m4v','mpg','mpeg','3gp']),archive:new Set(['zip','rar','7z','tar','gz','bz2','xz','cab','iso','dmg','pst','ost']),code:new Set(['py','pyc','js','ts','html','htm','css','java','c','cpp','cs','rb','php','go','rs','swift','kt','sh','bash','json','xml','yaml','yml','sql','r','m','ipynb']),system:new Set(['exe','dll','sys','msi','bat','cmd','vbs','com','scr','inf','lnk','url','deploy','dl_']),data:new Set(['db','sqlite','mdb','accdb','log','dat','bak','tmp'])};
+const CAT_LABEL={document:'Document',image:'Image',video:'Video',archive:'Archive',code:'Code',system:'System',data:'Data',other:'Other'};
+const CAT_COLOR={document:'#3B82F6',image:'#10B981',video:'#8B5CF6',archive:'#F59E0B',code:'#06B6D4',system:'#EF4444',data:'#EC4899',other:'#9CA3AF'};
+function getCategory(ext){const e=(ext||'').toLowerCase();for(const[c,s]of Object.entries(EXT_CAT)){if(s.has(e))return c;}return 'other';}
+
+let rawRows=[],allUsers={},globalStats=null;
+let donutChart=null,barChart=null,barChartMode='size';
+let allFormatsData=[],sortMode='size',sortDir={};
+let gridApi=null,viewTab='all';
+
+function fmt(b){if(!b)return'0 B';if(b>=1e12)return(b/1e12).toFixed(2)+' TB';if(b>=1e9)return(b/1e9).toFixed(2)+' GB';if(b>=1e6)return(b/1e6).toFixed(1)+' MB';if(b>=1e3)return(b/1e3).toFixed(0)+' KB';return b+' B';}
+function fmtN(n){return Number(n).toLocaleString();}
+function show(id){document.getElementById(id).style.display='block';}
+function hide(id){document.getElementById(id).style.display='none';}
+function tick(ms=30){return new Promise(r=>setTimeout(r,ms));}
+
+// UPLOAD
+const dz=document.getElementById('drop-zone');
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag-over');});
+dz.addEventListener('dragleave',()=>dz.classList.remove('drag-over'));
+dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag-over');if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);});
+document.getElementById('file-input').addEventListener('change',e=>{if(e.target.files[0])handleFile(e.target.files[0]);});
+
+function setProgress(pct,label,stats){document.getElementById('progress-bar').style.width=pct+'%';document.getElementById('progress-label').textContent=label;if(stats!==undefined)document.getElementById('progress-stats').textContent=stats;}
+
+async function handleFile(file){
+  show('progress-section');hide('upload-section');
+  setProgress(10,'Reading file…',file.name+' — '+fmt(file.size));
+  let csvText='';
+  try{
+    if(file.name.toLowerCase().endsWith('.zip')){
+      setProgress(25,'Extracting ZIP…','');
+      const zip=await JSZip.loadAsync(file);
+      const csvFile=Object.values(zip.files).find(f=>f.name.toLowerCase().endsWith('.csv'));
+      if(!csvFile)throw new Error('No CSV found inside ZIP.');
+      setProgress(45,'Extracting CSV…',csvFile.name);
+      csvText=await csvFile.async('text');
+    }else{csvText=await file.text();}
+    setProgress(65,'Parsing rows…','');await tick();
+    const result=Papa.parse(csvText,{header:true,skipEmptyLines:true,dynamicTyping:false});
+    rawRows=result.data;
+    setProgress(85,'Building user breakdown…',fmtN(rawRows.length)+' rows');await tick();
+    allUsers=buildAllUsers(rawRows);
+    setProgress(100,'Done!','');
+    saveToHistory(file.name,allUsers);
+    await tick(300);
+    showUserSelect();
+  }catch(err){hide('progress-section');show('upload-section');showToast('Error: '+err.message);}
 }
-(function() {
-  const saved = localStorage.getItem('theme') || 'light';
-  document.documentElement.setAttribute('data-theme', saved);
-  window.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('theme-knob').textContent = saved === 'dark' ? '🌙' : '☀️';
+
+function buildAllUsers(rows){
+  const uMap={};
+  rows.forEach(r=>{const u=r.SourcePath||'Unknown';if(!uMap[u])uMap[u]=[];uMap[u].push(r);});
+  const result={};
+  for(const[user,uRows]of Object.entries(uMap)){result[user]=analyzeRows(uRows,user);}
+  return result;
+}
+
+function analyzeRows(rows,userName){
+  const files=rows.filter(r=>(r.SourceType||'').toLowerCase()==='file');
+  const folders=rows.filter(r=>(r.SourceType||'').toLowerCase()==='folder');
+  const totalSize=files.reduce((s,r)=>s+(parseInt(r.SourceSize)||0),0);
+  const initials=userName.includes('@')?userName.split('@')[0].slice(0,2).toUpperCase():userName.slice(0,2).toUpperCase();
+  const extMap={};
+  files.forEach(r=>{let ext=(r.SourceExtension||'').replace(/^\./,'').toLowerCase().trim()||'(none)';if(!extMap[ext])extMap[ext]={count:0,size:0};extMap[ext].count++;extMap[ext].size+=parseInt(r.SourceSize)||0;});
+  const extList=Object.entries(extMap).map(([ext,d])=>({ext,count:d.count,size:d.size,avg:d.count?Math.round(d.size/d.count):0,category:getCategory(ext)})).sort((a,b)=>b.size-a.size);
+  return{userName,initials,rows,files,folders,totalSize,totalItems:rows.length,totalFiles:files.length,totalFolders:folders.length,extList,uniqueFormats:extList.length};
+}
+
+// USER SELECT
+function showUserSelect(){
+  hide('progress-section');hide('upload-section');hide('app-section');hide('history-section');
+  show('user-select-section');
+  document.getElementById('new-scan-btn').style.display='inline-flex';
+  document.getElementById('history-nav-btn').style.display='inline-flex';
+  const users=Object.values(allUsers).sort((a,b)=>b.totalSize-a.totalSize);
+  const maxSize=users[0]?.totalSize||1;
+  document.getElementById('us-title').textContent=users.length===1?'Scan report loaded — 1 user found':`Scan report loaded — ${users.length} users found`;
+  document.getElementById('us-sub').textContent='Click any user card to view their full file breakdown';
+  document.getElementById('users-grid').innerHTML=users.map((u,i)=>{
+    const badge=u.totalSize>100e9?'badge-heavy">Heavy':u.totalSize>10e9?'badge-medium">Medium':'badge-normal">Normal';
+    return`<div class="user-card" onclick="selectUser('${u.userName.replace(/'/g,"\\'")}')">
+      <span class="uc-rank">#${i+1}</span>
+      <div class="user-card-top">
+        <div class="uc-avatar" style="background:${AVATAR_COLORS[i%AVATAR_COLORS.length]}">${u.initials}</div>
+        <div><div class="uc-name">${u.userName}</div><span class="uc-badge ${badge}</span></div>
+      </div>
+      <div class="uc-stats">
+        <div class="uc-stat"><div class="uc-stat-label">Data size</div><div class="uc-stat-val">${fmt(u.totalSize)}</div></div>
+        <div class="uc-stat"><div class="uc-stat-label">Files</div><div class="uc-stat-val">${fmtN(u.totalFiles)}</div></div>
+        <div class="uc-stat"><div class="uc-stat-label">Formats</div><div class="uc-stat-val">${u.uniqueFormats}</div></div>
+        <div class="uc-stat"><div class="uc-stat-label">Folders</div><div class="uc-stat-val">${fmtN(u.totalFolders)}</div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function selectUser(userName){
+  globalStats=allUsers[userName];
+  renderApp(globalStats);
+}
+
+// APP
+function renderApp(s){
+  hide('user-select-section');show('app-section');
+  switchMainTab('dashboard');
+  const i=Object.keys(allUsers).indexOf(s.userName);
+  const ac=AVATAR_COLORS[i%AVATAR_COLORS.length];
+  document.getElementById('cup-avatar').style.background=ac;
+  document.getElementById('cup-avatar').textContent=s.initials;
+  document.getElementById('cup-name').textContent=s.userName;
+  document.getElementById('m-total-size').textContent=fmt(s.totalSize);
+  document.getElementById('m-total-items').textContent=fmtN(s.totalItems)+' total items';
+  document.getElementById('m-total-files').textContent=fmtN(s.totalFiles);
+  document.getElementById('m-total-folders').textContent=fmtN(s.totalFolders)+' folders';
+  document.getElementById('m-formats').textContent=s.uniqueFormats;
+  document.getElementById('m-time').textContent='~'+Math.max(1,Math.round((s.totalSize/1e9)/10))+' hrs';
+  allFormatsData=s.extList;
+  document.getElementById('format-count-sub').textContent=fmtN(s.uniqueFormats)+' unique extensions across '+fmtN(s.totalFiles)+' files';
+  document.getElementById('fmt-search').value='';
+  document.getElementById('fmt-category').value='';
+  sortMode='size';sortDir={};
+  ['sb-size','sb-count','sb-name'].forEach(id=>document.getElementById(id).classList.remove('active-sort'));
+  document.getElementById('sb-size').classList.add('active-sort');
+  renderFormatsTable(allFormatsData);
+  renderDonut(s);renderBar(s);renderEmail(s);
+  if(gridApi){gridApi.destroy();gridApi=null;}
+  document.getElementById('grid-search').value='';
+  viewTab='all';
+  document.querySelectorAll('.viewer-tab').forEach((b,i)=>b.classList.toggle('active',i===0));
+  hide('email-section');
+}
+
+function switchMainTab(tab){
+  ['dashboard','formats','data'].forEach(t=>{
+    document.getElementById('content-'+t).classList.toggle('active',t===tab);
+    document.getElementById('tab-'+t).classList.toggle('active',t===tab);
   });
-})();
-
-function isDark() { return document.documentElement.getAttribute('data-theme') === 'dark'; }
-
-// ── CORE ─────────────────────────────────────────────────
-const PALETTE = ['#3B82F6','#8B5CF6','#10B981','#F59E0B','#EF4444','#06B6D4','#EC4899','#84CC16','#F97316','#6366F1'];
-let donutChart = null, barChart = null, barMode = 'size', globalStats = null, rawRows = [], allRows = [];
-let gridApi = null, viewTab = 'all';
-
-function fmt(b) {
-  if (!b) return '0 B';
-  if (b >= 1e12) return (b/1e12).toFixed(2)+' TB';
-  if (b >= 1e9)  return (b/1e9).toFixed(2)+' GB';
-  if (b >= 1e6)  return (b/1e6).toFixed(1)+' MB';
-  if (b >= 1e3)  return (b/1e3).toFixed(0)+' KB';
-  return b+' B';
-}
-function fmtN(n) { return Number(n).toLocaleString(); }
-
-// ── UPLOAD ───────────────────────────────────────────────
-const dz = document.getElementById('drop-zone');
-dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
-dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
-dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('drag-over'); if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); });
-document.getElementById('file-input').addEventListener('change', e => { if (e.target.files[0]) handleFile(e.target.files[0]); });
-
-function setProgress(pct, label, stats) {
-  document.getElementById('progress-bar').style.width = pct + '%';
-  document.getElementById('progress-label').textContent = label;
-  if (stats !== undefined) document.getElementById('progress-stats').textContent = stats;
+  if(tab==='data'&&!gridApi&&globalStats)initGrid(globalStats.files);
 }
 
-async function handleFile(file) {
-  document.getElementById('upload-section').style.display = 'none';
-  document.getElementById('progress-section').style.display = 'block';
-  setProgress(10, 'Reading file…', file.name + ' — ' + fmt(file.size));
-  let csvText = '';
-  try {
-    if (file.name.toLowerCase().endsWith('.zip')) {
-      setProgress(20, 'Extracting ZIP archive…', '');
-      const zip = await JSZip.loadAsync(file);
-      const csvFile = Object.values(zip.files).find(f => f.name.toLowerCase().endsWith('.csv'));
-      if (!csvFile) throw new Error('No CSV found inside ZIP.');
-      setProgress(40, 'Extracting CSV…', csvFile.name);
-      csvText = await csvFile.async('text');
-    } else {
-      csvText = await file.text();
-    }
-    setProgress(60, 'Parsing rows…', '');
-    await new Promise(r => setTimeout(r, 30));
-    const result = Papa.parse(csvText, { header: true, skipEmptyLines: true, dynamicTyping: false });
-    setProgress(80, 'Building format breakdown…', fmtN(result.data.length) + ' rows');
-    await new Promise(r => setTimeout(r, 30));
-    rawRows = result.data;
-    globalStats = analyzeData(result.data);
-    setProgress(100, 'Complete', '');
-    await new Promise(r => setTimeout(r, 300));
-    renderDashboard(globalStats);
-  } catch (err) {
-    document.getElementById('progress-section').style.display = 'none';
-    document.getElementById('upload-section').style.display = 'block';
-    showToast('Error: ' + err.message);
-  }
+// CHARTS
+function chartTc(){return isDark()?'#8B949E':'#6B7280';}
+function chartGc(){return isDark()?'#2D3748':'#F0F2F5';}
+function ttOpts(){return{backgroundColor:isDark()?'#1C2333':'#fff',titleColor:isDark()?'#E6EDF3':'#0F1729',bodyColor:isDark()?'#8B949E':'#4B5563',borderColor:isDark()?'#2D3748':'#E2E6ED',borderWidth:1};}
+
+function renderDonut(s){
+  if(donutChart)donutChart.destroy();
+  const top8=s.extList.slice(0,8),othersSize=s.extList.slice(8).reduce((a,e)=>a+e.size,0);
+  const labels=[...top8.map(e=>'.'+e.ext.toUpperCase()),'Others'];
+  const data=[...top8.map(e=>e.size),othersSize];
+  const colors=[...PALETTE.slice(0,8),'#64748B'];
+  donutChart=new Chart(document.getElementById('donut-chart').getContext('2d'),{type:'doughnut',data:{labels,datasets:[{data,backgroundColor:colors,borderWidth:0,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{display:false},tooltip:{...ttOpts(),callbacks:{label:ctx=>'  '+fmt(ctx.raw)+' ('+((ctx.raw/s.totalSize)*100).toFixed(1)+'%)'}}}}}});
+  document.getElementById('donut-legend').innerHTML=labels.map((l,i)=>`<div class="legend-item"><div class="legend-dot" style="background:${colors[i]}"></div><span style="flex:1;color:var(--text-2)">${l}</span><span style="font-weight:600;font-size:12px">${fmt(data[i])}</span></div>`).join('');
 }
 
-// ── ANALYZE ──────────────────────────────────────────────
-function analyzeData(rows) {
-  const files   = rows.filter(r => (r.SourceType||'').toLowerCase() === 'file');
-  const folders = rows.filter(r => (r.SourceType||'').toLowerCase() === 'folder');
-  const totalSize = files.reduce((s,r) => s + (parseInt(r.SourceSize)||0), 0);
-  const userName = files[0]?.SourcePath || rows[0]?.SourcePath || 'Unknown';
-  const initials = userName.includes('@') ? userName.split('@')[0].slice(0,2).toUpperCase() : userName.slice(0,2).toUpperCase();
-  const extMap = {};
-  files.forEach(r => {
-    let ext = (r.SourceExtension||'').replace(/^\./, '').toLowerCase().trim() || '(none)';
-    if (!extMap[ext]) extMap[ext] = { count: 0, size: 0 };
-    extMap[ext].count++;
-    extMap[ext].size += parseInt(r.SourceSize)||0;
-  });
-  const extList = Object.entries(extMap)
-    .map(([ext, d]) => ({ ext, count: d.count, size: d.size, avg: d.count ? Math.round(d.size/d.count) : 0 }))
-    .sort((a,b) => b.size - a.size);
-  return { userName, initials, totalSize, totalItems: rows.length,
-    totalFiles: files.length, totalFolders: folders.length,
-    extList, uniqueFormats: extList.length };
+function renderBar(s){
+  if(barChart)barChart.destroy();
+  const top10=s.extList.slice(0,10);
+  const values=barChartMode==='size'?top10.map(e=>Math.round(e.size/1e9*100)/100):top10.map(e=>e.count);
+  barChart=new Chart(document.getElementById('bar-chart').getContext('2d'),{type:'bar',data:{labels:top10.map(e=>'.'+e.ext.toUpperCase()),datasets:[{data:values,backgroundColor:PALETTE.slice(0,10).map(c=>c+'BB'),borderColor:PALETTE.slice(0,10),borderWidth:1.5,borderRadius:5,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{...ttOpts(),callbacks:{label:ctx=>'  '+(barChartMode==='size'?ctx.raw+' GB':fmtN(ctx.raw)+' files')}}},scales:{x:{grid:{display:false},ticks:{color:chartTc(),font:{size:10},autoSkip:false,maxRotation:35}},y:{grid:{color:chartGc()},border:{dash:[4,4]},ticks:{color:chartTc(),font:{size:11},callback:v=>barChartMode==='size'?v+'GB':fmtN(v)}}}}});
 }
 
-// ── RENDER DASHBOARD ─────────────────────────────────────
-function renderDashboard(s) {
-  document.getElementById('progress-section').style.display = 'none';
-  document.getElementById('dashboard-section').style.display = 'block';
-  document.getElementById('new-scan-btn').style.display = 'inline-flex';
+function switchChartTab(mode){barChartMode=mode;document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',(i===0&&mode==='size')||(i===1&&mode==='count')));if(globalStats)renderBar(globalStats);}
 
-  document.getElementById('user-avatar').textContent = s.initials;
-  document.getElementById('user-name-display').textContent = 'Scan report — Wave 3';
-  document.getElementById('user-email-display').textContent = s.userName;
-
-  document.getElementById('m-total-size').textContent = fmt(s.totalSize);
-  document.getElementById('m-total-items').textContent = fmtN(s.totalItems) + ' total items';
-  document.getElementById('m-total-files').textContent = fmtN(s.totalFiles);
-  document.getElementById('m-total-folders').textContent = fmtN(s.totalFolders) + ' folders';
-  document.getElementById('m-formats').textContent = s.uniqueFormats;
-  const estHours = Math.max(1, Math.round((s.totalSize / 1e9) / 10));
-  document.getElementById('m-time').textContent = '~' + estHours + ' hrs';
-  document.getElementById('format-count-sub').textContent = fmtN(s.uniqueFormats) + ' unique extensions across ' + fmtN(s.totalFiles) + ' files';
-
-  renderDonut(s);
-  renderBar(s);
-  renderAllFormatsTable(s);
-  renderEmail(s);
+// FORMATS TABLE
+function filterFormats(){
+  const q=document.getElementById('fmt-search').value.toLowerCase().trim();
+  const cat=document.getElementById('fmt-category').value;
+  let data=allFormatsData;
+  if(q)data=data.filter(r=>r.ext.toLowerCase().includes(q));
+  if(cat)data=data.filter(r=>r.category===cat);
+  renderFormatsTable(data);
 }
 
-// ── CHARTS ───────────────────────────────────────────────
-function chartTextColor() { return isDark() ? '#8B949E' : '#6B7280'; }
-function chartGridColor() { return isDark() ? '#2D3748' : '#F0F2F5'; }
-
-function renderDonut(s) {
-  if (donutChart) donutChart.destroy();
-  const top8 = s.extList.slice(0,8);
-  const othersSize = s.extList.slice(8).reduce((a,e) => a+e.size, 0);
-  const labels = [...top8.map(e => '.'+e.ext.toUpperCase()), 'Others'];
-  const data   = [...top8.map(e => e.size), othersSize];
-  const colors = [...PALETTE.slice(0,8), '#64748B'];
-
-  donutChart = new Chart(document.getElementById('donut-chart').getContext('2d'), {
-    type: 'doughnut',
-    data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 0, hoverOffset: 6 }] },
-    options: {
-      responsive: true, maintainAspectRatio: false, cutout: '68%',
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: isDark() ? '#1C2333' : '#fff',
-          titleColor: isDark() ? '#E6EDF3' : '#0F1729',
-          bodyColor: isDark() ? '#8B949E' : '#4B5563',
-          borderColor: isDark() ? '#2D3748' : '#E2E6ED',
-          borderWidth: 1,
-          callbacks: { label: ctx => '  ' + fmt(ctx.raw) + ' (' + ((ctx.raw/s.totalSize)*100).toFixed(1) + '%)' }
-        }
-      }
-    }
-  });
-  document.getElementById('donut-legend').innerHTML = labels.map((l,i) => `
-    <div class="legend-item">
-      <div class="legend-dot" style="background:${colors[i]}"></div>
-      <span style="flex:1;color:var(--text-2)">${l}</span>
-      <span style="font-weight:600;font-size:12px;color:var(--text-1)">${fmt(data[i])}</span>
-    </div>`).join('');
+function sortFormats(mode){
+  if(sortMode===mode){sortDir[mode]=!sortDir[mode];}else{sortMode=mode;}
+  ['size','count','name'].forEach(m=>{const b=document.getElementById('sb-'+m);b.classList.toggle('active-sort',m===mode);});
+  filterFormats();
 }
 
-function renderBar(s) {
-  if (barChart) barChart.destroy();
-  const top10 = s.extList.slice(0,10);
-  const labels = top10.map(e => '.'+e.ext.toUpperCase());
-  const values = barMode === 'size'
-    ? top10.map(e => Math.round(e.size/1e9*100)/100)
-    : top10.map(e => e.count);
-
-  barChart = new Chart(document.getElementById('bar-chart').getContext('2d'), {
-    type: 'bar',
-    data: { labels, datasets: [{
-      data: values,
-      backgroundColor: PALETTE.slice(0,10).map(c => c + 'BB'),
-      borderColor: PALETTE.slice(0,10),
-      borderWidth: 1.5, borderRadius: 5, borderSkipped: false
-    }]},
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: isDark() ? '#1C2333' : '#fff',
-          titleColor: isDark() ? '#E6EDF3' : '#0F1729',
-          bodyColor: isDark() ? '#8B949E' : '#4B5563',
-          borderColor: isDark() ? '#2D3748' : '#E2E6ED',
-          borderWidth: 1,
-          callbacks: { label: ctx => '  ' + (barMode==='size' ? ctx.raw+' GB' : fmtN(ctx.raw)+' files') }
-        }
-      },
-      scales: {
-        x: { grid: { display: false }, ticks: { color: chartTextColor(), font: { size: 10 }, autoSkip: false, maxRotation: 35 } },
-        y: { grid: { color: chartGridColor() }, border: { dash: [4,4] }, ticks: { color: chartTextColor(), font: { size: 11 }, callback: v => barMode==='size' ? v+'GB' : fmtN(v) } }
-      }
-    }
-  });
-}
-
-function switchTab(mode) {
-  barMode = mode;
-  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', (i===0&&mode==='size')||(i===1&&mode==='count')));
-  if (globalStats) renderBar(globalStats);
-}
-
-// ── FORMAT TABLE ─────────────────────────────────────────
-function renderAllFormatsTable(s) { allRows = s.extList; buildTable(allRows); }
-
-function buildTable(rows) {
-  const tbody = document.getElementById('all-formats-body');
-  const maxSize = rows[0]?.size || 1;
-  tbody.innerHTML = rows.map(item => {
-    const pct = ((item.size/globalStats.totalSize)*100).toFixed(1);
-    const barW = Math.max(2, Math.round((item.size/maxSize)*100));
-    return `<tr>
+function renderFormatsTable(data){
+  const dir=sortDir[sortMode]?-1:1;
+  const sorted=[...data].sort((a,b)=>sortMode==='size'?dir*(b.size-a.size):sortMode==='count'?dir*(b.count-a.count):dir*a.ext.localeCompare(b.ext));
+  document.getElementById('fmt-count-label').textContent=fmtN(sorted.length)+' formats shown';
+  const maxSize=sorted[0]?.size||1;
+  document.getElementById('all-formats-body').innerHTML=sorted.map(item=>{
+    const pct=((item.size/globalStats.totalSize)*100).toFixed(1);
+    const barW=Math.max(2,Math.round((item.size/maxSize)*100));
+    const cc=CAT_COLOR[item.category]||'#9CA3AF';
+    const cl=CAT_LABEL[item.category]||'Other';
+    return`<tr>
       <td><span class="ext-pill">.${item.ext}</span></td>
+      <td style="text-align:right;padding-left:8px;"><span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;background:${cc}22;color:${cc};border:1px solid ${cc}44">${cl}</span></td>
       <td>${fmtN(item.count)}</td>
-      <td><div style="font-weight:500;color:var(--text-1)">${fmt(item.size)}</div><div class="bar-track"><div class="bar-fill" style="width:${barW}%"></div></div></td>
+      <td><div style="font-weight:600">${fmt(item.size)}</div><div class="bar-track"><div class="bar-fill-grad" style="width:${barW}%"></div></div></td>
       <td>${fmt(item.avg)}</td>
       <td style="text-align:left;padding-left:8px;">${pct}%</td>
     </tr>`;
   }).join('');
-  document.getElementById('no-results').style.display = rows.length ? 'none' : 'block';
+  document.getElementById('no-results').style.display=sorted.length?'none':'block';
 }
 
-function filterTable(q) {
-  const filtered = q.trim()==='' ? allRows : allRows.filter(r => r.ext.toLowerCase().includes(q.toLowerCase()));
-  buildTable(filtered);
+// DATA GRID
+function switchViewTab(tab){
+  viewTab=tab;
+  document.querySelectorAll('.viewer-tab').forEach((b,i)=>b.classList.toggle('active',['all','files','folders'][i]===tab));
+  const data=tab==='files'?globalStats.files:tab==='folders'?globalStats.folders:globalStats.rows;
+  if(gridApi){gridApi.setGridOption('rowData',data);updateRowCount();}
+  document.getElementById('grid-search').value='';
 }
 
-// ── DATA VIEWER ──────────────────────────────────────────
-function toggleViewer() {
-  const el = document.getElementById('viewer-section');
-  const isHidden = el.style.display==='none' || !el.style.display;
-  el.style.display = isHidden ? 'block' : 'none';
-  if (isHidden) {
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    if (!gridApi) initGrid(rawRows);
-  }
-}
-
-function getGridClass() {
-  return isDark() ? 'ag-theme-alpine-dark' : 'ag-theme-alpine';
-}
-
-function refreshGridTheme() {
-  const el = document.getElementById('data-grid');
-  el.className = 'grid-wrap ' + getGridClass();
-}
-
-function switchViewTab(tab) {
-  viewTab = tab;
-  document.querySelectorAll('.viewer-tab').forEach((b,i) => b.classList.toggle('active', ['all','files','folders'][i]===tab));
-  const data = tab==='files' ? rawRows.filter(r=>(r.SourceType||'').toLowerCase()==='file')
-             : tab==='folders' ? rawRows.filter(r=>(r.SourceType||'').toLowerCase()==='folder')
-             : rawRows;
-  if (gridApi) { gridApi.setGridOption('rowData', data); updateRowCount(); }
-  document.getElementById('grid-search').value = '';
-}
-
-function initGrid(data) {
-  if (!data.length) return;
-  const el = document.getElementById('data-grid');
-  el.className = 'grid-wrap ' + getGridClass();
-
-  const cols = Object.keys(data[0]).map(key => ({
-    field: key, headerName: key, sortable: true, filter: true,
-    resizable: true, editable: true, minWidth: 100,
-    width: Math.min(200, Math.max(110, key.length*9+20)),
-    cellStyle: params => {
-      if (key==='SourceSize'||key==='DestinationSize') {
-        const v = parseInt(params.value);
-        if (v>1e9) return { color: isDark()?'#F85149':'#DC2626', fontWeight:'600' };
-        if (v>1e8) return { color: isDark()?'#E3B341':'#D97706' };
-      }
-      if (key==='Status') {
-        const lc = (params.value||'').toLowerCase();
-        if (lc==='success') return { color: isDark()?'#3FB950':'#059669', fontWeight:'500' };
-        if (lc==='failed')  return { color: isDark()?'#F85149':'#DC2626', fontWeight:'500' };
-      }
+function initGrid(data){
+  if(!data.length)return;
+  const el=document.getElementById('data-grid');
+  el.className='grid-wrap '+(isDark()?'ag-theme-alpine-dark':'ag-theme-alpine');
+  const cols=Object.keys(data[0]).map(key=>({field:key,headerName:key,sortable:true,filter:true,resizable:true,editable:true,minWidth:100,width:Math.min(200,Math.max(110,key.length*9+20)),
+    cellStyle:params=>{
+      if(key==='SourceSize'||key==='DestinationSize'){const v=parseInt(params.value);if(v>1e9)return{color:isDark()?'#F85149':'#DC2626',fontWeight:'600'};if(v>1e8)return{color:isDark()?'#E3B341':'#D97706'};}
+      if(key==='Status'){const lc=(params.value||'').toLowerCase();if(lc==='success')return{color:isDark()?'#3FB950':'#059669',fontWeight:'500'};if(lc==='failed')return{color:isDark()?'#F85149':'#DC2626',fontWeight:'500'};}
       return null;
     }
   }));
-
-  gridApi = agGrid.createGrid(el, {
-    columnDefs: cols, rowData: data,
-    defaultColDef: { sortable:true, filter:true, resizable:true, editable:true },
-    animateRows: true, pagination: true, paginationPageSize: 100,
-    paginationPageSizeSelector: [50,100,250,500],
-    enableCellTextSelection: true,
-    onGridReady: () => updateRowCount(),
-    onFilterChanged: () => updateRowCount(),
-    onPaginationChanged: () => updateRowCount(),
-  });
+  gridApi=agGrid.createGrid(el,{columnDefs:cols,rowData:data,defaultColDef:{sortable:true,filter:true,resizable:true,editable:true},animateRows:true,pagination:true,paginationPageSize:100,paginationPageSizeSelector:[50,100,250,500],enableCellTextSelection:true,onGridReady:()=>updateRowCount(),onFilterChanged:()=>updateRowCount(),onPaginationChanged:()=>updateRowCount()});
   updateRowCount();
 }
 
-function updateRowCount() {
-  if (!gridApi) return;
-  const displayed = gridApi.getDisplayedRowCount();
-  const total = viewTab==='files' ? rawRows.filter(r=>(r.SourceType||'').toLowerCase()==='file').length
-              : viewTab==='folders' ? rawRows.filter(r=>(r.SourceType||'').toLowerCase()==='folder').length
-              : rawRows.length;
-  document.getElementById('grid-row-count').textContent =
-    displayed===total ? `${fmtN(total)} rows` : `${fmtN(displayed)} of ${fmtN(total)} rows`;
-  document.getElementById('viewer-sub').textContent =
-    `${Object.keys(rawRows[0]||{}).length} columns · ${fmtN(total)} rows · click any cell to edit`;
+function updateRowCount(){
+  if(!gridApi)return;
+  const displayed=gridApi.getDisplayedRowCount();
+  const total=(viewTab==='files'?globalStats.files:viewTab==='folders'?globalStats.folders:globalStats.rows).length;
+  document.getElementById('grid-row-count').textContent=displayed===total?fmtN(total)+' rows':fmtN(displayed)+' of '+fmtN(total)+' rows';
+  document.getElementById('viewer-sub').textContent=Object.keys((globalStats.rows[0]||{})).length+' columns · '+fmtN(total)+' rows · click any cell to edit';
+}
+function gridSearch(q){if(gridApi){gridApi.setGridOption('quickFilterText',q);updateRowCount();}}
+function clearGridSearch(){document.getElementById('grid-search').value='';if(gridApi){gridApi.setGridOption('quickFilterText','');updateRowCount();}}
+function refreshGridTheme(){const el=document.getElementById('data-grid');el.className='grid-wrap '+(isDark()?'ag-theme-alpine-dark':'ag-theme-alpine');}
+
+// EMAIL
+function renderEmail(s){
+  const estH=Math.max(1,Math.round((s.totalSize/1e9)/10));
+  const rows=s.extList.slice(0,15).map(i=>`  .${i.ext.toUpperCase().padEnd(12)} | ${fmtN(i.count).padStart(8)} files | ${fmt(i.size).padStart(10)}`).join('\n');
+  document.getElementById('email-subject-display').textContent=`Wave 3 – Scan Report & File Inventory | ${s.userName}`;
+  document.getElementById('email-body-display').textContent=`Hello Dylan, Riley,\n\nIn Wave 3 we have completed the scan for the following heavy user. Please find the full file inventory below.\n\nCould you please share this report with the user and confirm which data needs to be migrated to OneDrive?\n\n──────────────────────────────────────────────\nUser Name: ${s.userName}\nTotal Data Size: ${fmt(s.totalSize)}\nTotal Items: ${fmtN(s.totalItems)} (${fmtN(s.totalFiles)} files, ${fmtN(s.totalFolders)} folders)\nUnique File Formats: ${s.uniqueFormats}\nEstimated Migration Time: ~${estH} hours\n──────────────────────────────────────────────\n\nFile Format Breakdown (Top 15 by size):\n\n  Extension     |    Count    |       Size\n  ─────────────────────────────────────────\n${rows}\n  ─────────────────────────────────────────\n\nPlease review the full list of ${s.uniqueFormats} file formats with the user and confirm:\n  1. Which file types should be included in the migration\n  2. Any data that can be cleaned up at the source before migration\n\nThanks & Regards,\n[Your Name]\n[Your Team]`;
+}
+function toggleEmail(){const el=document.getElementById('email-section');el.style.display=(el.style.display==='none'||!el.style.display)?'block':'none';if(el.style.display==='block')el.scrollIntoView({behavior:'smooth',block:'start'});}
+function copyEmail(){const s=document.getElementById('email-subject-display').textContent,b=document.getElementById('email-body-display').textContent;navigator.clipboard.writeText('Subject: '+s+'\n\n'+b).then(()=>showToast('✓ Email copied')).catch(()=>showToast('Copy failed'));}
+
+// EXPORT
+function exportToExcel(){
+  if(!globalStats)return;
+  const btn=document.getElementById('export-btn');btn.textContent='Preparing…';btn.disabled=true;
+  setTimeout(()=>{
+    try{
+      const wb=XLSX.utils.book_new(),s=globalStats;
+      const mkSheet=rows=>{const sh=XLSX.utils.json_to_sheet(rows);sh['!freeze']={xSplit:0,ySplit:1};sh['!cols']=Object.keys(rows[0]||{}).map(k=>({wch:Math.min(40,Math.max(12,k.length+4))}));return sh;};
+      XLSX.utils.book_append_sheet(wb,mkSheet(s.rows),'Raw Scan Data');
+      const sumData=[['Extension','Category','File Count','Total Size (Bytes)','Total Size (GB)','Avg Size (MB)','% of Total'],...s.extList.map(e=>['.'+(e.ext).toUpperCase(),CAT_LABEL[e.category]||'Other',e.count,e.size,+(e.size/1e9).toFixed(3),+(e.avg/1e6).toFixed(2),+((e.size/s.totalSize)*100).toFixed(2)])];
+      const sumSh=XLSX.utils.aoa_to_sheet(sumData);sumSh['!cols']=[{wch:16},{wch:12},{wch:14},{wch:22},{wch:18},{wch:18},{wch:14}];sumSh['!freeze']={xSplit:0,ySplit:1};
+      XLSX.utils.book_append_sheet(wb,sumSh,'Format Summary');
+      XLSX.utils.book_append_sheet(wb,mkSheet(s.files),'Files Only');
+      if(s.folders.length)XLSX.utils.book_append_sheet(wb,mkSheet(s.folders),'Folders Only');
+      const ovSh=XLSX.utils.aoa_to_sheet([['User',s.userName],['Total Size (GB)',+(s.totalSize/1e9).toFixed(2)],['Total Items',s.totalItems],['Files',s.totalFiles],['Folders',s.totalFolders],['Formats',s.uniqueFormats],['Generated',new Date().toLocaleString()]]);
+      ovSh['!cols']=[{wch:28},{wch:40}];XLSX.utils.book_append_sheet(wb,ovSh,'Overview');
+      XLSX.writeFile(wb,`ScanReport_${s.userName.replace(/[^a-z0-9]/gi,'_').slice(0,30)}_${new Date().toISOString().slice(0,10)}.xlsx`);
+      showToast('✓ Excel downloaded');
+    }catch(e){showToast('Export failed: '+e.message);}
+    btn.innerHTML='<svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg> Export Excel';
+    btn.disabled=false;
+  },60);
 }
 
-function gridSearch(q) { if(gridApi){ gridApi.setGridOption('quickFilterText',q); updateRowCount(); } }
-function clearGridSearch() { document.getElementById('grid-search').value=''; if(gridApi){ gridApi.setGridOption('quickFilterText',''); updateRowCount(); } }
+// HISTORY
+function saveToHistory(fileName,users){
+  const history=getHistory();
+  const entry={id:Date.now(),fileName,date:new Date().toLocaleString(),totalUsers:Object.keys(users).length,totalSize:Object.values(users).reduce((s,u)=>s+u.totalSize,0),totalFiles:Object.values(users).reduce((s,u)=>s+u.totalFiles,0),users:Object.keys(users).slice(0,8),totalUsersCount:Object.keys(users).length};
+  history.unshift(entry);
+  try{localStorage.setItem('msa-history',JSON.stringify(history.slice(0,20)));}catch(e){}
+}
+function getHistory(){try{return JSON.parse(localStorage.getItem('msa-history')||'[]');}catch{return[];}}
 
-// ── EMAIL ─────────────────────────────────────────────────
-function renderEmail(s) {
-  const estHours = Math.max(1, Math.round((s.totalSize/1e9)/10));
-  const top15 = s.extList.slice(0,15);
-  const formatRows = top15.map(i =>
-    `  .${i.ext.toUpperCase().padEnd(12)} | ${fmtN(i.count).padStart(8)} files | ${fmt(i.size).padStart(10)}`
-  ).join('\n');
-  const subject = `Wave 3 – Scan Report & File Inventory | ${s.userName}`;
-  const body = `Hello Dylan, Riley,
-
-In Wave 3 we have completed the scan for the following heavy user. Please find the full file inventory below, which shows a breakdown of all file types and their sizes.
-
-Could you please share this report with the user and confirm which data needs to be migrated to OneDrive?
-
-──────────────────────────────────────────────
-User Name: ${s.userName}
-Total Data Size: ${fmt(s.totalSize)}
-Total Items: ${fmtN(s.totalItems)} (${fmtN(s.totalFiles)} files, ${fmtN(s.totalFolders)} folders)
-Unique File Formats: ${s.uniqueFormats}
-Estimated Migration Time: ~${estHours} hours
-──────────────────────────────────────────────
-
-File Format Breakdown (Top 15 by size):
-
-  Extension     |    Count    |       Size
-  ────────────────────────────────────────────
-${formatRows}
-  ────────────────────────────────────────────
-
-Please review the full list of ${s.uniqueFormats} file formats with the user and let us know:
-
-  1. Which file types / data should be included in the migration
-  2. Any data that can be cleaned up at the source before migration begins
-
-This will help us optimise the migration window and ensure only required data is transferred to OneDrive.
-
-Please let us know if you have any questions or need the complete scan report.
-
-Thanks & Regards,
-[Your Name]
-[Your Team]`;
-
-  document.getElementById('email-subject-display').textContent = subject;
-  document.getElementById('email-body-display').textContent = body;
+function showHistory(){
+  hide('upload-section');hide('user-select-section');hide('app-section');
+  show('history-section');
+  const history=getHistory();
+  const list=document.getElementById('history-list');
+  if(!history.length){
+    list.innerHTML='<div class="history-empty"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><p>No scan history yet. Upload a scan report to get started.</p></div>';
+    return;
+  }
+  list.innerHTML='<div class="history-grid">'+history.map(h=>`
+    <div class="history-card">
+      <div class="hc-top"><div><div class="hc-title">${h.fileName}</div><div class="hc-date">${h.date}</div></div>
+      <button class="hc-del" onclick="deleteHistory(${h.id},event)"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button></div>
+      <div class="hc-stats">
+        <div class="hc-stat"><div class="hc-stat-val">${h.totalUsers}</div><div class="hc-stat-label">Users</div></div>
+        <div class="hc-stat"><div class="hc-stat-val">${fmt(h.totalSize)}</div><div class="hc-stat-label">Total size</div></div>
+        <div class="hc-stat"><div class="hc-stat-val">${fmtN(h.totalFiles)}</div><div class="hc-stat-label">Files</div></div>
+      </div>
+      <div class="hc-users">${h.users.map(u=>`<span class="hc-user-tag">${u}</span>`).join('')}${h.totalUsersCount>8?`<span class="hc-user-tag">+${h.totalUsersCount-8} more</span>`:''}</div>
+    </div>`).join('')+'</div>';
 }
 
-function toggleEmail() {
-  const el = document.getElementById('email-section');
-  el.style.display = (el.style.display==='none'||!el.style.display) ? 'block' : 'none';
-  if (el.style.display==='block') el.scrollIntoView({ behavior:'smooth', block:'start' });
-}
+function deleteHistory(id,e){e.stopPropagation();const h=getHistory().filter(x=>x.id!==id);localStorage.setItem('msa-history',JSON.stringify(h));showHistory();showToast('Entry deleted');}
+function clearAllHistory(){if(!confirm('Clear all scan history?'))return;localStorage.removeItem('msa-history');showHistory();showToast('History cleared');}
+function backFromHistory(){hide('history-section');if(Object.keys(allUsers).length)showUserSelect();else{show('upload-section');document.getElementById('new-scan-btn').style.display='none';document.getElementById('history-nav-btn').style.display='none';}}
 
-function copyEmail() {
-  const subject = document.getElementById('email-subject-display').textContent;
-  const body = document.getElementById('email-body-display').textContent;
-  navigator.clipboard.writeText('Subject: '+subject+'\n\n'+body)
-    .then(() => showToast('✓ Email copied to clipboard'))
-    .catch(() => showToast('Copy failed — please select manually'));
-}
+// NAV
+function backToUsers(){hide('app-section');if(gridApi){gridApi.destroy();gridApi=null;}showUserSelect();}
+function goHome(){['user-select-section','app-section','history-section'].forEach(hide);show('upload-section');document.getElementById('new-scan-btn').style.display='none';document.getElementById('history-nav-btn').style.display='none';rawRows=[];allUsers={};globalStats=null;if(gridApi){gridApi.destroy();gridApi=null;}if(donutChart){donutChart.destroy();donutChart=null;}if(barChart){barChart.destroy();barChart=null;}document.getElementById('file-input').value='';}
 
-// ── EXPORT ────────────────────────────────────────────────
-function exportToExcel() {
-  if (!rawRows.length||!globalStats) return;
-  const btn = document.getElementById('export-btn');
-  btn.innerHTML = `<svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;animation:spin 0.7s linear infinite"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg> Preparing…`;
-  btn.disabled = true;
-
-  setTimeout(() => {
-    try {
-      const wb = XLSX.utils.book_new(); const s = globalStats;
-      const mkSheet = (rows) => { const sh = XLSX.utils.json_to_sheet(rows); sh['!freeze']={xSplit:0,ySplit:1}; sh['!cols']=Object.keys(rows[0]||{}).map(k=>({wch:Math.min(40,Math.max(12,k.length+4))})); return sh; };
-      XLSX.utils.book_append_sheet(wb, mkSheet(rawRows), 'Raw Scan Data');
-      const sumData = [['Extension','File Count','Total Size (Bytes)','Total Size (GB)','Average Size (MB)','% of Total'], ...s.extList.map(e=>['.'+(e.ext).toUpperCase(),e.count,e.size,+(e.size/1e9).toFixed(3),+(e.avg/1e6).toFixed(2),+((e.size/s.totalSize)*100).toFixed(2)])];
-      const sumSh = XLSX.utils.aoa_to_sheet(sumData); sumSh['!cols']=[{wch:16},{wch:14},{wch:22},{wch:18},{wch:20},{wch:22}]; sumSh['!freeze']={xSplit:0,ySplit:1};
-      XLSX.utils.book_append_sheet(wb, sumSh, 'Format Summary');
-      const files = rawRows.filter(r=>(r.SourceType||'').toLowerCase()==='file');
-      XLSX.utils.book_append_sheet(wb, mkSheet(files), 'Files Only');
-      const folders = rawRows.filter(r=>(r.SourceType||'').toLowerCase()==='folder');
-      if (folders.length) XLSX.utils.book_append_sheet(wb, mkSheet(folders), 'Folders Only');
-      const estH = Math.max(1,Math.round((s.totalSize/1e9)/10));
-      const ovData = [['Scan Report Overview',''],['',''],['User / Source',s.userName],['Total Data Size (Bytes)',s.totalSize],['Total Data Size (GB)',+(s.totalSize/1e9).toFixed(2)],['Total Items',s.totalItems],['Total Files',s.totalFiles],['Total Folders',s.totalFolders],['Unique File Formats',s.uniqueFormats],['Estimated Migration Time (hrs)',estH],['Report Generated',new Date().toLocaleString()]];
-      const ovSh = XLSX.utils.aoa_to_sheet(ovData); ovSh['!cols']=[{wch:30},{wch:40}];
-      XLSX.utils.book_append_sheet(wb, ovSh, 'Overview');
-      const safeUser = s.userName.replace(/[^a-z0-9]/gi,'_').slice(0,30);
-      XLSX.writeFile(wb, `ScanReport_${safeUser}_${new Date().toISOString().slice(0,10)}.xlsx`);
-      showToast('✓ Excel file downloaded');
-    } catch(e) { showToast('Export failed: '+e.message); }
-    btn.innerHTML = `<svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg> Export to Excel`;
-    btn.disabled = false;
-  }, 60);
-}
-
-// ── TOAST ─────────────────────────────────────────────────
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
-}
-
-// ── RESET ─────────────────────────────────────────────────
-function resetTool() {
-  ['dashboard-section','email-section','viewer-section'].forEach(id => document.getElementById(id).style.display='none');
-  document.getElementById('upload-section').style.display = 'block';
-  document.getElementById('new-scan-btn').style.display = 'none';
-  document.getElementById('file-input').value = '';
-  document.getElementById('search-input').value = '';
-  globalStats = null; allRows = []; rawRows = []; viewTab = 'all';
-  if (gridApi) { gridApi.destroy(); gridApi = null; }
-  if (donutChart) { donutChart.destroy(); donutChart = null; }
-  if (barChart) { barChart.destroy(); barChart = null; }
-}
-</script>
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+<\/script>
 </body>
 </html>
