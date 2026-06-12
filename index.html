@@ -1739,9 +1739,11 @@ async function saveToSharePoint(entry){
 
 async function loadFromSharePoint(){
   try{
-    const r=await fetch(SP_API+'?$orderby=Created desc&$top=50',{headers:{'Accept':'application/json;odata=verbose'}});
+    var spUrl='https://cognizantonline-my.sharepoint.com/personal/2389039_cognizant_com/_api/lists/getbytitle('ScanAnalyzerHistory')/items?$orderby=Created desc&$top=50';
+    const r=await fetch(spUrl,{headers:{'Accept':'application/json;odata=verbose'}});
     const d=await r.json();
-    return (d.d.results||[]).map(function(item){
+    var results=(d.d&&d.d.results)||d.value||[];
+    return results.map(function(item){
       return {
         id:item.ID||item.Id,spId:item.ID||item.Id,
         waveName:item.WaveName||item.Title||'',
