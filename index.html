@@ -277,6 +277,21 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       <div class="metric-card"><div class="metric-accent-bar bar-amber"></div><div class="metric-label">Unique formats</div><div class="metric-value" id="m-formats">—</div><div class="metric-sub">distinct extensions</div></div>
       <div class="metric-card"><div class="metric-accent-bar bar-purple"></div><div class="metric-label">Est. migration time</div><div class="metric-value" id="m-time">—</div><div class="metric-sub">based on data volume</div></div>
     </div>
+
+    <!-- Google Workspace Conversion Banner -->
+    <div id="gw-banner" style="display:none;margin-bottom:20px;">
+      <div style="background:var(--surface);border:1px solid #BFDBFE;border-radius:var(--radius-lg);padding:16px 20px;box-shadow:var(--shadow);">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+          <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#4285F4,#34A853);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">G</div>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--text-1);">Google Workspace files — format conversion required</div>
+            <div style="font-size:12px;color:var(--text-2);margin-top:2px;">These files will be converted to Microsoft formats during migration. Please confirm with the user.</div>
+          </div>
+          <div id="gw-total-badge" style="margin-left:auto;font-size:12px;font-weight:700;padding:4px 12px;background:#EFF6FF;color:#2563EB;border:1px solid #BFDBFE;border-radius:20px;white-space:nowrap;flex-shrink:0;"></div>
+        </div>
+        <div id="gw-conversion-rows" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px;"></div>
+      </div>
+    </div>
     <div class="content-grid">
       <div class="card">
         <div class="card-header"><div><div class="card-title">Storage by format</div><div class="card-sub">Top 8 file types</div></div></div>
@@ -296,6 +311,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
         <div class="search-wrap"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input class="search-input" id="fmt-search" type="text" placeholder="Search extension…" oninput="filterFormats()"></div>
         <select class="filter-select" id="fmt-category" onchange="filterFormats()">
           <option value="">All categories</option>
+          <option value="gworkspace">⭐ Google Workspace (needs conversion)</option>
           <option value="document">Documents</option>
           <option value="image">Images</option>
           <option value="video">Video</option>
@@ -369,9 +385,29 @@ function isDark(){return document.documentElement.getAttribute('data-theme')==='
 
 const PALETTE=['#3B82F6','#8B5CF6','#10B981','#F59E0B','#EF4444','#06B6D4','#EC4899','#84CC16','#F97316','#6366F1','#14B8A6','#A855F7'];
 const AVATAR_COLORS=['linear-gradient(135deg,#667EEA,#764BA2)','linear-gradient(135deg,#F97316,#EC4899)','linear-gradient(135deg,#10B981,#0891B2)','linear-gradient(135deg,#F59E0B,#EF4444)','linear-gradient(135deg,#6366F1,#8B5CF6)','linear-gradient(135deg,#14B8A6,#2563EB)'];
-const EXT_CAT={document:new Set(['pdf','doc','docx','xls','xlsx','xlsm','ppt','pptx','txt','rtf','odt','ods','odp','gdoc','gsheet','gslide','msg','eml','pages','numbers','key','csv']),image:new Set(['jpg','jpeg','png','gif','svg','webp','bmp','tiff','tif','ico','heic','raw','cr2','nef','psd','ai','eps','snag']),video:new Set(['mp4','avi','wmv','mov','mkv','flv','webm','m4v','mpg','mpeg','3gp']),archive:new Set(['zip','rar','7z','tar','gz','bz2','xz','cab','iso','dmg','pst','ost']),code:new Set(['py','pyc','js','ts','html','htm','css','java','c','cpp','cs','rb','php','go','rs','swift','kt','sh','bash','json','xml','yaml','yml','sql','r','m','ipynb']),system:new Set(['exe','dll','sys','msi','bat','cmd','vbs','com','scr','inf','lnk','url','deploy','dl_']),data:new Set(['db','sqlite','mdb','accdb','log','dat','bak','tmp'])};
-const CAT_LABEL={document:'Document',image:'Image',video:'Video',archive:'Archive',code:'Code',system:'System',data:'Data',other:'Other'};
-const CAT_COLOR={document:'#3B82F6',image:'#10B981',video:'#8B5CF6',archive:'#F59E0B',code:'#06B6D4',system:'#EF4444',data:'#EC4899',other:'#9CA3AF'};
+const EXT_CAT={
+  gworkspace:new Set(['gdoc','gsheet','gslide','gform','gdraw','gsite','gjam','gmap','gscript','gshortcut']),
+  document:new Set(['pdf','doc','docx','xls','xlsx','xlsm','ppt','pptx','txt','rtf','odt','ods','odp','msg','eml','pages','numbers','key','csv']),
+  image:new Set(['jpg','jpeg','png','gif','svg','webp','bmp','tiff','tif','ico','heic','raw','cr2','nef','psd','ai','eps','snag']),
+  video:new Set(['mp4','avi','wmv','mov','mkv','flv','webm','m4v','mpg','mpeg','3gp']),
+  archive:new Set(['zip','rar','7z','tar','gz','bz2','xz','cab','iso','dmg','pst','ost']),
+  code:new Set(['py','pyc','js','ts','html','htm','css','java','c','cpp','cs','rb','php','go','rs','swift','kt','sh','bash','json','xml','yaml','yml','sql','r','m','ipynb']),
+  system:new Set(['exe','dll','sys','msi','bat','cmd','vbs','com','scr','inf','lnk','url','deploy','dl_']),
+  data:new Set(['db','sqlite','mdb','accdb','log','dat','bak','tmp'])
+};
+const GW_CONVERSION={
+  gdoc:   {icon:'📄', converts:'Google Doc → Word (.docx)',    color:'#2563EB'},
+  gsheet: {icon:'📊', converts:'Google Sheet → Excel (.xlsx)', color:'#16A34A'},
+  gslide: {icon:'📽️', converts:'Google Slide → PowerPoint (.pptx)', color:'#D97706'},
+  gform:  {icon:'📋', converts:'Google Form → (review needed)', color:'#7C3AED'},
+  gdraw:  {icon:'🎨', converts:'Google Drawing → (review needed)', color:'#0891B2'},
+  gsite:  {icon:'🌐', converts:'Google Site → (not migrated by default)', color:'#DC2626'},
+  gjam:   {icon:'🎵', converts:'Google Jamboard → (review needed)', color:'#EA580C'},
+  gscript:{icon:'⚙️', converts:'Apps Script → (not migrated)', color:'#6B7280'},
+  gshortcut:{icon:'🔗',converts:'Google Shortcut → (skipped)', color:'#9CA3AF'},
+};
+const CAT_LABEL={gworkspace:'Google Workspace',document:'Document',image:'Image',video:'Video',archive:'Archive',code:'Code',system:'System',data:'Data',other:'Other'};
+const CAT_COLOR={gworkspace:'#4285F4',document:'#3B82F6',image:'#10B981',video:'#8B5CF6',archive:'#F59E0B',code:'#06B6D4',system:'#EF4444',data:'#EC4899',other:'#9CA3AF'};
 function getCategory(ext){const e=(ext||'').toLowerCase();for(const[c,s]of Object.entries(EXT_CAT)){if(s.has(e))return c;}return 'other';}
 
 let rawRows=[],allUsers={},globalStats=null;
@@ -494,7 +530,7 @@ function renderApp(s){
   ['sb-size','sb-count','sb-name'].forEach(id=>document.getElementById(id).classList.remove('active-sort'));
   document.getElementById('sb-size').classList.add('active-sort');
   renderFormatsTable(allFormatsData);
-  renderDonut(s);renderBar(s);renderEmail(s);
+  renderDonut(s);renderBar(s);renderEmail(s);renderGWBanner(s);
   if(gridApi){gridApi.destroy();gridApi=null;}
   document.getElementById('grid-search').value='';
   viewTab='all';
@@ -514,6 +550,26 @@ function switchMainTab(tab){
 function chartTc(){return isDark()?'#8B949E':'#6B7280';}
 function chartGc(){return isDark()?'#2D3748':'#F0F2F5';}
 function ttOpts(){return{backgroundColor:isDark()?'#1C2333':'#fff',titleColor:isDark()?'#E6EDF3':'#0F1729',bodyColor:isDark()?'#8B949E':'#4B5563',borderColor:isDark()?'#2D3748':'#E2E6ED',borderWidth:1};}
+
+// GOOGLE WORKSPACE BANNER
+function renderGWBanner(s){
+  const gwItems=s.extList.filter(e=>e.category==='gworkspace');
+  const banner=document.getElementById('gw-banner');
+  if(!gwItems.length){banner.style.display='none';return;}
+  banner.style.display='block';
+  const totalGW=gwItems.reduce((t,e)=>t+e.count,0);
+  document.getElementById('gw-total-badge').textContent=fmtN(totalGW)+' Google Workspace files';
+  document.getElementById('gw-conversion-rows').innerHTML=gwItems.map(item=>{
+    const gw=GW_CONVERSION[item.ext]||{icon:'📁',converts:'Google file (review needed)',color:'#6B7280'};
+    return `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;display:flex;align-items:center;gap:10px;">
+      <span style="font-size:18px;flex-shrink:0;">${gw.icon}</span>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:12px;font-weight:700;color:var(--text-1);">.${item.ext.toUpperCase()} <span style="font-weight:400;color:var(--text-2);">· ${fmtN(item.count)} files</span></div>
+        <div style="font-size:11px;color:${gw.color};margin-top:2px;font-weight:500;">${gw.converts}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
 
 function renderDonut(s){
   if(donutChart)donutChart.destroy();
