@@ -838,7 +838,8 @@ function showUserSelect(){
   document.getElementById('history-nav-btn').style.display='inline-flex';
   document.getElementById('back-home-btn').style.display='inline-flex';
 
-  const users=Object.values(allUsers).sort((a,b)=>b.totalSize-a.totalSize);
+  const users=Object.values(allUsers||{}).sort(function(a,b){return b.totalSize-a.totalSize;});
+  if(!users.length){show('landing-section');hide('user-select-section');showToast('No users found in scan report');return;}
   const totalSize=users.reduce((s,u)=>s+u.totalSize,0);
   const icon=getWaveIcon(currentWaveName);
   const isPilot=currentWaveName.toLowerCase().includes('pilot');
@@ -1038,7 +1039,7 @@ function renderDonut(s){
   const labels=[...top8.map(e=>'.'+e.ext.toUpperCase()),'Others'];
   const data=[...top8.map(e=>e.size),othersSize];
   const colors=[...PALETTE.slice(0,8),'#718096'];
-  const ttLabel=function(ctx){const pct=((ctx.raw/s.totalSize)*100).toFixed(1);return '  '+fmt(ctx.raw)+' ('+pct+'%)';};
+  const ttLabel=function(ctx){const pct=s.totalSize>0?((ctx.raw/s.totalSize)*100).toFixed(1):'0.0';return '  '+fmt(ctx.raw)+' ('+pct+'%)';};
   donutChart=new Chart(document.getElementById('donut-chart').getContext('2d'),{
     type:'doughnut',
     data:{labels,datasets:[{data,backgroundColor:colors,borderWidth:0,hoverOffset:6}]},
@@ -1079,7 +1080,7 @@ function renderFormatsTable(data){
   document.getElementById('fmt-count-label').textContent=fmtN(sorted.length)+' formats shown';
   const maxSize=sorted[0]?.size||1;
   document.getElementById('all-formats-body').innerHTML=sorted.map(item=>{
-    const pct=((item.size/globalStats.totalSize)*100).toFixed(1);
+    const pct=globalStats&&globalStats.totalSize>0?((item.size/globalStats.totalSize)*100).toFixed(1):'0.0';
     const barW=Math.max(2,Math.round((item.size/maxSize)*100));
     const cc=CAT_COLOR[item.category]||'#9CA3AF';
     const cl=CAT_LABEL[item.category]||'Other';
@@ -1362,17 +1363,17 @@ function saveToHistory(fileName,waveName,users){
     totalUsersCount:Object.keys(users).length,
     rawData:rawRows
   };
+  history=history.filter(function(h){return h.fileName!==fileName||h.waveName!==waveName;});
   history.unshift(entry);
+  history=history.slice(0,15);
   try{
-    // Try with rawData first
-    localStorage.setItem('msa-history',JSON.stringify(history.slice(0,10)));
+    localStorage.setItem('msa-history',JSON.stringify(history));
   }catch(e){
-    // If too large, save without rawData
-    const slim=history.slice(0,20).map(h=>({...h,rawData:undefined}));
-    try{localStorage.setItem('msa-history',JSON.stringify(slim));}catch(e2){}
+    var slim=history.map(function(h){var nh=Object.assign({},h);delete nh.rawData;return nh;});
+    try{localStorage.setItem('msa-history',JSON.stringify(slim.slice(0,5)));}catch(e2){}
   }
 }
-function getHistory(){try{const h=JSON.parse(localStorage.getItem('msa-history')||'[]');return h.filter(e=>e&&e.waveName&&e.fileName);}catch{return[];}}
+function getHistory(){try{var h=JSON.parse(localStorage.getItem('msa-history')||'[]');if(!Array.isArray(h))return[];return h.filter(function(e){return e&&e.waveName&&e.fileName&&e.id;});}catch(e){localStorage.removeItem('msa-history');return[];}}
 
 function showHistory(){
   hide('landing-section');hide('user-select-section');hide('app-section');hide('email-section');
@@ -1500,11 +1501,52 @@ function confirmWaveAndUpload(){
 
 // Override detectWaveName to use selected wave if set
 const _origDetect=detectWaveName;
-function detectWaveName(filename){
-  if(currentWaveName) return currentWaveName;
-  return _origDetect(filename);
-}
 
+
+
+function exportToExcel(){
+  if(!globalStats)return;
+  var btn=document.getElementById('export-btn');
+  if(btn){btn.textContent='Preparing...';btn.disabled=true;}
+  setTimeout(function(){
+    try{
+      var wb=XLSX.utils.book_new();
+      var s=globalStats;
+      function mkSheet(rows){
+        if(!rows||!rows.length)return XLSX.utils.aoa_to_sheet([['No data']]);
+        var sh=XLSX.utils.json_to_sheet(rows);
+        sh['!freeze']={xSplit:0,ySplit:1};
+        sh['!cols']=Object.keys(rows[0]||{}).map(function(k){return{wch:Math.min(40,Math.max(12,k.length+4))};});
+        return sh;
+      }
+      XLSX.utils.book_append_sheet(wb,mkSheet(s.rows),'Raw Scan Data');
+      var sumData=[['Extension','Category','File Count','Total Size (Bytes)','Total Size (GB)','Avg Size (MB)','% of Total']];
+      s.extList.forEach(function(ex){
+        sumData.push(['.'+ex.ext.toUpperCase(),CAT_LABEL[ex.category]||'Other',ex.count,ex.size,+(ex.size/1e9).toFixed(3),+(ex.avg/1e6).toFixed(2),+((s.totalSize>0?(ex.size/s.totalSize)*100:0)).toFixed(2)]);
+      });
+      var sumSh=XLSX.utils.aoa_to_sheet(sumData);
+      sumSh['!cols']=[{wch:16},{wch:16},{wch:14},{wch:22},{wch:18},{wch:18},{wch:14}];
+      sumSh['!freeze']={xSplit:0,ySplit:1};
+      XLSX.utils.book_append_sheet(wb,sumSh,'Format Summary');
+      if(s.files&&s.files.length)XLSX.utils.book_append_sheet(wb,mkSheet(s.files),'Files Only');
+      if(s.folders&&s.folders.length)XLSX.utils.book_append_sheet(wb,mkSheet(s.folders),'Folders Only');
+      var ovSh=XLSX.utils.aoa_to_sheet([
+        ['Wave',currentWaveName],['User',s.userName],
+        ['Total Size (GB)',+(s.totalSize/1e9).toFixed(2)],
+        ['Total Items',s.totalItems],['Files',s.totalFiles],
+        ['Folders',s.totalFolders],['Formats',s.uniqueFormats],
+        ['Badge',s.totalSize>50e9&&s.totalFiles>100000?'Heavy':s.totalSize>50e9||s.totalFiles>100000?'Medium-High':s.totalSize>10e9||s.totalFiles>25000?'Medium':'Normal'],
+        ['Generated',new Date().toLocaleString()]
+      ]);
+      ovSh['!cols']=[{wch:28},{wch:40}];
+      XLSX.utils.book_append_sheet(wb,ovSh,'Overview');
+      var fname='ScanReport_'+currentWaveName.replace(/[^a-z0-9]/gi,'_')+'_'+s.userName.replace(/[^a-z0-9]/gi,'_').slice(0,20)+'_'+new Date().toISOString().slice(0,10)+'.xlsx';
+      XLSX.writeFile(wb,fname);
+      showToast('Excel downloaded');
+    }catch(err){showToast('Export failed: '+err.message);}
+    if(btn){btn.innerHTML='<svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg> Export Excel';btn.disabled=false;}
+  },80);
+}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
 </script>
 </body>
