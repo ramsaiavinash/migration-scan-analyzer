@@ -1703,7 +1703,8 @@ function saveToHistory(fileName,waveName,users){
 function getHistory(){try{var h=JSON.parse(localStorage.getItem('msa-history')||'[]');if(!Array.isArray(h))return[];return h.filter(function(e){return e&&e.waveName&&e.fileName&&e.id;});}catch(e){localStorage.removeItem('msa-history');return[];}}
 
 function showHistory(){
-  hide('landing-section');hide('user-select-section');hide('app-section');hide('email-section');
+  hide('landing-section');hide('user-select-section');hide('app-section');
+  hide('email-section');hide('dashboard-section');
   show('history-section');
   renderHistoryList(getHistory());
 }
@@ -1758,9 +1759,7 @@ function deleteHistory(id,e){
 function clearAllHistory(){if(!confirm('Clear all scan history?'))return;localStorage.removeItem('msa-history');showHistory();renderWaveCards();showToast('History cleared');}
 function backFromHistory(){
   hide('history-section');
-  // Always go back to landing page - user can click wave card to get to users
   show('landing-section');
-  renderWaveCards();
   if(!Object.keys(allUsers).length){
     document.getElementById('back-home-btn').style.display='none';
     document.getElementById('history-nav-btn').style.display='none';
