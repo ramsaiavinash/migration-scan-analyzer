@@ -404,6 +404,9 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
     <button class="btn btn-sm btn-ghost" id="back-home-btn" style="display:none" onclick="goHome()">
       <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>Home
     </button>
+    <button class="btn btn-sm btn-ghost" onclick="showAbout()">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>About
+    </button>
     <button class="theme-toggle" onclick="toggleTheme()"><div class="theme-knob" id="theme-knob">☀️</div></button>
   </div>
 </header>
@@ -428,48 +431,6 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
       <div class="hero-tag"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Zero data transmission</div>
     </div>
   </div>
-  <!-- ABOUT SECTION -->
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:28px 32px;margin-bottom:28px;box-shadow:var(--shadow-sm);">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
-      <div style="width:32px;height:32px;background:var(--accent-bg);border-radius:8px;display:flex;align-items:center;justify-content:center;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      </div>
-      <div style="font-size:15px;font-weight:700;color:var(--text-1);">What is ScanAnalyzer?</div>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
-      <div style="background:var(--bg2);border-radius:var(--r-sm);padding:16px;">
-        <div style="font-size:20px;margin-bottom:8px;">🎯</div>
-        <div style="font-size:13px;font-weight:700;color:var(--text-1);margin-bottom:4px;">Purpose</div>
-        <div style="font-size:12px;color:var(--text-2);line-height:1.6;">ScanAnalyzer helps migration teams instantly analyze Google Drive to OneDrive scan reports from Microsoft Migration Manager. It turns raw CSV data into actionable insights.</div>
-      </div>
-      <div style="background:var(--bg2);border-radius:var(--r-sm);padding:16px;">
-        <div style="font-size:20px;margin-bottom:8px;">⚡</div>
-        <div style="font-size:13px;font-weight:700;color:var(--text-1);margin-bottom:4px;">How it works</div>
-        <div style="font-size:12px;color:var(--text-2);line-height:1.6;">Upload a scan report ZIP or CSV file → tool instantly parses it → shows per-user breakdown, file formats, Google Workspace conversions, and generates client emails.</div>
-      </div>
-      <div style="background:var(--bg2);border-radius:var(--r-sm);padding:16px;">
-        <div style="font-size:20px;margin-bottom:8px;">🔒</div>
-        <div style="font-size:13px;font-weight:700;color:var(--text-1);margin-bottom:4px;">Privacy & Security</div>
-        <div style="font-size:12px;color:var(--text-2);line-height:1.6;">100% browser-based. Your scan data never leaves your laptop. No server, no database, no data transmission. Works even when offline after page loads.</div>
-      </div>
-      <div style="background:var(--bg2);border-radius:var(--r-sm);padding:16px;">
-        <div style="font-size:20px;margin-bottom:8px;">📊</div>
-        <div style="font-size:13px;font-weight:700;color:var(--text-1);margin-bottom:4px;">Key Features</div>
-        <div style="font-size:12px;color:var(--text-2);line-height:1.6;">Per-user risk badges · Google Workspace conversion highlights · File format breakdown · Excel export · Client email generator · Full data grid with filters</div>
-      </div>
-      <div style="background:var(--bg2);border-radius:var(--r-sm);padding:16px;">
-        <div style="font-size:20px;margin-bottom:8px;">👥</div>
-        <div style="font-size:13px;font-weight:700;color:var(--text-1);margin-bottom:4px;">For Teams</div>
-        <div style="font-size:12px;color:var(--text-2);line-height:1.6;">Each team member analyzes their own waves. All uploads are tracked in SharePoint List for team-wide visibility. Share results via Excel export or email.</div>
-      </div>
-      <div style="background:var(--bg2);border-radius:var(--r-sm);padding:16px;">
-        <div style="font-size:20px;margin-bottom:8px;">🚀</div>
-        <div style="font-size:13px;font-weight:700;color:var(--text-1);margin-bottom:4px;">Migration Support</div>
-        <div style="font-size:12px;color:var(--text-2);line-height:1.6;">Supports Pilot Wave and Wave 1–7. Auto-detects Google Workspace files needing conversion. Risk classification based on Microsoft FastTrack thresholds.</div>
-      </div>
-    </div>
-  </div>
-
   <div class="waves-section" id="waves-section">
     <div class="waves-header">
       <div>
@@ -733,6 +694,114 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
         Continue to Upload
       </button>
     </div>
+  </div>
+</div>
+
+
+<!-- ABOUT -->
+<div id="about-section" style="display:none;animation:fadeUp .3s ease;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:10px;">
+    <div>
+      <h2 style="font-size:18px;font-weight:700;letter-spacing:-.3px;">About ScanAnalyzer</h2>
+      <p style="color:var(--text-2);font-size:12px;margin-top:3px;">Google Drive → OneDrive Migration Analysis Tool</p>
+    </div>
+    <button class="btn btn-sm" onclick="hideAbout()">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Back
+    </button>
+  </div>
+
+  <!-- What is it -->
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-hdr"><div class="card-title">🎯 What is ScanAnalyzer?</div></div>
+    <div class="card-body">
+      <p style="font-size:13px;color:var(--text-2);line-height:1.8;">ScanAnalyzer is a <strong style="color:var(--text-1);">browser-based migration analysis tool</strong> built for Google Drive to OneDrive migration teams. It instantly parses Microsoft Migration Manager scan reports and gives a full per-user breakdown — saving 2-3 hours of manual Excel work per wave.</p>
+    </div>
+  </div>
+
+  <!-- How it works -->
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-hdr"><div class="card-title">⚡ How it works</div></div>
+    <div class="card-body">
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="width:32px;height:32px;background:var(--accent-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--accent);flex-shrink:0;">1</div>
+          <div style="font-size:13px;color:var(--text-2);">Export scan report ZIP from <strong style="color:var(--text-1);">Microsoft Migration Manager</strong></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="width:32px;height:32px;background:var(--accent-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--accent);flex-shrink:0;">2</div>
+          <div style="font-size:13px;color:var(--text-2);">Click <strong style="color:var(--text-1);">Upload Scan Report</strong> → select wave name → select file</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="width:32px;height:32px;background:var(--accent-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--accent);flex-shrink:0;">3</div>
+          <div style="font-size:13px;color:var(--text-2);">Wave card created → click it → select a user → view full <strong style="color:var(--text-1);">dashboard, charts, and insights</strong></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="width:32px;height:32px;background:var(--accent-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--accent);flex-shrink:0;">4</div>
+          <div style="font-size:13px;color:var(--text-2);">Export to <strong style="color:var(--text-1);">Excel</strong> or generate <strong style="color:var(--text-1);">client email</strong> in one click</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Features -->
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-hdr"><div class="card-title">📊 Key Features</div></div>
+    <div class="card-body">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;">
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Per-user data breakdown</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>4-tier risk badges (Normal / Medium / Medium-High / Heavy)</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Google Workspace conversion highlights</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>File format breakdown with charts</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Excel export with 5 sheets</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Client email generator</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Full data grid — filter, sort, export CSV</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Supports multi-user scan reports</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>SharePoint history tracking</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Light / Dark mode</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Privacy -->
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-hdr"><div class="card-title">🔒 Privacy & Security</div></div>
+    <div class="card-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div style="background:var(--success-bg);border:1px solid var(--success-border);border-radius:var(--r-sm);padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:var(--success);margin-bottom:4px;">✅ What stays on your laptop</div>
+          <div style="font-size:11px;color:var(--text-2);line-height:1.6;">Raw scan data · File paths · User details · Browser history</div>
+        </div>
+        <div style="background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:var(--r-sm);padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:4px;">📤 What saves to SharePoint</div>
+          <div style="font-size:11px;color:var(--text-2);line-height:1.6;">Wave name · File name · User count · Total size · Total files</div>
+        </div>
+      </div>
+      <p style="font-size:12px;color:var(--text-3);margin-top:12px;">No scan file content ever leaves the browser. GitHub Pages only serves the HTML file — it has no server, no database, and cannot receive any data.</p>
+    </div>
+  </div>
+
+  <!-- Tech -->
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-hdr"><div class="card-title">⚙️ Technology</div></div>
+    <div class="card-body">
+      <div style="display:flex;flex-wrap:wrap;gap:8px;">
+        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">HTML5 + CSS3 + JavaScript</span>
+        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">Chart.js 4.4.1</span>
+        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">AG Grid Community 31.3.2</span>
+        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">PapaParse 5.4.1</span>
+        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">JSZip 3.10.1</span>
+        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">SheetJS 0.18.5</span>
+        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">Power Automate</span>
+        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">SharePoint List</span>
+        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">GitHub Pages (hosting)</span>
+        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">3.3 MB self-contained</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Version -->
+  <div style="text-align:center;padding:16px;color:var(--text-3);font-size:11px;">
+    ScanAnalyzer v1.0 · Built by Kanigolla, Rama Sai Avinash (Cognizant) · June 2026
   </div>
 </div>
 
@@ -1906,6 +1975,21 @@ async function handleReupload(file){
     showToast('Error: ' + err.message);
   }
   document.getElementById('reupload-file-input').value = '';
+}
+
+
+function showAbout(){
+  hide('landing-section');
+  hide('user-select-section');
+  hide('app-section');
+  hide('history-section');
+  hide('email-section');
+  show('about-section');
+}
+
+function hideAbout(){
+  hide('about-section');
+  show('landing-section');
 }
 
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
