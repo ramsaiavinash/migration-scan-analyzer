@@ -428,6 +428,48 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
       <div class="hero-tag"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Zero data transmission</div>
     </div>
   </div>
+  <!-- ABOUT SECTION -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:28px 32px;margin-bottom:28px;box-shadow:var(--shadow-sm);">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+      <div style="width:32px;height:32px;background:var(--accent-bg);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      </div>
+      <div style="font-size:15px;font-weight:700;color:var(--text-1);">What is ScanAnalyzer?</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+      <div style="background:var(--bg2);border-radius:var(--r-sm);padding:16px;">
+        <div style="font-size:20px;margin-bottom:8px;">🎯</div>
+        <div style="font-size:13px;font-weight:700;color:var(--text-1);margin-bottom:4px;">Purpose</div>
+        <div style="font-size:12px;color:var(--text-2);line-height:1.6;">ScanAnalyzer helps migration teams instantly analyze Google Drive to OneDrive scan reports from Microsoft Migration Manager. It turns raw CSV data into actionable insights.</div>
+      </div>
+      <div style="background:var(--bg2);border-radius:var(--r-sm);padding:16px;">
+        <div style="font-size:20px;margin-bottom:8px;">⚡</div>
+        <div style="font-size:13px;font-weight:700;color:var(--text-1);margin-bottom:4px;">How it works</div>
+        <div style="font-size:12px;color:var(--text-2);line-height:1.6;">Upload a scan report ZIP or CSV file → tool instantly parses it → shows per-user breakdown, file formats, Google Workspace conversions, and generates client emails.</div>
+      </div>
+      <div style="background:var(--bg2);border-radius:var(--r-sm);padding:16px;">
+        <div style="font-size:20px;margin-bottom:8px;">🔒</div>
+        <div style="font-size:13px;font-weight:700;color:var(--text-1);margin-bottom:4px;">Privacy & Security</div>
+        <div style="font-size:12px;color:var(--text-2);line-height:1.6;">100% browser-based. Your scan data never leaves your laptop. No server, no database, no data transmission. Works even when offline after page loads.</div>
+      </div>
+      <div style="background:var(--bg2);border-radius:var(--r-sm);padding:16px;">
+        <div style="font-size:20px;margin-bottom:8px;">📊</div>
+        <div style="font-size:13px;font-weight:700;color:var(--text-1);margin-bottom:4px;">Key Features</div>
+        <div style="font-size:12px;color:var(--text-2);line-height:1.6;">Per-user risk badges · Google Workspace conversion highlights · File format breakdown · Excel export · Client email generator · Full data grid with filters</div>
+      </div>
+      <div style="background:var(--bg2);border-radius:var(--r-sm);padding:16px;">
+        <div style="font-size:20px;margin-bottom:8px;">👥</div>
+        <div style="font-size:13px;font-weight:700;color:var(--text-1);margin-bottom:4px;">For Teams</div>
+        <div style="font-size:12px;color:var(--text-2);line-height:1.6;">Each team member analyzes their own waves. All uploads are tracked in SharePoint List for team-wide visibility. Share results via Excel export or email.</div>
+      </div>
+      <div style="background:var(--bg2);border-radius:var(--r-sm);padding:16px;">
+        <div style="font-size:20px;margin-bottom:8px;">🚀</div>
+        <div style="font-size:13px;font-weight:700;color:var(--text-1);margin-bottom:4px;">Migration Support</div>
+        <div style="font-size:12px;color:var(--text-2);line-height:1.6;">Supports Pilot Wave and Wave 1–7. Auto-detects Google Workspace files needing conversion. Risk classification based on Microsoft FastTrack thresholds.</div>
+      </div>
+    </div>
+  </div>
+
   <div class="waves-section" id="waves-section">
     <div class="waves-header">
       <div>
@@ -923,9 +965,9 @@ function renderWaveCardsData(history){
     });
     var available=hasSession||(h.rawData&&h.rawData.length>0);
     var fromSP=h.source==='sharepoint';
-    var sessionText=hasSession?'In session':available?'Available':'Re-upload to view';
-    var sessionColor=hasSession||available?'var(--success)':'var(--text-3)';
-    var dot=hasSession||available?'●':'○';
+    var sessionText=hasSession?'In session':available?'Available':'Click to re-upload';
+    var sessionColor=hasSession||available?'var(--success)':'var(--accent)';
+    var dot=hasSession||available?'●':'↑';
     html+='<div class="wave-card" data-hid="'+String(h.id)+'">';
     html+='<div class="wave-card-stripe"></div>';
     html+='<div class="wave-card-header"><div>';
@@ -950,7 +992,26 @@ function renderWaveCardsData(history){
   });
   grid.innerHTML=html;
   grid.querySelectorAll('.wave-card').forEach(function(el){
-    el.addEventListener('click',function(){loadFromHistory(this.getAttribute('data-hid'));});
+    el.addEventListener('click',function(){
+      var hid = this.getAttribute('data-hid');
+      var history = getHistory();
+      var entry = history.find(function(h){ return String(h.id)===hid; });
+      if(!entry){ loadFromHistory(hid); return; }
+      // Check if data available in session
+      var hasSession = Object.keys(sessionStore).some(function(k){
+        return sessionStore[k].waveName===entry.waveName && sessionStore[k].fileName===entry.fileName;
+      });
+      var hasRaw = entry.rawData && entry.rawData.length > 0;
+      if(hasSession || hasRaw){
+        loadFromHistory(hid);
+      } else {
+        // Trigger re-upload with wave name pre-filled
+        reuploadWaveName = entry.waveName;
+        reuploadHistoryId = hid;
+        document.getElementById('reupload-file-input').value = '';
+        document.getElementById('reupload-file-input').click();
+      }
+    });
   });
 }
 function loadFromHistory(id){
@@ -1799,6 +1860,52 @@ async function saveToSharePoint(entry){
     console.log('SP save failed:', e.message);
     return false;
   }
+}
+
+
+// ── QUICK RE-UPLOAD ──────────────────────────────
+var reuploadWaveName = '';
+var reuploadHistoryId = '';
+
+async function handleReupload(file){
+  if(!file) return;
+  // Use existing wave name - skip modal
+  currentWaveName = reuploadWaveName;
+  hide('landing-section');
+  show('progress-section');
+  document.getElementById('progress-filename').textContent = file.name + ' — ' + fmt(file.size);
+  setProgress(10,'Reading file...','');
+  var csvText = '';
+  try{
+    if(file.name.toLowerCase().endsWith('.zip')){
+      setProgress(25,'Extracting ZIP...','');
+      var zip = await JSZip.loadAsync(file);
+      var csvFile = Object.values(zip.files).find(function(f){ return f.name.toLowerCase().endsWith('.csv'); });
+      if(!csvFile) throw new Error('No CSV found inside ZIP.');
+      setProgress(45,'Extracting CSV...',csvFile.name);
+      csvText = await csvFile.async('text');
+    } else {
+      csvText = await file.text();
+    }
+    setProgress(65,'Parsing rows...',''); await tick();
+    var result = Papa.parse(csvText,{header:true,skipEmptyLines:true,dynamicTyping:false});
+    rawRows = result.data;
+    setProgress(85,'Building user breakdown...',fmtN(rawRows.length)+' rows'); await tick();
+    allUsers = buildAllUsers(rawRows);
+    // Save to session store
+    var sessionKey = currentWaveName + '_' + file.name;
+    sessionStore[sessionKey] = {rawRows:[...rawRows], waveName:currentWaveName, fileName:file.name};
+    setProgress(100,'Done!',''); await tick(300);
+    hide('progress-section');
+    show('landing-section');
+    renderWaveCards();
+    showToast('Re-uploaded — click the wave card to view');
+  } catch(err){
+    hide('progress-section');
+    show('landing-section');
+    showToast('Error: ' + err.message);
+  }
+  document.getElementById('reupload-file-input').value = '';
 }
 
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
