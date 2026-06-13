@@ -404,12 +404,6 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
     <span class="logo-sub">Google Drive → OneDrive</span>
   </div>
   <div class="header-right">
-    <button class="btn btn-sm btn-ghost" id="history-nav-btn" style="display:none" onclick="showHistory()">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>History
-    </button>
-    <button class="btn btn-sm btn-ghost" id="back-home-btn" style="display:none" onclick="goHome()">
-      <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>Home
-    </button>
     <button class="btn btn-sm btn-ghost" onclick="showDashboard()">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard
     </button>
@@ -1029,9 +1023,6 @@ function analyzeRows(rows,userName){
 function showUserSelect(){
   hide('progress-section');hide('landing-section');hide('app-section');hide('history-section');
   show('user-select-section');
-  document.getElementById('history-nav-btn').style.display='inline-flex';
-  document.getElementById('back-home-btn').style.display='inline-flex';
-
   const users=Object.values(allUsers||{}).sort(function(a,b){return b.totalSize-a.totalSize;});
   if(!users.length){show('landing-section');hide('user-select-section');showToast('No users found in scan report');return;}
   const totalSize=users.reduce((s,u)=>s+u.totalSize,0);
@@ -1091,8 +1082,6 @@ function loadFromHistory(id){
     hide('landing-section');
     hide('dashboard-section');
     prevSection='dashboard';
-    document.getElementById('back-home-btn').style.display='inline-flex';
-    document.getElementById('history-nav-btn').style.display='inline-flex';
     showUserSelect();
     return;
   }
@@ -1106,8 +1095,6 @@ function loadFromHistory(id){
     hide('landing-section');
     hide('dashboard-section');
     prevSection='dashboard';
-    document.getElementById('back-home-btn').style.display='inline-flex';
-    document.getElementById('history-nav-btn').style.display='inline-flex';
     showUserSelect();
     return;
   }
@@ -1120,8 +1107,6 @@ function loadFromHistory(id){
     hide('landing-section');
     hide('dashboard-section');
     prevSection='dashboard';
-    document.getElementById('back-home-btn').style.display='inline-flex';
-    document.getElementById('history-nav-btn').style.display='inline-flex';
     showUserSelect();
     return;
   }
@@ -1172,7 +1157,7 @@ function switchMainTab(tab){
     if(content) content.style.display = t===tab ? 'block' : 'none';
     if(tabBtn) tabBtn.classList.toggle('active', t===tab);
   });
-  if(tab==='data'&&!gridApi&&globalStats)initGrid(globalStats.files);
+  if(tab==='data'&&globalStats){if(gridApi){gridApi.destroy();gridApi=null;}initGrid(viewTab==='files'?globalStats.files:viewTab==='folders'?globalStats.folders:globalStats.rows);}
 }
 
 // ── CHARTS ───────────────────────────────────
@@ -1784,16 +1769,13 @@ function goBackToNav(){
 }
 
 function goHome(){
-  ['user-select-section','app-section','history-section'].forEach(hide);
+  ['user-select-section','app-section','history-section','dashboard-section'].forEach(hide);
   show('landing-section');
-  document.getElementById('back-home-btn').style.display='none';
-  document.getElementById('history-nav-btn').style.display='none';
   globalStats=null;
   currentWaveName='';
   if(gridApi){gridApi.destroy();gridApi=null;}
   if(donutChart){donutChart.destroy();donutChart=null;}
   if(barChart){barChart.destroy();barChart=null;}
-  renderWaveCards();
 }
 
 // ── WAVE MODAL ─────────────────────────────────
