@@ -967,42 +967,86 @@ function analyzeRows(rows,userName){
   files.forEach(r=>{let ext=(r.SourceExtension||'').replace(/^\./,'').toLowerCase().trim()||'(none)';if(!extMap[ext])extMap[ext]={count:0,size:0};extMap[ext].count++;extMap[ext].size+=parseInt(r.SourceSize)||0;});
   const extList=Object.entries(extMap).map(([ext,d])=>({ext,count:d.count,size:d.size,avg:d.count?Math.round(d.size/d.count):0,category:getCategory(ext)})).sort((a,b)=>b.size-a.size);
 
-  // ── PATH LENGTH VALIDATION ──
+  // ── PATH LENGTH & SPECIAL CHARACTER VALIDATION ──
+  // OneDrive path limit: 400 characters total
+  // Source: https://support.microsoft.com/en-us/office/restrictions-and-limitations-in-onedrive-64883a5d-228e-48f5-b3d2-eb39e07630fa
+  // Special chars not allowed in OneDrive/SharePoint file names
   var MAX_PATH = 400;
-  var SPECIAL_CHARS = /[\*\?"<>\|\\:]/g;
-  var GW_EXTS = ['gdoc','gsheet','gslide','gform','gdraw','gsite','gscript','gmaps','gjam'];
+  var SPECIAL_CHARS_RE = /[\*\?"<>\|:]/g;  // chars not allowed in OneDrive file names
+  var SPECIAL_PATH_RE = /[\*\?"<>\|]/g;   // chars not allowed in path segments
 
   var pathIssues = [];
   var specialCharIssues = [];
   var longPathCount = 0;
   var specialCharCount = 0;
 
-  files.forEach(function(r){
-    var path = r.FullPath || r.SourcePath || '';
-    var name = r.Name || '';
+  // Get all available path-related column names from first row
+  var sampleRow = files[0] || {};
+  var availableCols = Object.keys(sampleRow);
+  
+  // Detect which column has the full path
+  // Migration Manager uses: FullPath, ItemPath, SourcePath (not user), Path
+  var pathCol = '';
+  ['FullPath','ItemPath','Path','FilePath'].forEach(function(col){
+    if(availableCols.indexOf(col) > -1 && !pathCol) pathCol = col;
+  });
+  
+  // Detect name column
+  var nameCol = '';
+  ['Name','FileName','ItemName','Title'].forEach(function(col){
+    if(availableCols.indexOf(col) > -1 && !nameCol) nameCol = col;
+  });
 
-    // Path length check
-    if(path.length > MAX_PATH){
+  files.forEach(function(r){
+    // Get the path - try multiple column names
+    var fullPath = (pathCol ? r[pathCol] : '') || r.FullPath || r.ItemPath || r.FilePath || '';
+    var name = (nameCol ? r[nameCol] : '') || r.Name || r.FileName || '';
+    
+    // If no dedicated path column, construct from SourcePath (after removing user prefix)
+    // SourcePath in Migration Manager = user/file path like "/user@domain.com/My Drive/folder/file"
+    if(!fullPath && r.SourcePath){
+      // SourcePath includes the user prefix, extract just the file path portion
+      var sp = r.SourcePath;
+      var slashIdx = sp.indexOf('/', 1); // skip first slash
+      fullPath = slashIdx > -1 ? sp.slice(slashIdx) : sp;
+    }
+
+    if(!fullPath) return;
+
+    // PATH LENGTH CHECK
+    // OneDrive path = /personal/user_domain_com/Documents + fullPath
+    // We check the fullPath length against 400 (conservative estimate)
+    var pathLen = fullPath.length;
+    
+    if(pathLen > MAX_PATH){
       longPathCount++;
-      if(pathIssues.length < 50){
+      if(pathIssues.length < 100){
         pathIssues.push({
           name: name,
-          path: path,
-          length: path.length,
-          excess: path.length - MAX_PATH
+          path: fullPath,
+          length: pathLen,
+          excess: pathLen - MAX_PATH
         });
       }
     }
 
-    // Special characters check
-    var specialMatches = name.match(SPECIAL_CHARS);
-    if(specialMatches){
+    // SPECIAL CHARACTER CHECK
+    // Check file name for invalid OneDrive characters: * ? " < > | :
+    // Also check for # and % which cause issues in SharePoint URLs
+    var nameToCheck = name;
+    var specialMatches = nameToCheck.match(SPECIAL_CHARS_RE);
+    var hasHashOrPercent = /[#%]/.test(nameToCheck);
+    
+    if(specialMatches || hasHashOrPercent){
       specialCharCount++;
-      if(specialCharIssues.length < 50){
+      if(specialCharIssues.length < 100){
+        var allBadChars = [];
+        if(specialMatches) allBadChars = allBadChars.concat([...new Set(specialMatches)]);
+        if(hasHashOrPercent) allBadChars = allBadChars.concat(nameToCheck.match(/[#%]/g).filter((v,i,a)=>a.indexOf(v)===i));
         specialCharIssues.push({
           name: name,
-          path: path,
-          chars: [...new Set(specialMatches)].join(' ')
+          path: fullPath,
+          chars: allBadChars.join(' ')
         });
       }
     }
