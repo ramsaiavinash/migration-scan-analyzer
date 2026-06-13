@@ -518,7 +518,7 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
 <!-- USER SELECT -->
 <div id="user-select-section">
   <div class="breadcrumb">
-    <span class="bc-item" onclick="goHome()">Home</span>
+    <span class="bc-item" onclick="goBackToNav()">Home</span>
     <span class="bc-sep">›</span>
     <span class="bc-item active" id="bc-wave">Wave</span>
   </div>
@@ -540,7 +540,7 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
   <div class="app-topbar">
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
       <div class="breadcrumb" style="margin:0;">
-        <span class="bc-item" onclick="goHome()">Home</span>
+        <span class="bc-item" onclick="goBackToNav()">Home</span>
         <span class="bc-sep">›</span>
         <span class="bc-item" id="bc-wave2" onclick="backToUsers()">Wave</span>
         <span class="bc-sep">›</span>
@@ -860,7 +860,7 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
 
 
 
-<script>
+
 
 // SP List URL for View in SharePoint button
 const SP_LIST_URL = 'https://cognizantonline-my.sharepoint.com/personal/2389039_cognizant_com/Lists/ScanAnalyzerHistory/AllItems.aspx';
@@ -1710,6 +1710,8 @@ function saveToHistory(fileName,waveName,users){
 function getHistory(){try{var h=JSON.parse(localStorage.getItem('msa-history')||'[]');if(!Array.isArray(h))return[];return h.filter(function(e){return e&&e.waveName&&e.fileName&&e.id;});}catch(e){localStorage.removeItem('msa-history');return[];}}
 
 function showHistory(){
+  if(document.getElementById('dashboard-section').style.display!=='none') prevSection='dashboard';
+  else prevSection='landing';
   hide('landing-section');hide('user-select-section');hide('app-section');
   hide('email-section');hide('dashboard-section');
   show('history-section');
