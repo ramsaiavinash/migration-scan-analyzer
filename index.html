@@ -1658,14 +1658,14 @@ function copyEmail(){var s=document.getElementById('email-subject-display').valu
 function saveToHistory(fileName,waveName,users){
   if(!fileName||!waveName||!users)return;
   var history=getHistory();
-  var totalSizeGB = Object.values(users).reduce(function(s,u){return s+u.totalSize;},0);
+  var totalSizeBytes = Object.values(users).reduce(function(s,u){return s+u.totalSize;},0);
   var entry={
     id:Date.now(),
     fileName:fileName,
     waveName:waveName,
     date:new Date().toLocaleString(),
     totalUsers:Object.keys(users).length,
-    totalSize:totalSizeGB,
+    totalSize:totalSizeBytes,
     totalFiles:Object.values(users).reduce(function(s,u){return s+u.totalFiles;},0),
     totalItems:Object.values(users).reduce(function(s,u){return s+u.totalItems;},0),
     users:Object.keys(users).slice(0,8),
@@ -1690,7 +1690,7 @@ function saveToHistory(fileName,waveName,users){
     waveName:   waveName,
     fileName:   fileName,
     totalUsers: entry.totalUsers,
-    totalSize:  parseFloat((totalSizeGB/1e9).toFixed(2)),
+    totalSize:  parseFloat((totalSizeBytes/1e9).toFixed(2)),
     totalFiles: entry.totalFiles,
     totalItems: entry.totalItems,
     uploadedBy: entry.uploadedBy,
@@ -1918,7 +1918,7 @@ async function saveToSharePoint(entry){
       waveName:   entry.waveName,
       fileName:   entry.fileName,
       totalUsers: entry.totalUsers,
-      totalSize:  String(parseFloat((entry.totalSize/1e9).toFixed(2)))+' GB',
+      totalSize:  parseFloat((entry.totalSize/1e9).toFixed(2))+' GB',
       totalFiles: entry.totalFiles,
       totalItems: entry.totalItems||0,
       uploadedBy: entry.uploadedBy||'Team',
