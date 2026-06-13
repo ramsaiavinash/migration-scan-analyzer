@@ -519,6 +519,9 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
     <button class="main-tab" onclick="switchMainTab('formats')" id="tab-formats">
       <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>All Formats
     </button>
+    <button class="main-tab" onclick="switchMainTab('issues')" id="tab-issues">
+      <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Issues <span id="issues-badge" style="display:none;background:#ef4444;color:white;border-radius:10px;padding:1px 6px;font-size:10px;margin-left:2px;"></span>
+    </button>
     <button class="main-tab" onclick="switchMainTab('data')" id="tab-data">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="9" x2="9" y2="21"/></svg>Full Data
     </button>
@@ -591,6 +594,11 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
         <div id="no-results">No formats match your filter.</div>
       </div></div>
     </div>
+  </div>
+
+  <!-- ISSUES TAB -->
+  <div class="tab-content" id="content-issues" style="display:none;">
+    <div id="issues-content"></div>
   </div>
 
   <!-- DATA TAB -->
@@ -794,20 +802,7 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
         <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">SheetJS 0.18.5</span>
         <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">Power Automate</span>
         <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">SharePoint List</span>
-        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">GitHub Pages (hosting)</span>
-        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">3.3 MB self-contained</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Version -->
-  <div style="text-align:center;padding:16px;color:var(--text-3);font-size:11px;">
-    ScanAnalyzer v1.0 · Built by Kanigolla, Rama Sai Avinash (Cognizant) · June 2026
-  </div>
-
-</div>
-
-<script>
+        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:v
 // SP List URL for View in SharePoint button
 const SP_LIST_URL = 'https://cognizantonline-my.sharepoint.com/personal/2389039_cognizant_com/Lists/ScanAnalyzerHistory/AllItems.aspx';
 const PA_SAVE_URL = 'https://defaultde08c40719b9427d9fe8edf254300c.a7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/b5aa8b13fca648e3970b24d968bcc632/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Z2_vHjhXLvyav59_KrnekMgfh3e3eJ07y_Kph08hxKg';
@@ -957,7 +952,56 @@ function analyzeRows(rows,userName){
   const extMap={};
   files.forEach(r=>{let ext=(r.SourceExtension||'').replace(/^\./,'').toLowerCase().trim()||'(none)';if(!extMap[ext])extMap[ext]={count:0,size:0};extMap[ext].count++;extMap[ext].size+=parseInt(r.SourceSize)||0;});
   const extList=Object.entries(extMap).map(([ext,d])=>({ext,count:d.count,size:d.size,avg:d.count?Math.round(d.size/d.count):0,category:getCategory(ext)})).sort((a,b)=>b.size-a.size);
-  return{userName,initials,rows,files,folders,totalSize,totalItems:rows.length,totalFiles:files.length,totalFolders:folders.length,extList,uniqueFormats:extList.length};
+
+  // ── PATH LENGTH VALIDATION ──
+  var MAX_PATH = 400;
+  var SPECIAL_CHARS = /[\*\?"<>\|\\:]/g;
+  var GW_EXTS = ['gdoc','gsheet','gslide','gform','gdraw','gsite','gscript','gmaps','gjam'];
+
+  var pathIssues = [];
+  var specialCharIssues = [];
+  var longPathCount = 0;
+  var specialCharCount = 0;
+
+  files.forEach(function(r){
+    var path = r.FullPath || r.SourcePath || '';
+    var name = r.Name || '';
+
+    // Path length check
+    if(path.length > MAX_PATH){
+      longPathCount++;
+      if(pathIssues.length < 50){
+        pathIssues.push({
+          name: name,
+          path: path,
+          length: path.length,
+          excess: path.length - MAX_PATH
+        });
+      }
+    }
+
+    // Special characters check
+    var specialMatches = name.match(SPECIAL_CHARS);
+    if(specialMatches){
+      specialCharCount++;
+      if(specialCharIssues.length < 50){
+        specialCharIssues.push({
+          name: name,
+          path: path,
+          chars: [...new Set(specialMatches)].join(' ')
+        });
+      }
+    }
+  });
+
+  return{
+    userName, initials, rows, files, folders,
+    totalSize, totalItems:rows.length,
+    totalFiles:files.length, totalFolders:folders.length,
+    extList, uniqueFormats:extList.length,
+    longPathCount, pathIssues,
+    specialCharCount, specialCharIssues
+  };
 }
 
 // ── USER SELECT ──────────────────────────────
@@ -1134,6 +1178,14 @@ function loadFromHistory(id){
 function renderApp(s){
   hide('user-select-section');show('app-section');
   switchMainTab('dashboard');
+  // Pre-calculate issues badge
+  if(s.longPathCount > 0 || s.specialCharCount > 0){
+    var badge = document.getElementById('issues-badge');
+    if(badge){
+      badge.textContent = (s.longPathCount||0)+(s.specialCharCount||0);
+      badge.style.display = 'inline';
+    }
+  }
   const i=Object.keys(allUsers).indexOf(s.userName);
   const ac=AVATAR_COLORS[i%AVATAR_COLORS.length];
   document.getElementById('cup-avatar').style.background=ac;
@@ -1165,10 +1217,13 @@ function renderApp(s){
 }
 
 function switchMainTab(tab){
-  ['dashboard','formats','data'].forEach(t=>{
-    document.getElementById('content-'+t).classList.toggle('active',t===tab);
-    document.getElementById('tab-'+t).classList.toggle('active',t===tab);
+  ['dashboard','formats','issues','data'].forEach(function(t){
+    var content = document.getElementById('content-'+t);
+    var tabBtn = document.getElementById('tab-'+t);
+    if(content) content.style.display = t===tab ? 'block' : 'none';
+    if(tabBtn) tabBtn.classList.toggle('active', t===tab);
   });
+  if(tab==='issues'&&globalStats) renderIssues(globalStats);
   if(tab==='data'&&!gridApi&&globalStats)initGrid(globalStats.files);
 }
 
@@ -1434,7 +1489,7 @@ function initGrid(data){
         suppressSorting: false,
         suppressMiniFilter: false,
       },
-      floatingFilter: false,
+      floatingFilter: true,
       enableValue: true,
       enableRowGroup: false,
       cellStyle: function(params){
@@ -1992,6 +2047,169 @@ function showAbout(){
 function hideAbout(){
   hide('about-section');
   show('landing-section');
+}
+
+
+// ── ISSUES VALIDATOR ──────────────────────────────
+function renderIssues(s){
+  var el = document.getElementById('issues-content');
+  if(!el) return;
+
+  var totalIssues = (s.longPathCount||0) + (s.specialCharCount||0);
+
+  // Update badge
+  var badge = document.getElementById('issues-badge');
+  if(badge){
+    if(totalIssues > 0){
+      badge.textContent = totalIssues;
+      badge.style.display = 'inline';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  var html = '';
+
+  // Summary cards
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">';
+  
+  // Path length card
+  var pathColor = s.longPathCount > 0 ? '#ef4444' : 'var(--success)';
+  var pathBg = s.longPathCount > 0 ? '#fef2f2' : 'var(--success-bg)';
+  html += '<div style="background:'+pathBg+';border:1px solid '+pathColor+';border-radius:var(--r-sm);padding:16px;">';
+  html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">';
+  html += '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="'+pathColor+'" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0-3.42 0z"/></svg>';
+  html += '<span style="font-size:13px;font-weight:700;color:'+pathColor+';">Path Length Issues</span></div>';
+  html += '<div style="font-size:28px;font-weight:800;color:'+pathColor+';">'+( s.longPathCount||0)+'</div>';
+  html += '<div style="font-size:11px;color:var(--text-2);margin-top:4px;">Files with path > 400 characters</div>';
+  html += '<div style="font-size:11px;color:var(--text-3);margin-top:2px;">These files may fail to migrate to OneDrive</div>';
+  html += '</div>';
+
+  // Special chars card
+  var scColor = s.specialCharCount > 0 ? '#f59e0b' : 'var(--success)';
+  var scBg = s.specialCharCount > 0 ? '#fffbeb' : 'var(--success-bg)';
+  html += '<div style="background:'+scBg+';border:1px solid '+scColor+';border-radius:var(--r-sm);padding:16px;">';
+  html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">';
+  html += '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="'+scColor+'" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+  html += '<span style="font-size:13px;font-weight:700;color:'+scColor+';">Special Character Issues</span></div>';
+  html += '<div style="font-size:28px;font-weight:800;color:'+scColor+';">'+( s.specialCharCount||0)+'</div>';
+  html += '<div style="font-size:11px;color:var(--text-2);margin-top:4px;">Files with invalid OneDrive characters</div>';
+  html += '<div style="font-size:11px;color:var(--text-3);margin-top:2px;">Characters: * ? " &lt; &gt; | \ :</div>';
+  html += '</div>';
+  html += '</div>';
+
+  if(totalIssues === 0){
+    html += '<div style="text-align:center;padding:48px;color:var(--success);">';
+    html += '<div style="font-size:48px;margin-bottom:12px;">✅</div>';
+    html += '<div style="font-size:16px;font-weight:700;">No Issues Found!</div>';
+    html += '<div style="font-size:13px;color:var(--text-2);margin-top:6px;">All files are compatible with OneDrive migration.</div>';
+    html += '</div>';
+    el.innerHTML = html;
+    return;
+  }
+
+  // Path length issues table
+  if(s.longPathCount > 0){
+    html += '<div class="card" style="margin-bottom:16px;">';
+    html += '<div class="card-hdr"><div class="card-title">⚠️ Path Too Long (> 400 chars) — '+s.longPathCount+' files';
+    if(s.longPathCount > 50) html += ' <span style="font-size:11px;color:var(--text-3);">(showing first 50)</span>';
+    html += '</div></div>';
+    html += '<div class="card-body" style="padding:0;">';
+    html += '<table style="width:100%;border-collapse:collapse;font-size:12px;">';
+    html += '<thead><tr style="background:var(--bg2);">';
+    html += '<th style="padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);">File Name</th>';
+    html += '<th style="padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);">Path</th>';
+    html += '<th style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border);">Length</th>';
+    html += '<th style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border);">Excess</th>';
+    html += '</tr></thead><tbody>';
+    s.pathIssues.forEach(function(issue){
+      html += '<tr style="border-bottom:1px solid var(--border);">';
+      html += '<td style="padding:7px 12px;color:var(--text-1);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+issue.name+'</td>';
+      html += '<td style="padding:7px 12px;color:var(--text-2);max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:monospace;font-size:11px;">'+issue.path+'</td>';
+      html += '<td style="padding:7px 12px;text-align:right;font-weight:600;color:#ef4444;">'+issue.length+'</td>';
+      html += '<td style="padding:7px 12px;text-align:right;color:#ef4444;">+'+issue.excess+'</td>';
+      html += '</tr>';
+    });
+    html += '</tbody></table></div></div>';
+  }
+
+  // Special character issues table
+  if(s.specialCharCount > 0){
+    html += '<div class="card" style="margin-bottom:16px;">';
+    html += '<div class="card-hdr"><div class="card-title">⚠️ Invalid Characters — '+s.specialCharCount+' files';
+    if(s.specialCharCount > 50) html += ' <span style="font-size:11px;color:var(--text-3);">(showing first 50)</span>';
+    html += '</div></div>';
+    html += '<div class="card-body" style="padding:0;">';
+    html += '<table style="width:100%;border-collapse:collapse;font-size:12px;">';
+    html += '<thead><tr style="background:var(--bg2);">';
+    html += '<th style="padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);">File Name</th>';
+    html += '<th style="padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);">Path</th>';
+    html += '<th style="padding:8px 12px;text-align:center;border-bottom:1px solid var(--border);">Bad Chars</th>';
+    html += '</tr></thead><tbody>';
+    s.specialCharIssues.forEach(function(issue){
+      html += '<tr style="border-bottom:1px solid var(--border);">';
+      html += '<td style="padding:7px 12px;color:var(--text-1);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+issue.name+'</td>';
+      html += '<td style="padding:7px 12px;color:var(--text-2);max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:monospace;font-size:11px;">'+issue.path+'</td>';
+      html += '<td style="padding:7px 12px;text-align:center;font-weight:700;color:#f59e0b;font-size:14px;">'+issue.chars+'</td>';
+      html += '</tr>';
+    });
+    html += '</tbody></table></div></div>';
+  }
+
+  // Export issues button
+  html += '<div style="text-align:right;margin-top:8px;">';
+  html += '<button class="btn btn-sm" onclick="exportIssues()"><svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg> Export Issues to Excel</button>';
+  html += '</div>';
+
+  el.innerHTML = html;
+}
+
+function exportIssues(){
+  if(!globalStats) return;
+  var s = globalStats;
+  var wb = XLSX.utils.book_new();
+
+  // Path issues sheet
+  if(s.pathIssues && s.pathIssues.length){
+    var pathData = [['File Name','Full Path','Path Length','Excess Characters']];
+    s.pathIssues.forEach(function(i){ pathData.push([i.name, i.path, i.length, i.excess]); });
+    var sh = XLSX.utils.aoa_to_sheet(pathData);
+    sh['!cols'] = [{wch:40},{wch:80},{wch:14},{wch:18}];
+    XLSX.utils.book_append_sheet(wb, sh, 'Path Too Long');
+  }
+
+  // Special char issues sheet
+  if(s.specialCharIssues && s.specialCharIssues.length){
+    var scData = [['File Name','Full Path','Invalid Characters']];
+    s.specialCharIssues.forEach(function(i){ scData.push([i.name, i.path, i.chars]); });
+    var sh2 = XLSX.utils.aoa_to_sheet(scData);
+    sh2['!cols'] = [{wch:40},{wch:80},{wch:20}];
+    XLSX.utils.book_append_sheet(wb, sh2, 'Special Characters');
+  }
+
+  // Summary sheet
+  var sumData = [
+    ['Issue Type','Count','Description'],
+    ['Path Too Long', s.longPathCount||0, 'Files with path > 400 characters'],
+    ['Special Characters', s.specialCharCount||0, 'Files with * ? " < > | \\ :'],
+    ['Total Issues', (s.longPathCount||0)+(s.specialCharCount||0), '']
+  ];
+  var sumSh = XLSX.utils.aoa_to_sheet(sumData);
+  sumSh['!cols'] = [{wch:22},{wch:10},{wch:40}];
+  XLSX.utils.book_append_sheet(wb, sumSh, 'Summary');
+
+  var fname = 'MigrationIssues_'+currentWaveName+'_'+(s.userName||'').replace(/[^a-z0-9]/gi,'_').slice(0,20)+'_'+new Date().toISOString().slice(0,10)+'.xlsx';
+  XLSX.writeFile(wb, fname);
+  showToast('Issues exported to Excel');
+}
+
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+:22},{wch:10},{wch:40}];
+  XLSX.utils.book_append_sheet(wb, sumSh, 'Summary');
+
+  var fname = 'MigrationIssues_'+currentWaveName+'_'+(s.userName||'').replace(/[^a-z0-9]/gi,'_').slice(0,20)+'_'+new Date().toISOString().slice(0,10)+'.xlsx';
+  XLSX.writeFile(wb, fname);
+  showToast('Issues exported to Excel');
 }
 
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
