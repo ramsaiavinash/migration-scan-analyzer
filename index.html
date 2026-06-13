@@ -410,6 +410,9 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
     <button class="btn btn-sm btn-ghost" id="back-home-btn" style="display:none" onclick="goHome()">
       <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>Home
     </button>
+    <button class="btn btn-sm btn-ghost" onclick="showDashboard()">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard
+    </button>
     <button class="btn btn-sm btn-ghost" onclick="showAbout()">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>About
     </button>
@@ -438,41 +441,55 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
       <div class="hero-tag"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Zero data transmission</div>
     </div>
   </div>
-  <!-- WAVE SUMMARY -->
-  <div id="wave-summary" style="display:none;margin-bottom:20px;"></div>
-
-  <div class="waves-section" id="waves-section">
-    <div class="waves-header">
-      <div>
-        <div class="waves-title" id="waves-title">Recent scan reports</div>
-        <div class="waves-sub">Click any card to view users and statistics</div>
-      </div>
-      <div style="display:flex;gap:8px;">
-        <a href="https://cognizantonline-my.sharepoint.com/personal/2389039_cognizant_com/Lists/ScanAnalyzerHistory/AllItems.aspx" target="_blank" class="btn btn-sm" style="text-decoration:none;background:#0078D4;color:white;border:none;">
-          <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 0 2 2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          View in SharePoint
-        </a>
-        <button class="btn btn-sm btn-ghost" onclick="showHistory()">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>View history
-        </button>
-      </div>
-    </div>
-    <div id="waves-grid"></div>
   </div>
+
+<!-- DASHBOARD -->
+<div id="dashboard-section" style="display:none;animation:fadeUp .3s ease;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+    <div>
+      <h2 style="font-size:18px;font-weight:700;letter-spacing:-.3px;">Migration Dashboard</h2>
+      <p style="color:var(--text-2);font-size:12px;margin-top:3px;">Overview of all uploaded scan reports</p>
+    </div>
+    <button class="btn btn-sm" onclick="showLanding()">
+      <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2"><polyline points="15 18 9 12 15 6"/></svg>Back to Home
+    </button>
+  </div>
+
+  <!-- Summary Cards -->
+  <div id="dash-summary" style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;"></div>
+
+  <!-- Wave Cards -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+    <div>
+      <div id="dash-waves-title" style="font-size:14px;font-weight:700;color:var(--text-1);">Recent scan reports</div>
+      <div style="font-size:12px;color:var(--text-2);">Click any card to view users and statistics</div>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <a href="https://cognizantonline-my.sharepoint.com/personal/2389039_cognizant_com/Lists/ScanAnalyzerHistory/AllItems.aspx" target="_blank" class="btn btn-sm" style="text-decoration:none;background:#0078D4;color:white;border:none;">
+        <svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 0 2 2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        View in SharePoint
+      </a>
+      <button class="btn btn-sm btn-ghost" onclick="showHistory()">
+        <svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>History
+      </button>
+    </div>
+  </div>
+  <div class="waves-grid" id="dash-waves-grid"></div>
 </div>
 
-<!-- PROGRESS -->
-<div id="progress-section">
-  <div class="progress-wrap">
-    <div class="progress-icon-wrap">
-      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+<!-- WAVE SIDE PANEL -->
+<div id="wave-panel-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:200;animation:fadeIn .2s ease;" onclick="closeWavePanel()"></div>
+<div id="wave-panel" style="display:none;position:fixed;top:0;right:0;width:380px;max-width:95vw;height:100vh;background:var(--surface);border-left:1px solid var(--border);z-index:201;overflow-y:auto;animation:slideIn .25s ease;">
+  <div style="padding:20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+    <div>
+      <div id="wave-panel-title" style="font-size:15px;font-weight:700;color:var(--text-1);"></div>
+      <div id="wave-panel-sub" style="font-size:12px;color:var(--text-2);margin-top:2px;"></div>
     </div>
-    <div class="progress-heading">Processing scan report</div>
-    <div class="progress-file" id="progress-filename">Reading file...</div>
-    <div class="progress-status" id="progress-label">Initializing...</div>
-    <div class="prog-track"><div class="prog-fill" id="progress-bar"></div></div>
-    <div class="prog-note" id="progress-stats"></div>
+    <button onclick="closeWavePanel()" style="background:none;border:none;cursor:pointer;color:var(--text-2);padding:4px;">
+      <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
   </div>
+  <div id="wave-panel-list" style="padding:16px;"></div>
 </div>
 
 <!-- USER SELECT -->
@@ -842,7 +859,28 @@ function toggleTheme(){
 function isDark(){return document.documentElement.getAttribute('data-theme')==='dark';}
 
 // ── CONSTANTS ─────────────────────────────
-const PALETTE=['#4F46E5','#7C3AED','#059669','#D97706','#DC2626','#0891B2','#EC4899','#84CC16','#F97316','#6366F1','#14B8A6','#A855F7'];
+const PALETTE=['#4F46E5','#7C3AED','#059669','#D97706','#DC2626','#0891B2','#7C2D12','#1E40AF'];
+
+// ── THEME ────────────────────────────────
+function toggleTheme(){
+  const h=document.documentElement,d=h.getAttribute('data-theme')==='dark';
+  h.setAttribute('data-theme',d?'light':'dark');
+  document.getElementById('theme-knob').textContent=d?'☀️':'🌙';
+  localStorage.setItem('msa-theme',d?'light':'dark');
+  if(gridApi)refreshGridTheme();
+  if(globalStats){renderDonut(globalStats);renderBar(globalStats);}
+}
+(function(){
+  const t=localStorage.getItem('msa-theme')||'light';
+  document.documentElement.setAttribute('data-theme',t);
+  window.addEventListener('DOMContentLoaded',()=>{
+    document.getElementById('theme-knob').textContent=t==='dark'?'🌙':'☀️';
+    renderWaveCards();
+  });
+})();
+function isDark(){return document.documentElement.getAttribute('data-theme')==='dark';}
+
+// ── CONSTANTS ─────────────────────────────
 const AVATAR_COLORS=['linear-gradient(135deg,#4F46E5,#7C3AED)','linear-gradient(135deg,#F97316,#EC4899)','linear-gradient(135deg,#059669,#0891B2)','linear-gradient(135deg,#D97706,#DC2626)','linear-gradient(135deg,#6366F1,#7C3AED)','linear-gradient(135deg,#14B8A6,#4F46E5)'];
 const EXT_CAT={
   gworkspace:new Set(['gdoc','gsheet','gslide','gform','gdraw','gsite','gjam','gmap','gscript','gshortcut']),
@@ -1045,80 +1083,7 @@ function selectUser(userName){
 }
 
 // ── WAVE CARDS ON LANDING ───────────────────
-function renderWaveCards(){
-  var history = getHistory();
-  renderWaveSummary(history);
-  renderWaveCardsData(history);
-}
-function renderWaveCardsData(history){
-  var grid=document.getElementById('waves-grid');
-  var title=document.getElementById('waves-title');
-  if(!grid||!title)return;
-  var valid=(history||[]).filter(function(h){return h&&h.waveName&&h.fileName;});
-  if(!valid.length){
-    grid.innerHTML='<div class="waves-empty"><div class="waves-empty-icon">📂</div><div class="waves-empty-title">No scan reports yet</div><div class="waves-empty-sub">Upload your first scan report using the button above</div></div>';
-    title.textContent='Recent scan reports';
-    return;
-  }
-  title.textContent='Recent scan reports ('+valid.length+')';
-  var html='';
-  valid.forEach(function(h){
-    var isPilot=(h.waveName||'').toLowerCase().includes('pilot');
-    var icon=getWaveIcon(h.waveName||'Scan');
-    var hasSession=Object.keys(sessionStore).some(function(k){
-      return sessionStore[k].waveName===h.waveName&&sessionStore[k].fileName===h.fileName;
-    });
-    var available=hasSession||(h.rawData&&h.rawData.length>0);
-    var fromSP=h.source==='sharepoint';
-    var sessionText=hasSession?'In session':available?'Available':'Click to re-upload';
-    var sessionColor=hasSession||available?'var(--success)':'var(--accent)';
-    var dot=hasSession||available?'●':'↑';
-    html+='<div class="wave-card" data-hid="'+String(h.id)+'">';
-    html+='<div class="wave-card-stripe"></div>';
-    html+='<div class="wave-card-header"><div>';
-    html+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">';
-    html+='<span style="font-size:18px;">'+icon+'</span>';
-    html+='<span class="wave-badge '+(isPilot?'wave-badge-pilot':'wave-badge-wave')+'">'+h.waveName+'</span>';
-    if(fromSP) html+='<span style="font-size:10px;color:#0078D4;font-weight:600;">● SP</span>';
-    html+='</div>';
-    html+='<div class="wave-date">'+(h.date||'')+'</div>';
-    html+='</div></div>';
-    html+='<div class="wave-filename">'+(h.fileName||'')+'</div>';
-    html+='<div class="wave-stats">';
-    html+='<div class="wave-stat"><div class="wave-stat-val">'+(h.totalUsers||0)+'</div><div class="wave-stat-label">Users</div></div>';
-    var sizeStr=typeof h.totalSize==='number'?fmt(h.totalSize):(h.totalSize||'0');
-    html+='<div class="wave-stat"><div class="wave-stat-val">'+sizeStr+'</div><div class="wave-stat-label">Total size</div></div>';
-    html+='<div class="wave-stat"><div class="wave-stat-val">'+(h.totalFiles?fmtN(h.totalFiles):'0')+'</div><div class="wave-stat-label">Files</div></div>';
-    html+='</div>';
-    html+='<div class="wave-card-footer">';
-    html+='<span style="font-size:10px;font-weight:600;color:'+sessionColor+';">'+dot+' '+sessionText+'</span>';
-    html+='<div class="wave-card-arr"><svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2.5"><polyline points="9 18 15 12 9 6"/></svg></div>';
-    html+='</div></div>';
-  });
-  grid.innerHTML=html;
-  grid.querySelectorAll('.wave-card').forEach(function(el){
-    el.addEventListener('click',function(){
-      var hid = this.getAttribute('data-hid');
-      var history = getHistory();
-      var entry = history.find(function(h){ return String(h.id)===hid; });
-      if(!entry){ loadFromHistory(hid); return; }
-      // Check if data available in session
-      var hasSession = Object.keys(sessionStore).some(function(k){
-        return sessionStore[k].waveName===entry.waveName && sessionStore[k].fileName===entry.fileName;
-      });
-      var hasRaw = entry.rawData && entry.rawData.length > 0;
-      if(hasSession || hasRaw){
-        loadFromHistory(hid);
-      } else {
-        // Trigger re-upload with wave name pre-filled
-        reuploadWaveName = entry.waveName;
-        reuploadHistoryId = hid;
-        document.getElementById('reupload-file-input').value = '';
-        document.getElementById('reupload-file-input').click();
-      }
-    });
-  });
-}
+
 function loadFromHistory(id){
   var history=getHistory();
   const entry=history.find(h=>h.id==id);
@@ -2031,23 +1996,58 @@ function hideAbout(){
 
 
 
-// ── WAVE SUMMARY DASHBOARD ──────────────────────────────
-function renderWaveSummary(history){
-  var el = document.getElementById('wave-summary');
-  if(!el || !history || !history.length) return;
 
-  var totalWaves = history.length;
+
+// ── DASHBOARD ──────────────────────────────────────────
+
+function showDashboard(){
+  hide('landing-section');
+  hide('user-select-section');
+  hide('app-section');
+  hide('history-section');
+  hide('about-section');
+  show('dashboard-section');
+  renderDashboard();
+}
+
+function showLanding(){
+  hide('dashboard-section');
+  hide('user-select-section');
+  hide('app-section');
+  hide('history-section');
+  hide('about-section');
+  show('landing-section');
+  closeWavePanel();
+}
+
+function renderDashboard(){
+  var history = getHistory();
+  renderDashSummary(history);
+  renderDashWaveCards(history);
+  // Update title
+  var t = document.getElementById('dash-waves-title');
+  if(t) t.textContent = 'Recent scan reports (' + history.length + ')';
+}
+
+function renderDashSummary(history){
+  var el = document.getElementById('dash-summary');
+  if(!el) return;
+
+  // Count unique wave names
+  var uniqueWaves = [...new Set(history.map(function(h){ return h.waveName; }))];
   var totalUsers = 0;
   var totalSize = 0;
   var totalFiles = 0;
 
-  history.forEach(function(h){
-    totalUsers += parseInt(h.totalUsers)||0;
-    // totalSize can be string like "39.49 GB" or number in bytes
-    if(typeof h.totalSize === 'number'){
-      totalSize += h.totalSize;
-    } else if(typeof h.totalSize === 'string'){
-      var match = h.totalSize.match(/([\d.]+)\s*(GB|MB|KB|TB)?/i);
+  // Use latest entry per wave for dedup
+  uniqueWaves.forEach(function(wname){
+    var entries = history.filter(function(h){ return h.waveName === wname; });
+    var latest = entries[0]; // already sorted newest first
+    totalUsers += parseInt(latest.totalUsers)||0;
+    if(typeof latest.totalSize === 'number'){
+      totalSize += latest.totalSize;
+    } else if(typeof latest.totalSize === 'string'){
+      var match = latest.totalSize.match(/([\d.]+)\s*(GB|MB|KB|TB)?/i);
       if(match){
         var val = parseFloat(match[1]);
         var unit = (match[2]||'').toUpperCase();
@@ -2058,42 +2058,180 @@ function renderWaveSummary(history){
         else totalSize += val;
       }
     }
-    totalFiles += parseInt(h.totalFiles)||0;
+    totalFiles += parseInt(latest.totalFiles)||0;
   });
 
-  var html = '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">';
-  
-  // Waves
-  html += '<div style="background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:var(--r-sm);padding:14px;text-align:center;">';
-  html += '<div style="font-size:22px;font-weight:800;color:var(--accent);">'+totalWaves+'</div>';
-  html += '<div style="font-size:11px;color:var(--text-2);margin-top:4px;">Total Waves</div>';
-  html += '</div>';
+  var cards = [
+    {label:'Total Waves', value: uniqueWaves.length, accent:true, onclick:'openWavesPanel()'},
+    {label:'Total Users', value: totalUsers, accent:false, onclick:''},
+    {label:'Total Size',  value: fmt(totalSize), accent:false, onclick:''},
+    {label:'Total Files', value: fmtN(totalFiles), accent:false, onclick:''},
+  ];
 
-  // Users
-  html += '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px;text-align:center;">';
-  html += '<div style="font-size:22px;font-weight:800;color:var(--text-1);">'+totalUsers+'</div>';
-  html += '<div style="font-size:11px;color:var(--text-2);margin-top:4px;">Total Users</div>';
-  html += '</div>';
+  el.innerHTML = cards.map(function(card){
+    var style = card.accent
+      ? 'background:var(--accent-bg);border:1px solid var(--accent-border);cursor:pointer;'
+      : 'background:var(--surface);border:1px solid var(--border);';
+    var hover = card.accent ? 'onmouseover="this.style.opacity=0.85" onmouseout="this.style.opacity=1"' : '';
+    var click = card.onclick ? 'onclick="'+card.onclick+'"' : '';
+    return '<div style="'+style+'border-radius:var(--r-md);padding:18px;text-align:center;transition:all .2s;" '+hover+' '+click+'>'
+      +'<div style="font-size:26px;font-weight:800;color:'+(card.accent?'var(--accent)':'var(--text-1)')+';">'+card.value+'</div>'
+      +'<div style="font-size:12px;color:var(--text-2);margin-top:5px;">'+card.label+'</div>'
+      +(card.accent?'<div style="font-size:10px;color:var(--accent);margin-top:3px;">Click to view →</div>':'')
+      +'</div>';
+  }).join('');
+}
 
-  // Size
-  html += '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px;text-align:center;">';
-  html += '<div style="font-size:22px;font-weight:800;color:var(--text-1);">'+fmt(totalSize)+'</div>';
-  html += '<div style="font-size:11px;color:var(--text-2);margin-top:4px;">Total Size</div>';
-  html += '</div>';
+function renderDashWaveCards(history){
+  var grid = document.getElementById('dash-waves-grid');
+  if(!grid) return;
 
-  // Files
-  html += '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px;text-align:center;">';
-  html += '<div style="font-size:22px;font-weight:800;color:var(--text-1);">'+fmtN(totalFiles)+'</div>';
-  html += '<div style="font-size:11px;color:var(--text-2);margin-top:4px;">Total Files</div>';
-  html += '</div>';
+  if(!history||!history.length){
+    grid.innerHTML = '<div class="waves-empty"><div class="waves-empty-icon">📂</div><div class="waves-empty-title">No scan reports yet</div><div class="waves-empty-sub">Upload your first scan report from the Home page</div></div>';
+    return;
+  }
 
-  html += '</div>';
-  el.innerHTML = html;
-  el.style.display = 'block';
+  var html = '';
+  history.forEach(function(h){
+    if(!h||!h.waveName) return;
+    var isPilot = (h.waveName||'').toLowerCase().includes('pilot');
+    var icon = getWaveIcon(h.waveName||'Scan');
+    var hasSession = Object.keys(sessionStore).some(function(k){
+      return sessionStore[k].waveName===h.waveName && sessionStore[k].fileName===h.fileName;
+    });
+    var available = hasSession||(h.rawData&&h.rawData.length>0);
+    var sessionText = hasSession?'In session':available?'Available':'Re-upload to view';
+    var sessionColor = hasSession||available?'var(--success)':'var(--accent)';
+    var dot = hasSession||available?'●':'↑';
+    var sizeStr = typeof h.totalSize==='number'?fmt(h.totalSize):(h.totalSize||'0');
+    html += '<div class="wave-card" data-hid="'+String(h.id)+'">';
+    html += '<div class="wave-card-stripe"></div>';
+    html += '<div class="wave-card-header"><div>';
+    html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">';
+    html += '<span style="font-size:18px;">'+icon+'</span>';
+    html += '<span class="wave-badge '+(isPilot?'wave-badge-pilot':'wave-badge-wave')+'">'+h.waveName+'</span>';
+    html += '</div>';
+    html += '<div class="wave-date">'+(h.date||'')+'</div>';
+    html += '</div></div>';
+    html += '<div class="wave-filename">'+(h.fileName||'')+'</div>';
+    html += '<div class="wave-stats">';
+    html += '<div class="wave-stat"><div class="wave-stat-val">'+(h.totalUsers||0)+'</div><div class="wave-stat-label">Users</div></div>';
+    html += '<div class="wave-stat"><div class="wave-stat-val">'+sizeStr+'</div><div class="wave-stat-label">Total size</div></div>';
+    html += '<div class="wave-stat"><div class="wave-stat-val">'+(h.totalFiles?fmtN(h.totalFiles):'0')+'</div><div class="wave-stat-label">Files</div></div>';
+    html += '</div>';
+    html += '<div class="wave-card-footer">';
+    html += '<span style="font-size:10px;font-weight:600;color:'+sessionColor+';">'+dot+' '+sessionText+'</span>';
+    html += '<div class="wave-card-arr"><svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2.5"><polyline points="9 18 15 12 9 6"/></svg></div>';
+    html += '</div></div>';
+  });
+  grid.innerHTML = html;
+
+  // Click handlers
+  grid.querySelectorAll('.wave-card').forEach(function(el){
+    el.addEventListener('click', function(){
+      var hid = this.getAttribute('data-hid');
+      var hist = getHistory();
+      var entry = hist.find(function(h){ return String(h.id)===hid; });
+      if(!entry){ loadFromHistory(hid); return; }
+      var hasSession = Object.keys(sessionStore).some(function(k){
+        return sessionStore[k].waveName===entry.waveName && sessionStore[k].fileName===entry.fileName;
+      });
+      var hasRaw = entry.rawData && entry.rawData.length > 0;
+      if(hasSession||hasRaw){
+        loadFromHistory(hid);
+      } else {
+        reuploadWaveName = entry.waveName;
+        reuploadHistoryId = hid;
+        document.getElementById('reupload-file-input').value = '';
+        document.getElementById('reupload-file-input').click();
+      }
+    });
+  });
+}
+
+// Wave side panel
+function openWavesPanel(){
+  var history = getHistory();
+  // Group by wave name
+  var waveMap = {};
+  history.forEach(function(h){
+    if(!h.waveName) return;
+    if(!waveMap[h.waveName]) waveMap[h.waveName] = [];
+    waveMap[h.waveName].push(h);
+  });
+
+  var title = document.getElementById('wave-panel-title');
+  var sub = document.getElementById('wave-panel-sub');
+  var list = document.getElementById('wave-panel-list');
+  if(title) title.textContent = 'All Waves';
+  var waveCount = Object.keys(waveMap).length;
+  if(sub) sub.textContent = waveCount + ' unique wave' + (waveCount!==1?'s':'') + ' uploaded';
+
+  var html = '';
+  Object.keys(waveMap).forEach(function(wname){
+    var entries = waveMap[wname];
+    var icon = getWaveIcon(wname);
+    var totalSize = 0;
+    var totalFiles = 0;
+    var totalUsers = 0;
+    entries.forEach(function(e){
+      if(typeof e.totalSize==='number') totalSize+=e.totalSize;
+      totalFiles+=parseInt(e.totalFiles)||0;
+      totalUsers+=parseInt(e.totalUsers)||0;
+    });
+    html += '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-md);padding:14px;margin-bottom:10px;">';
+    html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">';
+    html += '<span style="font-size:20px;">'+icon+'</span>';
+    html += '<div>';
+    html += '<div style="font-size:13px;font-weight:700;color:var(--text-1);">'+wname+'</div>';
+    html += '<div style="font-size:11px;color:var(--text-2);">'+entries.length+' scan report'+(entries.length!==1?'s':'')+'</div>';
+    html += '</div></div>';
+    // List each scan file
+    entries.forEach(function(e){
+      var hasSession = Object.keys(sessionStore).some(function(k){
+        return sessionStore[k].waveName===e.waveName && sessionStore[k].fileName===e.fileName;
+      });
+      var available = hasSession||(e.rawData&&e.rawData.length>0);
+      html += '<div class="wave-entry" data-eid="'+String(e.id)+'" style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--surface);border:1px solid var(--border);border-radius:6px;cursor:pointer;margin-bottom:6px;transition:border-color .15s;">';
+      html += '<div style="flex:1;min-width:0;">';
+      html += '<div style="font-size:11px;color:var(--text-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+e.fileName+'</div>';
+      html += '<div style="font-size:10px;color:var(--text-3);margin-top:2px;">'+(e.date||'')+'</div>';
+      html += '</div>';
+      html += '<div style="text-align:right;margin-left:8px;flex-shrink:0;">';
+      html += '<div style="font-size:10px;font-weight:600;color:'+(available?'var(--success)':'var(--accent)')+';">'+(available?'● Ready':'↑ Re-upload')+'</div>';
+      html += '<div style="font-size:10px;color:var(--text-3);">'+(e.totalUsers||0)+' users</div>';
+      html += '</div></div>';
+    });
+    html += '</div>';
+  });
+
+  if(list){
+    list.innerHTML = html;
+    list.querySelectorAll('.wave-entry').forEach(function(el){
+      el.addEventListener('mouseover', function(){ this.style.borderColor='var(--accent)'; });
+      el.addEventListener('mouseout', function(){ this.style.borderColor='var(--border)'; });
+      el.addEventListener('click', function(){
+        var eid = this.getAttribute('data-eid');
+        closeWavePanel();
+        loadFromHistory(eid);
+      });
+    });
+  }
+  document.getElementById('wave-panel-overlay').style.display = 'block';
+  document.getElementById('wave-panel').style.display = 'block';
+}
+
+function closeWavePanel(){
+  document.getElementById('wave-panel-overlay').style.display = 'none';
+  document.getElementById('wave-panel').style.display = 'none';
+}
+
+// Keep old renderWaveCards for compatibility (used after upload)
+function renderWaveCards(){
+  // After upload, switch to dashboard view
+  if(document.getElementById('dashboard-section').style.display !== 'none'){
+    renderDashboard();
+  }
 }
 
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
-
-</script>
-</body>
-</html>
