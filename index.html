@@ -1029,6 +1029,9 @@ function showUserSelect(){
   prevSection='dashboard';
   hide('progress-section');hide('landing-section');hide('app-section');
   hide('history-section');hide('dashboard-section');
+  // Show both Home and Dashboard in header
+  document.getElementById('header-home-btn').style.display='inline-flex';
+  document.getElementById('header-dashboard-btn').style.display='inline-flex';
   show('user-select-section');
   const users=Object.values(allUsers||{}).sort(function(a,b){return b.totalSize-a.totalSize;});
   if(!users.length){show('landing-section');hide('user-select-section');showToast('No users found in scan report');return;}
@@ -1125,6 +1128,9 @@ function loadFromHistory(id){
 // ── APP ──────────────────────────────────────
 function renderApp(s){
   hide('user-select-section');show('app-section');
+  // Show both Home and Dashboard in header
+  document.getElementById('header-home-btn').style.display='inline-flex';
+  document.getElementById('header-dashboard-btn').style.display='inline-flex';
   switchMainTab('dashboard');
 
   const i=Object.keys(allUsers).indexOf(s.userName);
@@ -1640,6 +1646,8 @@ function showHistory(){
   hide('landing-section');hide('user-select-section');hide('app-section');
   hide('email-section');hide('dashboard-section');
   show('history-section');
+  document.getElementById('header-home-btn').style.display='inline-flex';
+  document.getElementById('header-dashboard-btn').style.display='inline-flex';
   renderHistoryList(getHistory());
 }
 function renderHistoryList(history){
@@ -1926,6 +1934,12 @@ async function handleReupload(file){
 }
 
 function showAbout(){
+  // Track which section we came from
+  if(document.getElementById('dashboard-section').style.display!=='none') prevSection='dashboard';
+  else if(document.getElementById('user-select-section').style.display!=='none') prevSection='users';
+  else if(document.getElementById('app-section').style.display!=='none') prevSection='app';
+  else if(document.getElementById('history-section').style.display!=='none') prevSection='history';
+  else prevSection='landing';
   hide('landing-section');hide('user-select-section');hide('app-section');
   hide('history-section');hide('email-section');hide('dashboard-section');
   show('about-section');
@@ -1933,7 +1947,11 @@ function showAbout(){
 
 function hideAbout(){
   hide('about-section');
-  showDashboard();
+  if(prevSection==='dashboard') showDashboard();
+  else if(prevSection==='users') showUserSelect();
+  else if(prevSection==='app') { show('app-section'); }
+  else if(prevSection==='history') showHistory();
+  else showLanding();
 }
 
 
