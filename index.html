@@ -2041,15 +2041,13 @@ function renderDashSummary(history){
   var totalSize = 0;
   var totalFiles = 0;
 
-  // Use latest entry per wave for dedup
-  uniqueWaves.forEach(function(wname){
-    var entries = history.filter(function(h){ return h.waveName === wname; });
-    var latest = entries[0]; // already sorted newest first
-    totalUsers += parseInt(latest.totalUsers)||0;
-    if(typeof latest.totalSize === 'number'){
-      totalSize += latest.totalSize;
-    } else if(typeof latest.totalSize === 'string'){
-      var match = latest.totalSize.match(/([\d.]+)\s*(GB|MB|KB|TB)?/i);
+  // Sum ALL entries across ALL waves
+  history.forEach(function(h){
+    totalUsers += parseInt(h.totalUsers)||0;
+    if(typeof h.totalSize === 'number'){
+      totalSize += h.totalSize;
+    } else if(typeof h.totalSize === 'string'){
+      var match = h.totalSize.match(/([\d.]+)\s*(GB|MB|KB|TB)?/i);
       if(match){
         var val = parseFloat(match[1]);
         var unit = (match[2]||'').toUpperCase();
@@ -2060,7 +2058,7 @@ function renderDashSummary(history){
         else totalSize += val;
       }
     }
-    totalFiles += parseInt(latest.totalFiles)||0;
+    totalFiles += parseInt(h.totalFiles)||0;
   });
 
   var cards = [
