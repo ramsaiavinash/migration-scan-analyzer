@@ -24,18 +24,24 @@
   --r-sm:6px;--r:8px;--r-md:12px;--r-lg:16px;--r-xl:20px;--r-2xl:24px;
 }
 [data-theme="dark"]{
-  --bg:#0C0E14;--bg2:#13161F;--surface:#1A1D28;--surface2:#20243A;
-  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
-  --text-1:#F0F2F8;--text-2:#8892A4;--text-3:#4A5568;
-  --accent:#8080FF;--accent2:#6B6BFF;--accent-bg:#1A1A3E;--accent-border:#3D3D8A;
-  --success:#34D399;--success-bg:#022C22;--success-border:#065F46;
-  --warning:#FBBF24;--warning-bg:#1C1700;--warning-border:#78350F;
-  --danger:#FC8181;--danger-bg:#1A0505;--danger-border:#7F1D1D;
-  --shadow-xs:0 1px 2px rgba(0,0,0,0.4);
-  --shadow-sm:0 1px 3px rgba(0,0,0,0.3),0 1px 2px rgba(0,0,0,0.2);
-  --shadow:0 4px 8px rgba(0,0,0,0.3),0 2px 4px rgba(0,0,0,0.2);
-  --shadow-md:0 8px 16px rgba(0,0,0,0.4),0 4px 8px rgba(0,0,0,0.3);
-  --shadow-lg:0 16px 32px rgba(0,0,0,0.5),0 8px 16px rgba(0,0,0,0.4);
+  /* Backgrounds - warm dark tones, not pure black */
+  --bg:#111318;--bg2:#1A1D27;--surface:#1E2130;--surface2:#252839;
+  /* Borders - subtle but visible */
+  --border:rgba(255,255,255,0.09);--border2:rgba(255,255,255,0.15);
+  /* Text - high contrast for readability */
+  --text-1:#E8EAF2;--text-2:#9AA3BC;--text-3:#555E78;
+  /* Accent - softer purple, easier on eyes */
+  --accent:#7B7FF5;--accent2:#6366E8;--accent-bg:#1E1F45;--accent-border:#3A3C7A;
+  /* Status colors - adjusted for dark */
+  --success:#2DD4A0;--success-bg:#012A1E;--success-border:#04543C;
+  --warning:#F0B429;--warning-bg:#1E1400;--warning-border:#6B4800;
+  --danger:#F87171;--danger-bg:#1F0808;--danger-border:#7F1D1D;
+  /* Shadows - more pronounced in dark mode */
+  --shadow-xs:0 1px 3px rgba(0,0,0,0.5);
+  --shadow-sm:0 2px 6px rgba(0,0,0,0.4),0 1px 3px rgba(0,0,0,0.3);
+  --shadow:0 4px 12px rgba(0,0,0,0.5),0 2px 6px rgba(0,0,0,0.3);
+  --shadow-md:0 8px 20px rgba(0,0,0,0.5),0 4px 10px rgba(0,0,0,0.35);
+  --shadow-lg:0 16px 40px rgba(0,0,0,0.6),0 8px 20px rgba(0,0,0,0.4);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
@@ -432,6 +438,9 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
       <div class="hero-tag"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Zero data transmission</div>
     </div>
   </div>
+  <!-- WAVE SUMMARY -->
+  <div id="wave-summary" style="display:none;margin-bottom:20px;"></div>
+
   <div class="waves-section" id="waves-section">
     <div class="waves-header">
       <div>
@@ -1037,7 +1046,9 @@ function selectUser(userName){
 
 // ── WAVE CARDS ON LANDING ───────────────────
 function renderWaveCards(){
-  renderWaveCardsData(getHistory());
+  var history = getHistory();
+  renderWaveSummary(history);
+  renderWaveCardsData(history);
 }
 function renderWaveCardsData(history){
   var grid=document.getElementById('waves-grid');
@@ -1461,7 +1472,7 @@ function initGrid(data){
         suppressSorting: false,
         suppressMiniFilter: false,
       },
-      floatingFilter: true,
+      floatingFilter: false,
       enableValue: true,
       enableRowGroup: false,
       cellStyle: function(params){
@@ -2018,6 +2029,68 @@ function hideAbout(){
   show('landing-section');
 }
 
+
+
+// ── WAVE SUMMARY DASHBOARD ──────────────────────────────
+function renderWaveSummary(history){
+  var el = document.getElementById('wave-summary');
+  if(!el || !history || !history.length) return;
+
+  var totalWaves = history.length;
+  var totalUsers = 0;
+  var totalSize = 0;
+  var totalFiles = 0;
+
+  history.forEach(function(h){
+    totalUsers += parseInt(h.totalUsers)||0;
+    // totalSize can be string like "39.49 GB" or number in bytes
+    if(typeof h.totalSize === 'number'){
+      totalSize += h.totalSize;
+    } else if(typeof h.totalSize === 'string'){
+      var match = h.totalSize.match(/([\d.]+)\s*(GB|MB|KB|TB)?/i);
+      if(match){
+        var val = parseFloat(match[1]);
+        var unit = (match[2]||'').toUpperCase();
+        if(unit==='TB') totalSize += val*1e12;
+        else if(unit==='GB') totalSize += val*1e9;
+        else if(unit==='MB') totalSize += val*1e6;
+        else if(unit==='KB') totalSize += val*1e3;
+        else totalSize += val;
+      }
+    }
+    totalFiles += parseInt(h.totalFiles)||0;
+  });
+
+  var html = '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">';
+  
+  // Waves
+  html += '<div style="background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:var(--r-sm);padding:14px;text-align:center;">';
+  html += '<div style="font-size:22px;font-weight:800;color:var(--accent);">'+totalWaves+'</div>';
+  html += '<div style="font-size:11px;color:var(--text-2);margin-top:4px;">Total Waves</div>';
+  html += '</div>';
+
+  // Users
+  html += '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px;text-align:center;">';
+  html += '<div style="font-size:22px;font-weight:800;color:var(--text-1);">'+totalUsers+'</div>';
+  html += '<div style="font-size:11px;color:var(--text-2);margin-top:4px;">Total Users</div>';
+  html += '</div>';
+
+  // Size
+  html += '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px;text-align:center;">';
+  html += '<div style="font-size:22px;font-weight:800;color:var(--text-1);">'+fmt(totalSize)+'</div>';
+  html += '<div style="font-size:11px;color:var(--text-2);margin-top:4px;">Total Size</div>';
+  html += '</div>';
+
+  // Files
+  html += '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px;text-align:center;">';
+  html += '<div style="font-size:22px;font-weight:800;color:var(--text-1);">'+fmtN(totalFiles)+'</div>';
+  html += '<div style="font-size:11px;color:var(--text-2);margin-top:4px;">Total Files</div>';
+  html += '</div>';
+
+  html += '</div>';
+  el.innerHTML = html;
+  el.style.display = 'block';
+}
 
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
 
