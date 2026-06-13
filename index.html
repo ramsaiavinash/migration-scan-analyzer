@@ -472,8 +472,9 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
       <h2 style="font-size:18px;font-weight:700;letter-spacing:-.3px;">Migration Dashboard</h2>
       <p style="color:var(--text-2);font-size:12px;margin-top:3px;">Overview of all uploaded scan reports</p>
     </div>
-    <button class="btn btn-sm" onclick="showLanding()">
-      <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2"><polyline points="15 18 9 12 15 6"/></svg>Back to Home
+    <button class="btn btn-primary btn-sm" onclick="openWaveModal()">
+      <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:white;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Upload New Scan
     </button>
   </div>
 
@@ -952,6 +953,7 @@ function setProgress(pct,label,stats){
 async function handleFile(file){
   if(!file) return;
   hide('landing-section');
+  hide('dashboard-section');
   show('progress-section');
   document.getElementById('progress-filename').textContent=file.name+' — '+fmt(file.size);
   setProgress(10,'Reading file…','');
@@ -1942,9 +1944,9 @@ var reuploadHistoryId = '';
 
 async function handleReupload(file){
   if(!file) return;
-  // Use existing wave name - skip modal
   currentWaveName = reuploadWaveName;
   hide('landing-section');
+  hide('dashboard-section');
   show('progress-section');
   document.getElementById('progress-filename').textContent = file.name + ' — ' + fmt(file.size);
   setProgress(10,'Reading file...','');
