@@ -1021,6 +1021,7 @@ function analyzeRows(rows,userName){
 
 // ── USER SELECT ──────────────────────────────
 function showUserSelect(){
+  prevSection='dashboard';
   hide('progress-section');hide('landing-section');hide('app-section');hide('history-section');
   show('user-select-section');
   const users=Object.values(allUsers||{}).sort(function(a,b){return b.totalSize-a.totalSize;});
@@ -1157,7 +1158,7 @@ function switchMainTab(tab){
     if(content) content.style.display = t===tab ? 'block' : 'none';
     if(tabBtn) tabBtn.classList.toggle('active', t===tab);
   });
-  if(tab==='data'&&globalStats){if(gridApi){gridApi.destroy();gridApi=null;}initGrid(viewTab==='files'?globalStats.files:viewTab==='folders'?globalStats.folders:globalStats.rows);}
+  if(tab==='data'&&globalStats&&!gridApi){initGrid(globalStats.rows);}
 }
 
 // ── CHARTS ───────────────────────────────────
@@ -1755,7 +1756,7 @@ function backFromHistory(){
 }
 
 // ── NAV ──────────────────────────────────────────
-function backToUsers(){hide('app-section');if(gridApi){gridApi.destroy();gridApi=null;}showUserSelect();}
+function backToUsers(){hide('app-section');hide('email-section');if(gridApi){gridApi.destroy();gridApi=null;}globalStats=null;showUserSelect();}
 
 function goBackToNav(){
   // Go back to dashboard if that's where scan was loaded from, else home
