@@ -1035,8 +1035,8 @@ function analyzeRows(rows,userName){
         pathIssues.push({
           name: name,
           path: fullPath,
-          length: pathLen,
-          excess: pathLen - MAX_PATH
+          length: totalPathLen,
+          excess: totalPathLen - MAX_PATH
         });
       }
     }
