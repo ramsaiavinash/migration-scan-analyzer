@@ -1024,18 +1024,22 @@ function analyzeRows(rows,userName){
     }
     
     // Step 2: Calculate server relative path per Microsoft docs
-    // Personal/user_domain_com/Documents + file path = server relative path
-    // Get user email from SourcePath or from FullPath first segment
-    var userEmail = (files[0] ? files[0].SourcePath : '') || '';
-    // For shared drives, SourcePath may be the team name - extract email from FullPath
-    if(userEmail.indexOf('@') === -1){
-      var fp0 = (files[0] ? files[0].FullPath : '') || '';
-      var parts0 = fp0.split('/').filter(function(p){ return p.indexOf('@') > -1; });
-      if(parts0.length > 0) userEmail = parts0[0];
+    // Each file may belong to different users (personal or shared drives)
+    // FullPath = /user@domain.com/My Drive/... (personal)
+    //          = /Team/user@domain.com/... (shared/team drive)
+    // Extract the actual owner email from THIS file's FullPath
+    var fileOwnerEmail = '';
+    var fpParts = fullPath.split('/').filter(function(p){ return p.length > 0; });
+    // Find email segment in path
+    for(var pi=0; pi<fpParts.length; pi++){
+      if(fpParts[pi].indexOf('@') > -1){ fileOwnerEmail = fpParts[pi]; break; }
     }
-    var userOneDrive = userEmail.replace('@','_').replace(/\./g,'_').replace(/^\//,'');
-    var PREFIX = 'Personal/' + userOneDrive + '/Documents';
-    var totalPathLen = PREFIX.length + filePath.length;
+    // Fallback to SourcePath
+    if(!fileOwnerEmail) fileOwnerEmail = (files[0] ? files[0].SourcePath : '') || '';
+    
+    var ownerOneDrive = fileOwnerEmail.replace('@','_').replace(/\./g,'_');
+    var FILE_PREFIX = 'Personal/' + ownerOneDrive + '/Documents';
+    var totalPathLen = FILE_PREFIX.length + filePath.length;
     
     if(totalPathLen > MAX_PATH){
       longPathCount++;
