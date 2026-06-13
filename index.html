@@ -434,9 +434,15 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
         <div class="waves-title" id="waves-title">Recent scan reports</div>
         <div class="waves-sub">Click any card to view users and statistics</div>
       </div>
-      <button class="btn btn-sm btn-ghost" onclick="showHistory()">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>View history
-      </button>
+      <div style="display:flex;gap:8px;">
+        <a href="https://cognizantonline-my.sharepoint.com/personal/2389039_cognizant_com/Lists/ScanAnalyzerHistory/AllItems.aspx" target="_blank" class="btn btn-sm" style="text-decoration:none;background:#0078D4;color:white;border:none;">
+          <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 0 2 2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          View in SharePoint
+        </a>
+        <button class="btn btn-sm btn-ghost" onclick="showHistory()">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>View history
+        </button>
+      </div>
     </div>
     <div id="waves-grid"></div>
   </div>
@@ -691,7 +697,11 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
 </main>
 <div id="toast"></div>
 
-<script>
+<script>// SP List URL for View in SharePoint button
+const SP_LIST_URL = 'https://cognizantonline-my.sharepoint.com/personal/2389039_cognizant_com/Lists/ScanAnalyzerHistory/AllItems.aspx';
+const PA_SAVE_URL = 'https://defaultde08c40719b9427d9fe8edf254300c.a7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/b5aa8b13fca648e3970b24d968bcc632/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Z2_vHjhXLvyav59_KrnekMgfh3e3eJ07y_Kph08hxKg';
+
+
 // ── THEME ────────────────────────────────
 function toggleTheme(){
   const h=document.documentElement,d=h.getAttribute('data-theme')==='dark';
@@ -891,29 +901,8 @@ function selectUser(userName){
 
 // ── WAVE CARDS ON LANDING ───────────────────
 function renderWaveCards(){
-  var grid=document.getElementById('waves-grid');
-  var title=document.getElementById('waves-title');
-  if(!grid||!title)return;
-  // Show local first instantly
   renderWaveCardsData(getHistory());
-  // Then load from SharePoint and update
-  loadFromSharePoint().then(function(spItems){
-    if(!spItems||!spItems.length){
-      renderWaveCardsData(getHistory());
-      return;
-    }
-    var localHistory=getHistory();
-    var spFileNames=spItems.map(function(i){return i.fileName;});
-    var localOnly=localHistory.filter(function(h){return !spFileNames.includes(h.fileName);});
-    var merged=spItems.concat(localOnly);
-    merged.sort(function(a,b){return new Date(b.date)-new Date(a.date);});
-    renderWaveCardsData(merged);
-  }).catch(function(err){
-    console.error('SP load error:',err);
-    renderWaveCardsData(getHistory());
-  });
 }
-
 function renderWaveCardsData(history){
   var grid=document.getElementById('waves-grid');
   var title=document.getElementById('waves-title');
@@ -1579,18 +1568,8 @@ function getHistory(){try{var h=JSON.parse(localStorage.getItem('msa-history')||
 function showHistory(){
   hide('landing-section');hide('user-select-section');hide('app-section');hide('email-section');
   show('history-section');
-  var list=document.getElementById('history-list');
-  list.innerHTML='<div style="text-align:center;padding:28px;color:var(--text-3);">⏳ Loading from SharePoint...</div>';
-  loadFromSharePoint().then(function(spItems){
-    var localHistory=getHistory();
-    var spFileNames=spItems.map(function(i){return i.fileName;});
-    var localOnly=localHistory.filter(function(h){return !spFileNames.includes(h.fileName);});
-    var merged=spItems.concat(localOnly);
-    merged.sort(function(a,b){return new Date(b.date)-new Date(a.date);});
-    renderHistoryList(merged);
-  }).catch(function(){renderHistoryList(getHistory());});
+  renderHistoryList(getHistory());
 }
-
 function renderHistoryList(history){
   var list=document.getElementById('history-list');
   if(!history||!history.length){
@@ -1796,14 +1775,11 @@ function exportToExcel(){
 }
 
 // ── POWER AUTOMATE + SHAREPOINT INTEGRATION
-const PA_SAVE_URL = "https://defaultde08c40719b9427d9fe8edf254300c.a7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/b5aa8b13fca648e3970b24d968bcc632/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Z2_vHjhXLvyav59_KrnekMgfh3e3eJ07y_Kph08hxKg";
-const PA_GET_URL = "https://defaultde08c40719b9427d9fe8edf254300c.a7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/4a9eb9fbbb3949da911eaf730f9f6514/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=KllF8PV2PARNSASiUTLBL0znOghtrWMl7iRLHgcI9U4";
-const SP_READ_URL = "https://cognizantonline-my.sharepoint.com/personal/2389039_cognizant_com/_api/lists/getbytitle('ScanAnalyzerHistory')/items?$orderby=Created desc&$top=50";
 
 // Save history via Power Automate Flow (no CORS issues)
 async function saveToSharePoint(entry){
   try{
-    const body = {
+    var body = {
       waveName:   entry.waveName,
       fileName:   entry.fileName,
       totalUsers: entry.totalUsers,
@@ -1813,104 +1789,16 @@ async function saveToSharePoint(entry){
       uploadedBy: entry.uploadedBy||'Team',
       date:       new Date().toLocaleString()
     };
-    const r = await fetch(PA_SAVE_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    if(r.ok){
-      console.log('PA: Saved to SharePoint via Power Automate');
-      return true;
-    }else{
-      const err = await r.text();
-      console.error('PA save error:', r.status, err);
-      return false;
-    }
-  }catch(e){
-    console.error('PA save exception:', e);
-    return false;
-  }
-}
-
-// Load history directly from SharePoint REST API
-async function loadFromSharePoint(){
-  try{
-    var r = await fetch(PA_GET_URL, {
+    var r = await fetch('https://defaultde08c40719b9427d9fe8edf254300c.a7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/b5aa8b13fca648e3970b24d968bcc632/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Z2_vHjhXLvyav59_KrnekMgfh3e3eJ07y_Kph08hxKg', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({action: 'getHistory'})
+      body: JSON.stringify(body)
     });
-    if(!r.ok){ console.error('PA GET error:', r.status); return []; }
-    var text = await r.text();
-    console.log('PA GET raw:', text.slice(0,200));
-    if(!text||!text.trim()){ return []; }
-
-    // Try multiple parse strategies
-    var items = [];
-    try{
-      var data = JSON.parse(text);
-      // Strategy 1: direct array
-      if(Array.isArray(data)) items = data;
-      // Strategy 2: {value: [...]}
-      else if(data.value && Array.isArray(data.value)) items = data.value;
-      // Strategy 3: {d: {results: [...]}}
-      else if(data.d && data.d.results) items = data.d.results;
-      // Strategy 4: {body: {d: {results: [...]}}}
-      else if(data.body && data.body.d) items = data.body.d.results||[];
-      // Strategy 5: {outputs: {body: {...}}}
-      else if(data.outputs){ 
-        var b = data.outputs.body||data.outputs;
-        items = b.value||b.d&&b.d.results||[];
-      }
-      else{
-        // Try to find array anywhere in response
-        var str = JSON.stringify(data);
-        var match = str.match(/"results":\s*(\[.*?\])/);
-        if(match) items = JSON.parse(match[1]);
-      }
-    }catch(parseErr){
-      // Try to extract JSON array from text
-      var match = text.match(/\[\s*\{.*\}\s*\]/s);
-      if(match){ try{ items = JSON.parse(match[0]); }catch(e){} }
-    }
-
-    console.log('PA GET items found:', items.length);
-    return items.map(function(item){
-      return {
-        id:         item.ID||item.Id||item.id||Date.now(),
-        spId:       item.ID||item.Id||item.id,
-        waveName:   item.WaveName||item.waveName||item.Title||item.title||'',
-        fileName:   item.FileName||item.fileName||'',
-        totalUsers: parseInt(item.TotalUsers||item.totalUsers||0),
-        totalSize:  item.TotalSize||item.totalSize||'0 GB',
-        totalFiles: parseInt(item.TotalFiles||item.totalFiles||0),
-        totalItems: parseInt(item.TotalItems||item.totalItems||0),
-        uploadedBy: item.UploadedBy||item.uploadedBy||'',
-        users:      [],
-        date:       item.Created?new Date(item.Created).toLocaleString():(item.date||''),
-        source:     'sharepoint'
-      };
-    }).filter(function(item){ return item.waveName&&item.fileName; });
+    return r.status === 200 || r.status === 202;
   }catch(e){
-    console.error('SP load error:', e);
-    return [];
+    console.log('SP save failed:', e.message);
+    return false;
   }
-}
-async function deleteFromSharePoint(spId){
-  // Delete via SharePoint direct API (works when hosted on SP)
-  try{
-    const digestR = await fetch(
-      'https://cognizantonline-my.sharepoint.com/personal/2389039_cognizant_com/_api/contextinfo',
-      {method:'POST',headers:{'Accept':'application/json;odata=verbose'}}
-    );
-    const digestD = await digestR.json();
-    const digest = digestD.d.GetContextWebInformation.FormDigestValue;
-    const r = await fetch(
-      'https://cognizantonline-my.sharepoint.com/personal/2389039_cognizant_com/_api/lists/getbytitle(\'ScanAnalyzerHistory\')/items('+spId+')',
-      {method:'DELETE',headers:{'Accept':'application/json;odata=verbose','X-RequestDigest':digest,'IF-MATCH':'*'}}
-    );
-    return r.ok;
-  }catch(e){ return false; }
 }
 
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
