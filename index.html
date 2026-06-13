@@ -404,10 +404,10 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
     <span class="logo-sub">Google Drive → OneDrive</span>
   </div>
   <div class="header-right">
-    <button class="btn btn-sm btn-ghost" onclick="goHome()">
+    <button class="btn btn-sm btn-ghost" id="header-home-btn" style="display:none;" onclick="goHome()">
       <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home
     </button>
-    <button class="btn btn-sm btn-ghost" onclick="showDashboard()">
+    <button class="btn btn-sm btn-ghost" id="header-dashboard-btn" onclick="showDashboard()">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard
     </button>
     <button class="btn btn-sm btn-ghost" onclick="showAbout()">
@@ -462,9 +462,6 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
       <p style="color:var(--text-2);font-size:12px;margin-top:3px;">Overview of all uploaded scan reports</p>
     </div>
     <div style="display:flex;gap:8px;">
-      <button class="btn btn-sm btn-ghost" onclick="showLanding()">
-        <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home
-      </button>
       <button class="btn btn-primary btn-sm" onclick="openWaveModal()">
         <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:white;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Upload New Scan
       </button>
@@ -1717,6 +1714,9 @@ function goBackToNav(){
 function goHome(){
   ['user-select-section','app-section','history-section','dashboard-section'].forEach(hide);
   show('landing-section');
+  // Header: hide Home btn (we're on home), show Dashboard btn
+  document.getElementById('header-home-btn').style.display='none';
+  document.getElementById('header-dashboard-btn').style.display='inline-flex';
   globalStats=null;
   currentWaveName='';
   if(gridApi){gridApi.destroy();gridApi=null;}
@@ -1949,6 +1949,9 @@ function showDashboard(){
   hide('history-section');
   hide('about-section');
   show('dashboard-section');
+  // Header: hide Dashboard btn (we're on dashboard), show Home btn
+  document.getElementById('header-home-btn').style.display='inline-flex';
+  document.getElementById('header-dashboard-btn').style.display='none';
   renderDashboard();
 }
 
@@ -1959,6 +1962,8 @@ function showLanding(){
   hide('history-section');
   hide('about-section');
   show('landing-section');
+  document.getElementById('header-home-btn').style.display='none';
+  document.getElementById('header-dashboard-btn').style.display='inline-flex';
   closeWavePanel();
 }
 
