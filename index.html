@@ -1012,22 +1012,23 @@ function analyzeRows(rows,userName){
     
     // Step 1: Remove user email prefix from FullPath
     // e.g. /user@domain.com/My Drive/... -> /My Drive/...
-    var onedrivePath = fullPath;
+    var filePath = fullPath;
     var firstSlash = fullPath.indexOf('/');
     var secondSlash = fullPath.indexOf('/', firstSlash + 1);
     if(secondSlash > -1){
       var segment = fullPath.slice(firstSlash+1, secondSlash);
       // If first segment looks like email (contains @) or domain, remove it
       if(segment.indexOf('@') > -1 || segment.indexOf('.') > -1){
-        onedrivePath = fullPath.slice(secondSlash);
+        filePath = fullPath.slice(secondSlash);
       }
     }
     
-    // Step 2: Add OneDrive base path prefix
-    // /personal/user_cognizant_com/Documents = approx 45 chars
-    // Use actual typical prefix length
-    var ONEDRIVE_PREFIX_LEN = 46; // /personal/username_domain_com/Documents
-    var totalPathLen = ONEDRIVE_PREFIX_LEN + onedrivePath.length;
+    // Step 2: Calculate server relative path
+    // Per Microsoft docs: Personal/user_domain_com/Documents + file path
+    var userEmail = (files[0] ? files[0].SourcePath : '') || '';
+    var userOneDrive = userEmail.replace('@','_').replace(/\./g,'_');
+    var PREFIX = 'Personal/' + userOneDrive + '/Documents';
+    var totalPathLen = PREFIX.length + filePath.length;
     
     if(totalPathLen > MAX_PATH){
       longPathCount++;
