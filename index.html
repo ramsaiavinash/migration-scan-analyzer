@@ -424,6 +424,7 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
       Upload Scan Report
     </button>
     <input type="file" id="hero-file-input" accept=".zip,.csv" style="display:none" onchange="handleFile(this.files[0])">
+    <input type="file" id="reupload-file-input" accept=".zip,.csv" style="display:none" onchange="handleReupload(this.files[0])">
     <div class="hero-tags">
       <div class="hero-tag"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Multi-user reports</div>
       <div class="hero-tag"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Custom wave naming</div>
@@ -801,14 +802,7 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
 
   <!-- Version -->
   <div style="text-align:center;padding:16px;color:var(--text-3);font-size:11px;">
-    ScanAnalyzer v1.0 · Built by Kanigolla, Rama Sai Avinash (Cognizant) · June 2026
-  </div>
-</div>
-
-</main>
-<div id="toast"></div>
-
-<script>// SP List URL for View in SharePoint button
+    ScanAnal// SP List URL for View in SharePoint button
 const SP_LIST_URL = 'https://cognizantonline-my.sharepoint.com/personal/2389039_cognizant_com/Lists/ScanAnalyzerHistory/AllItems.aspx';
 const PA_SAVE_URL = 'https://defaultde08c40719b9427d9fe8edf254300c.a7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/b5aa8b13fca648e3970b24d968bcc632/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Z2_vHjhXLvyav59_KrnekMgfh3e3eJ07y_Kph08hxKg';
 
@@ -1974,7 +1968,9 @@ async function handleReupload(file){
     show('landing-section');
     showToast('Error: ' + err.message);
   }
-  document.getElementById('reupload-file-input').value = '';
+  // Reset file input so same file can be selected again
+  var ri = document.getElementById('reupload-file-input');
+  if(ri) ri.value = '';
 }
 
 
@@ -1993,6 +1989,7 @@ function hideAbout(){
 }
 
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+st t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
 </script>
 </body>
 </html>
