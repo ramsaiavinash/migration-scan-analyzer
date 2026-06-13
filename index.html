@@ -1410,7 +1410,6 @@ function initGrid(data){
       sortable: true,
       resizable: true,
       editable: true,
-      movable: true,
       minWidth: 80,
       width: Math.min(220, Math.max(100, key.length * 9 + 20)),
       filter: isNumeric ? 'agNumberColumnFilter' : SetFilter,
@@ -1421,12 +1420,8 @@ function initGrid(data){
       } : {
         buttons: ['reset','apply'],
         closeOnApply: true,
-        suppressSorting: false,
-        suppressMiniFilter: false,
       },
       floatingFilter: false,
-      enableValue: true,
-      enableRowGroup: false,
       cellStyle: function(params){
         if(key==='SourceSize'||key==='DestinationSize'){
           const v=parseInt(params.value);
@@ -1468,7 +1463,6 @@ function initGrid(data){
       floatingFilter: false,
       minWidth: 80,
     },
-    // Excel-like features
     animateRows: true,
     pagination: true,
     paginationPageSize: 100,
@@ -1476,49 +1470,7 @@ function initGrid(data){
     enableCellTextSelection: true,
     rowSelection: 'multiple',
     suppressRowClickSelection: true,
-    enableRangeSelection: true,
-    suppressCopyRowsToClipboard: false,
-    copyHeadersToClipboard: true,
     suppressMovableColumns: false,
-    // Context menu like Excel right-click
-    getContextMenuItems: function(params){
-      return [
-        'copy',
-        'copyWithHeaders',
-        'copyWithGroupHeaders',
-        'separator',
-        'csvExport',
-        'excelExport',
-        'separator',
-        {
-          name: 'Auto-size this column',
-          action: function(){
-            if(params.column) gridApi.autoSizeColumns([params.column.getId()]);
-          },
-          icon: '<span style="font-size:12px;">↔</span>'
-        },
-        {
-          name: 'Auto-size all columns',
-          action: function(){ autoSizeGridColumns(); },
-          icon: '<span style="font-size:12px;">⊞</span>'
-        },
-        'separator',
-        {
-          name: 'Pin column left',
-          action: function(){
-            if(params.column) gridApi.setColumnPinned(params.column.getId(),'left');
-          },
-          icon: '<span style="font-size:12px;">📌</span>'
-        },
-        {
-          name: 'Unpin column',
-          action: function(){
-            if(params.column) gridApi.setColumnPinned(params.column.getId(),null);
-          },
-        },
-      ];
-    },
-    // Column menu with filter
     suppressMenuHide: false,
     onGridReady: function(){ updateRowCount(); },
     onFilterChanged: function(){ updateRowCount(); },
@@ -1526,15 +1478,6 @@ function initGrid(data){
     onSortChanged: function(){ updateRowCount(); },
     onCellValueChanged: function(params){
       showToast('Cell updated: '+params.colDef.field);
-    },
-    // Status bar like Excel bottom bar
-    statusBar:{
-      statusPanels:[
-        {statusPanel:'agTotalAndFilteredRowCountComponent',align:'left'},
-        {statusPanel:'agTotalRowCountComponent',align:'center'},
-        {statusPanel:'agSelectedRowCountComponent',align:'center'},
-        {statusPanel:'agAggregationComponent',align:'right'},
-      ]
     },
   });
   updateRowCount();
