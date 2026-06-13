@@ -404,6 +404,9 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
     <span class="logo-sub">Google Drive → OneDrive</span>
   </div>
   <div class="header-right">
+    <button class="btn btn-sm btn-ghost" onclick="goHome()">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home
+    </button>
     <button class="btn btn-sm btn-ghost" onclick="showDashboard()">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard
     </button>
@@ -458,10 +461,14 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
       <h2 style="font-size:18px;font-weight:700;letter-spacing:-.3px;">Migration Dashboard</h2>
       <p style="color:var(--text-2);font-size:12px;margin-top:3px;">Overview of all uploaded scan reports</p>
     </div>
-    <button class="btn btn-primary btn-sm" onclick="openWaveModal()">
-      <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:white;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-      Upload New Scan
-    </button>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-sm btn-ghost" onclick="showLanding()">
+        <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home
+      </button>
+      <button class="btn btn-primary btn-sm" onclick="openWaveModal()">
+        <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:white;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Upload New Scan
+      </button>
+    </div>
   </div>
 
   <!-- Summary Cards -->
@@ -504,7 +511,7 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
 <!-- USER SELECT -->
 <div id="user-select-section" style="display:none;">
   <div class="breadcrumb">
-    <span class="bc-item" onclick="goBackToNav()">Home</span>
+    <span class="bc-item" onclick="goBackToNav()">Dashboard</span>
     <span class="bc-sep">›</span>
     <span class="bc-item active" id="bc-wave">Wave</span>
   </div>
@@ -526,7 +533,7 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
   <div class="app-topbar">
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
       <div class="breadcrumb" style="margin:0;">
-        <span class="bc-item" onclick="goBackToNav()">Home</span>
+        <span class="bc-item" onclick="goBackToNav()">Dashboard</span>
         <span class="bc-sep">›</span>
         <span class="bc-item" id="bc-wave2" onclick="backToUsers()">Wave</span>
         <span class="bc-sep">›</span>
