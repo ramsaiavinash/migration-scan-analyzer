@@ -1918,7 +1918,7 @@ async function saveToSharePoint(entry){
       waveName:   entry.waveName,
       fileName:   entry.fileName,
       totalUsers: entry.totalUsers,
-      totalSize:  parseFloat((entry.totalSize/1e9).toFixed(2))+' GB',
+      totalSize:  parseFloat(entry.totalSize).toFixed(2)+' GB',
       totalFiles: entry.totalFiles,
       totalItems: entry.totalItems||0,
       uploadedBy: entry.uploadedBy||'Team',
