@@ -890,7 +890,7 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
 const SP_LIST_URL = 'https://cognizantonline-my.sharepoint.com/personal/2389039_cognizant_com/Lists/ScanAnalyzerHistory/AllItems.aspx';
 const PA_SAVE_URL = 'https://defaultde08c40719b9427d9fe8edf254300c.a7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/b5aa8b13fca648e3970b24d968bcc632/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Z2_vHjhXLvyav59_KrnekMgfh3e3eJ07y_Kph08hxKg';
 const PA_SAVE_FILE_URL = 'https://defaultde08c40719b9427d9fe8edf254300c.a7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/d2a8fb4866fb4ce980ba281c8f2cd98c/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=GQu77VNpZX9KCEdEAiY19kvKkRxDKuOOFxOw8h_8Ufk';
-const PA_GET_FILE_URL = 'https://defaultde08c40719b9427d9fe8edf254300c.a7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/1399fc2ef7a244589085784ce7722e54/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=CZjl9z1jKKSTCt3rXbIPOe2PfpAoy7cnkrBgkPkJHN0';
+const PA_GET_FILE_URL = 'https://defaultde08c40719b9427d9fe8edf254300c.a7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/1399fc2ef7a244589085784ce7722e54/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=GQu77VNpZX9KCEdEAiY19kvKkRxDKuOOFxOw8h_8Ufk';
 
 // ── THEME ────────────────────────────────
 function toggleTheme(){
@@ -1188,26 +1188,7 @@ function loadFromHistory(id){
     return;
   }
 
-  // 5. Try SharePoint file
-  if(entry.spFileName){
-    showToast('Loading from SharePoint...');
-    getFileFromSharePoint(entry.spFileName).then(function(csvText){
-      if(csvText){
-        var result=Papa.parse(csvText,{header:true,skipEmptyLines:true,dynamicTyping:false});
-        rawRows=result.data;
-        allUsers=buildAllUsers(rawRows);
-        currentWaveName=entry.waveName;
-        try{localStorage.setItem('msa-raw-'+entry.id,JSON.stringify(rawRows));}catch(e){}
-        hide('landing-section');hide('dashboard-section');
-        prevSection='dashboard';
-        showUserSelect();
-      } else {
-        showToast('Please re-upload this scan report to view it');
-      }
-    });
-    return;
-  }
-  // 6. Nothing available
+  // 5. Nothing available
   showToast('Please re-upload this scan report to view it');
 }
 
@@ -1751,17 +1732,20 @@ function showHistory(){
   document.getElementById('header-dashboard-btn').style.display='inline-flex';
   renderHistoryList(getHistory());
 }
-function renderHistoryList(history){
+function renderHistoryList(history, isSP){
   var list=document.getElementById('history-list');
+  // Remove loading indicator
+  var loading = document.getElementById('sp-loading');
+  if(loading) loading.remove();
   if(!history||!history.length){
-    list.innerHTML='<div style="text-align:center;padding:56px 20px;color:var(--text-3);"><div style="font-size:48px;margin-bottom:16px;">📂</div><div style="font-size:15px;font-weight:600;margin-bottom:8px;">No history yet</div><div style="font-size:13px;">Upload a scan report to get started</div></div>';
+    if(!isSP) list.innerHTML='<div style="text-align:center;padding:56px 20px;color:var(--text-3);"><div style="font-size:48px;margin-bottom:16px;">📂</div><div style="font-size:15px;font-weight:600;margin-bottom:8px;">No history yet</div><div style="font-size:13px;">Upload a scan report to get started</div></div>';
     return;
   }
   var html='<div class="hist-grid">';
   history.forEach(function(h){
     if(!h||!h.waveName)return;
     var icon=getWaveIcon(h.waveName||'');
-    var spBadge=h.source==='sharepoint'?'<span style="font-size:10px;color:#0078D4;font-weight:600;margin-left:6px;">● SP</span>':'';
+    var spBadge=h.source==='sharepoint'||h.uploadedBy!==getUserEmail()?'<span style="font-size:10px;color:#0078D4;font-weight:600;margin-left:6px;padding:1px 6px;background:#E3F2FF;border-radius:10px;">👥 '+( h.uploadedBy||'Team')+'</span>':'';
     var sizeStr=typeof h.totalSize==='number'?fmt(h.totalSize):(h.totalSize||'0');
     html+='<div class="hist-card">';
     html+='<div class="hc-top">';
@@ -2107,9 +2091,26 @@ function renderDashboard(){
   var history = getHistory();
   renderDashSummary(history);
   renderDashWaveCards(history);
-  // Update title
   var t = document.getElementById('dash-waves-title');
   if(t) t.textContent = 'Recent scan reports (' + history.length + ')';
+  // Load team history from SharePoint in background
+  getSharedHistory().then(function(spItems){
+    if(spItems && spItems.length){
+      var local = getHistory();
+      var localKeys = local.map(function(h){ return h.fileName+h.waveName; });
+      var newItems = spItems.filter(function(sp){
+        return !localKeys.includes(sp.fileName+sp.waveName);
+      });
+      if(newItems.length > 0){
+        var merged = local.concat(newItems).sort(function(a,b){
+          return new Date(b.date) - new Date(a.date);
+        });
+        renderDashSummary(merged);
+        renderDashWaveCards(merged);
+        if(t) t.textContent = 'Recent scan reports (' + merged.length + ')';
+      }
+    }
+  });
 }
 
 function renderDashSummary(history){
@@ -2180,12 +2181,10 @@ function renderDashWaveCards(history){
     var hasSession = Object.keys(sessionStore).some(function(k){
       return sessionStore[k].waveName===h.waveName && sessionStore[k].fileName===h.fileName;
     });
-    var hasRawStored = !!localStorage.getItem('msa-raw-'+h.id);
-    var hasSP = !!(h.spFileName);
-    var available = hasSession||hasRawStored||hasSP;
-    var sessionText = hasSession?'In session':hasSP?'In SharePoint':hasRawStored?'Available':'Re-upload to view';
-    var sessionColor = available?'var(--success)':'var(--accent)';
-    var dot = available?'●':'↑';
+    var available = hasSession||(h.rawData&&h.rawData.length>0);
+    var sessionText = hasSession?'In session':available?'Available':'Re-upload to view';
+    var sessionColor = hasSession||available?'var(--success)':'var(--accent)';
+    var dot = hasSession||available?'●':'↑';
     var sizeStr = typeof h.totalSize==='number'?fmt(h.totalSize):(h.totalSize||'0');
     html += '<div class="wave-card" data-hid="'+String(h.id)+'">';
     html += '<div class="wave-card-stripe"></div>';
@@ -2219,9 +2218,8 @@ function renderDashWaveCards(history){
       var hasSession = Object.keys(sessionStore).some(function(k){
         return sessionStore[k].waveName===entry.waveName && sessionStore[k].fileName===entry.fileName;
       });
-      var hasRaw = !!localStorage.getItem('msa-raw-'+entry.id);
-      var hasSP = !!(entry.spFileName);
-      if(hasSession||hasRaw||hasSP){
+      var hasRaw = entry.rawData && entry.rawData.length > 0;
+      if(hasSession||hasRaw){
         loadFromHistory(hid);
       } else {
         reuploadWaveName = entry.waveName;
@@ -2460,6 +2458,69 @@ function openFilesPanel(){
   document.getElementById('wave-panel').style.display = 'block';
 }
 
+
+
+
+// ── SHAREPOINT SHARED HISTORY ──────────────────────────────
+
+const PA_GET_HISTORY_URL = 'https://defaultde08c40719b9427d9fe8edf254300c.a7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/b5aa8b13fca648e3970b24d968bcc632/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Z2_vHjhXLvyav59_KrnekMgfh3e3eJ07y_Kph08hxKg';
+
+async function getSharedHistory(){
+  try{
+    var r = await fetch(PA_GET_HISTORY_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({action: 'getAll'})
+    });
+    if(r.ok){
+      var data = await r.json();
+      return data.items || [];
+    }
+    return [];
+  }catch(e){
+    console.log('Get shared history failed:', e.message);
+    return [];
+  }
+}
+
+
+
+// ── SHARED HISTORY FROM SHAREPOINT ─────────────────────────
+
+async function getSharedHistory(){
+  try{
+    var r = await fetch(PA_GET_HISTORY_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({})
+    });
+    if(r.ok){
+      var data = await r.json();
+      if(data.items && data.items.length){
+        return data.items.map(function(item){
+          return {
+            id: item.ID || Date.now(),
+            waveName: item.Title || '',
+            fileName: item.FileName || '',
+            date: item.Created ? new Date(item.Created).toLocaleString() : '',
+            totalUsers: parseInt(item.TotalUsers) || 0,
+            totalSize: item.TotalSize || '0 GB',
+            totalFiles: parseInt(item.TotalFiles) || 0,
+            totalItems: parseInt(item.TotalItems) || 0,
+            uploadedBy: item.UploadedBy || '',
+            users: [],
+            spFileName: null,
+            source: 'sharepoint'
+          };
+        });
+      }
+    }
+    return null;
+  }catch(e){
+    console.log('Get shared history failed:', e.message);
+    return null;
+  }
+}
 
 
 // ── SHAREPOINT FILE STORAGE ─────────────────────────────────
