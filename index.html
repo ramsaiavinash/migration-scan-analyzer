@@ -2098,16 +2098,25 @@ function renderDashboard(){
     if(spItems && spItems.length){
       var local = getHistory();
       var localKeys = local.map(function(h){ return h.fileName+h.waveName; });
-      // Only add SP items not in local - local always takes precedence
       var newItems = spItems.filter(function(sp){
         return !localKeys.includes(sp.fileName+sp.waveName);
       });
-      var merged = local.concat(newItems).sort(function(a,b){
-        return new Date(b.date) - new Date(a.date);
-      });
-      renderDashSummary(merged);
-      renderDashWaveCards(merged);
-      if(t) t.textContent = 'Recent scan reports (' + merged.length + ')';
+      if(newItems.length > 0){
+        // Only update summary and add new SP cards - don't re-render local cards
+        var merged = local.concat(newItems).sort(function(a,b){
+          return new Date(b.date) - new Date(a.date);
+        });
+        renderDashSummary(merged);
+        if(t) t.textContent = 'Recent scan reports (' + merged.length + ')';
+        // Append only new SP cards to existing grid
+        var grid = document.getElementById('waves-grid');
+        if(grid){
+          newItems.forEach(function(h){
+            var el = buildWaveCard(h);
+            grid.appendChild(el);
+          });
+        }
+      }
     }
   });
 }
