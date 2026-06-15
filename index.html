@@ -2098,17 +2098,16 @@ function renderDashboard(){
     if(spItems && spItems.length){
       var local = getHistory();
       var localKeys = local.map(function(h){ return h.fileName+h.waveName; });
+      // Only add SP items not in local - local always takes precedence
       var newItems = spItems.filter(function(sp){
         return !localKeys.includes(sp.fileName+sp.waveName);
       });
-      if(newItems.length > 0){
-        var merged = local.concat(newItems).sort(function(a,b){
-          return new Date(b.date) - new Date(a.date);
-        });
-        renderDashSummary(merged);
-        renderDashWaveCards(merged);
-        if(t) t.textContent = 'Recent scan reports (' + merged.length + ')';
-      }
+      var merged = local.concat(newItems).sort(function(a,b){
+        return new Date(b.date) - new Date(a.date);
+      });
+      renderDashSummary(merged);
+      renderDashWaveCards(merged);
+      if(t) t.textContent = 'Recent scan reports (' + merged.length + ')';
     }
   });
 }
