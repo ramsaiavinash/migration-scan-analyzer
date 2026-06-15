@@ -2497,9 +2497,13 @@ async function getSharedHistory(){
       body: JSON.stringify({})
     });
     if(r.ok){
-      var text = await r.text();
-      if(!text || text.trim()==='') return null;
-      var data = JSON.parse(text);
+      var data;
+      try{ data = await r.json(); }
+      catch(je){
+        var text = await r.clone().text();
+        console.log('JSON parse error, response length:', text.length);
+        return null;
+      }
       if(data.items && data.items.length){
         return data.items.map(function(item){
           return {
