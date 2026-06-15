@@ -2500,8 +2500,7 @@ async function getSharedHistory(){
       var data;
       try{ data = await r.json(); }
       catch(je){
-        var text = await r.clone().text();
-        console.log('JSON parse error, response length:', text.length);
+        console.log('JSON parse error:', je.message);
         return null;
       }
       if(data.items && data.items.length){
