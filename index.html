@@ -2495,7 +2495,9 @@ async function getSharedHistory(){
       body: JSON.stringify({})
     });
     if(r.ok){
-      var data = await r.json();
+      var text = await r.text();
+      if(!text || text.trim()==='') return null;
+      var data = JSON.parse(text);
       if(data.items && data.items.length){
         return data.items.map(function(item){
           return {
