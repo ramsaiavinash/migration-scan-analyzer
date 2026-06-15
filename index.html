@@ -2112,7 +2112,7 @@ function renderDashboard(){
   renderDashWaveCards(history);
   var t = document.getElementById('dash-waves-title');
   if(t) t.textContent = 'Recent scan reports (' + history.length + ')';
-  // Load team history from SharePoint in background
+  // Load team history from SharePoint in background - only once
   getSharedHistory().then(function(spItems){
     if(spItems && spItems.length){
       var local = getHistory();
