@@ -2180,10 +2180,12 @@ function renderDashWaveCards(history){
     var hasSession = Object.keys(sessionStore).some(function(k){
       return sessionStore[k].waveName===h.waveName && sessionStore[k].fileName===h.fileName;
     });
-    var available = hasSession||(h.rawData&&h.rawData.length>0);
-    var sessionText = hasSession?'In session':available?'Available':'Re-upload to view';
-    var sessionColor = hasSession||available?'var(--success)':'var(--accent)';
-    var dot = hasSession||available?'●':'↑';
+    var hasRawStored = !!localStorage.getItem('msa-raw-'+h.id);
+    var hasSP = !!(h.spFileName);
+    var available = hasSession||hasRawStored||hasSP;
+    var sessionText = hasSession?'In session':hasSP?'In SharePoint':hasRawStored?'Available':'Re-upload to view';
+    var sessionColor = available?'var(--success)':'var(--accent)';
+    var dot = available?'●':'↑';
     var sizeStr = typeof h.totalSize==='number'?fmt(h.totalSize):(h.totalSize||'0');
     html += '<div class="wave-card" data-hid="'+String(h.id)+'">';
     html += '<div class="wave-card-stripe"></div>';
