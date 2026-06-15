@@ -1188,7 +1188,26 @@ function loadFromHistory(id){
     return;
   }
 
-  // 5. Nothing available
+  // 5. Try SharePoint file
+  if(entry.spFileName){
+    showToast('Loading from SharePoint...');
+    getFileFromSharePoint(entry.spFileName).then(function(csvText){
+      if(csvText){
+        var result=Papa.parse(csvText,{header:true,skipEmptyLines:true,dynamicTyping:false});
+        rawRows=result.data;
+        allUsers=buildAllUsers(rawRows);
+        currentWaveName=entry.waveName;
+        try{localStorage.setItem('msa-raw-'+entry.id,JSON.stringify(rawRows));}catch(e){}
+        hide('landing-section');hide('dashboard-section');
+        prevSection='dashboard';
+        showUserSelect();
+      } else {
+        showToast('Please re-upload this scan report to view it');
+      }
+    });
+    return;
+  }
+  // 6. Nothing available
   showToast('Please re-upload this scan report to view it');
 }
 
@@ -2198,8 +2217,9 @@ function renderDashWaveCards(history){
       var hasSession = Object.keys(sessionStore).some(function(k){
         return sessionStore[k].waveName===entry.waveName && sessionStore[k].fileName===entry.fileName;
       });
-      var hasRaw = entry.rawData && entry.rawData.length > 0;
-      if(hasSession||hasRaw){
+      var hasRaw = !!localStorage.getItem('msa-raw-'+entry.id);
+      var hasSP = !!(entry.spFileName);
+      if(hasSession||hasRaw||hasSP){
         loadFromHistory(hid);
       } else {
         reuploadWaveName = entry.waveName;
