@@ -2199,7 +2199,7 @@ function renderDashWaveCards(history){
       var hasSession = Object.keys(sessionStore).some(function(k){
         return sessionStore[k].waveName===entry.waveName && sessionStore[k].fileName===entry.fileName;
       });
-      var hasRaw = entry.rawData && entry.rawData.length > 0;
+      var hasRaw = !!localStorage.getItem('msa-raw-'+entry.id);
       if(hasSession||hasRaw){
         loadFromHistory(hid);
       } else {
