@@ -722,34 +722,6 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
 </div>
 
 
-<!-- EMAIL MODAL -->
-<div class="modal-overlay" id="email-modal" style="display:flex;">
-  <div class="modal-box">
-    <div class="modal-header">
-      <div class="modal-icon">
-        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-      </div>
-      <div>
-        <div class="modal-title">Welcome to ScanAnalyzer</div>
-        <div class="modal-sub">Enter your Cognizant email to get started</div>
-      </div>
-    </div>
-    <input id="user-email-input" type="email" placeholder="e.g. yourname@cognizant.com"
-      style="width:100%;padding:10px 14px;border:1.5px solid var(--border2);border-radius:var(--r-sm);font-size:14px;background:var(--surface2);color:var(--text-1);outline:none;font-family:inherit;transition:border-color .15s;margin-top:16px;"
-      onkeydown="if(event.key==='Enter')confirmUserEmail()"
-      oninput="updateEmailConfirm(this.value)">
-    <div id="email-error" style="color:var(--danger);font-size:11px;margin-top:6px;display:none;">Please enter a valid Cognizant email</div>
-    <div class="modal-footer">
-      <button class="btn btn-primary btn-sm" id="email-confirm-btn" onclick="confirmUserEmail()" disabled style="opacity:.5;cursor:not-allowed;width:100%;justify-content:center;">
-        Continue →
-      </button>
-    </div>
-    <div style="text-align:center;font-size:11px;color:var(--text-3);margin-top:12px;">
-      🔒 Your email is stored locally only — never shared
-    </div>
-  </div>
-</div>
-
 <!-- WAVE MODAL -->
 <div class="modal-overlay" id="wave-modal" style="display:none;">
   <div class="modal-box">
@@ -879,9 +851,41 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
   </div>
 </div>
 
+
+
+<!-- EMAIL MODAL -->
+<div class="modal-overlay" id="email-modal" style="display:none;">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-icon">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </div>
+      <div>
+        <div class="modal-title">Welcome to ScanAnalyzer</div>
+        <div class="modal-sub">Enter your Cognizant email to get started</div>
+      </div>
+    </div>
+    <input id="user-email-input" type="email" placeholder="e.g. yourname@cognizant.com"
+      style="width:100%;padding:10px 14px;border:1.5px solid var(--border2);border-radius:var(--r-sm);font-size:14px;background:var(--surface2);color:var(--text-1);outline:none;font-family:inherit;transition:border-color .15s;margin-top:16px;"
+      onkeydown="if(event.key==='Enter')confirmUserEmail()"
+      oninput="updateEmailConfirm(this.value)">
+    <div id="email-error" style="color:var(--danger);font-size:11px;margin-top:6px;display:none;">Please enter a valid Cognizant email</div>
+    <div class="modal-footer">
+      <button class="btn btn-primary btn-sm" id="email-confirm-btn" onclick="confirmUserEmail()" disabled style="opacity:.5;cursor:not-allowed;width:100%;justify-content:center;">
+        Continue →
+      </button>
+    </div>
+    <div style="text-align:center;font-size:11px;color:var(--text-3);margin-top:12px;">
+      🔒 Your email is stored locally only — never shared
+    </div>
+  </div>
+</div>
+
 </main>
 <div id="toast"></div>
+
 <script>
+
 // SP List URL for View in SharePoint button
 const SP_LIST_URL = 'https://cognizantonline-my.sharepoint.com/personal/2389039_cognizant_com/Lists/ScanAnalyzerHistory/AllItems.aspx';
 const PA_SAVE_URL = 'https://defaultde08c40719b9427d9fe8edf254300c.a7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/b5aa8b13fca648e3970b24d968bcc632/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Z2_vHjhXLvyav59_KrnekMgfh3e3eJ07y_Kph08hxKg';
