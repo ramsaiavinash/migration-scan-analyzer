@@ -2498,8 +2498,10 @@ async function getSharedHistory(){
     });
     if(r.ok){
       var data;
-      try{ data = await r.json(); }
-      catch(je){
+      try{
+        var txt = await r.text();
+        data = JSON.parse(txt);
+      }catch(je){
         console.log('JSON parse error:', je.message);
         return null;
       }
