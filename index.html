@@ -2500,6 +2500,7 @@ async function getSharedHistory(){
       var data;
       try{
         var txt = await r.text();
+        console.log('Response length:', txt.length, 'Last 50:', txt.slice(-50));
         data = JSON.parse(txt);
       }catch(je){
         console.log('JSON parse error:', je.message);
