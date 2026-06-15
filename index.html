@@ -1178,7 +1178,24 @@ function loadFromHistory(id){
     return;
   }
 
-  // 5. Nothing available
+  // 5. Try separate raw data key
+  try{
+    var stored=localStorage.getItem('msa-raw-'+entry.id);
+    if(stored){
+      var parsed=JSON.parse(stored);
+      if(parsed&&parsed.length){
+        rawRows=parsed;
+        allUsers=buildAllUsers(rawRows);
+        currentWaveName=entry.waveName;
+        hide('landing-section');
+        hide('dashboard-section');
+        prevSection='dashboard';
+        showUserSelect();
+        return;
+      }
+    }
+  }catch(e){}
+  // 6. Nothing available
   showToast('Please re-upload this scan report to view it');
 }
 
