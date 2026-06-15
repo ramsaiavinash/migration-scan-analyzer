@@ -1148,7 +1148,25 @@ function loadFromHistory(id){
     return;
   }
 
-  // 3. Try localStorage rawData
+  // 3. Try separate localStorage rawData key
+  try{
+    var stored = localStorage.getItem('msa-raw-'+entry.id);
+    if(stored){
+      var parsed = JSON.parse(stored);
+      if(parsed && parsed.length){
+        rawRows=parsed;
+        allUsers=buildAllUsers(rawRows);
+        currentWaveName=entry.waveName;
+        hide('landing-section');
+        hide('dashboard-section');
+        prevSection='dashboard';
+        showUserSelect();
+        return;
+      }
+    }
+  }catch(e){}
+
+  // 4. Try legacy rawData on entry itself
   if(entry.rawData&&entry.rawData.length){
     rawRows=entry.rawData;
     allUsers=buildAllUsers(rawRows);
@@ -1160,7 +1178,7 @@ function loadFromHistory(id){
     return;
   }
 
-  // 4. Nothing available
+  // 5. Nothing available
   showToast('Please re-upload this scan report to view it');
 }
 
@@ -1650,15 +1668,30 @@ function saveToHistory(fileName,waveName,users){
   };
   // Remove duplicate entries for same file
   history=history.filter(function(h){return h.fileName!==fileName||h.waveName!==waveName;});
-  history.unshift(entry);
+  // Save rawData separately by entry id to avoid 5MB limit
+  var entryId = entry.id;
+  try{
+    localStorage.setItem('msa-raw-'+entryId, JSON.stringify(rawRows));
+  }catch(e){
+    console.log('Raw data too large for localStorage:', e.message);
+  }
+  // Save history without rawData in main history key
+  var entrySlim = Object.assign({}, entry, {rawData: undefined});
+  history.unshift(entrySlim);
   history=history.slice(0,15);
+  // Clean up old raw data keys not in history
+  try{
+    var histIds = history.map(function(h){return String(h.id);});
+    Object.keys(localStorage).forEach(function(k){
+      if(k.startsWith('msa-raw-') && !histIds.includes(k.replace('msa-raw-',''))){
+        localStorage.removeItem(k);
+      }
+    });
+  }catch(e){}
   try{
     localStorage.setItem('msa-history',JSON.stringify(history));
   }catch(e){
-    var slim=history.map(function(h){return Object.assign({},h,{rawData:undefined});});
-    try{localStorage.setItem('msa-history',JSON.stringify(slim));}catch(e2){
-      try{localStorage.setItem('msa-history',JSON.stringify(slim.slice(0,5)));}catch(e3){}
-    }
+    try{localStorage.setItem('msa-history',JSON.stringify(history.slice(0,5)));}catch(e2){}
   }
   // Also save to SharePoint (async - don't block UI)
   var spEntry = {
@@ -1725,6 +1758,8 @@ function renderHistoryList(history){
 function deleteHistory(id,e){
   e.stopPropagation();
   if(!confirm('Delete this scan report from history?'))return;
+  // Delete raw data too
+  localStorage.removeItem('msa-raw-'+id);
   // Delete from localStorage
   var h=getHistory().filter(function(x){return x.id!==id;});
   localStorage.setItem('msa-history',JSON.stringify(h));
@@ -1737,7 +1772,16 @@ function deleteHistory(id,e){
   renderWaveCards();
   showToast('Entry deleted');
 }
-function clearAllHistory(){if(!confirm('Clear all scan history?'))return;localStorage.removeItem('msa-history');showHistory();renderWaveCards();showToast('History cleared');}
+function clearAllHistory(){
+  if(!confirm('Clear all scan history?'))return;
+  // Clear all raw data keys too
+  Object.keys(localStorage).forEach(function(k){
+    if(k.startsWith('msa-raw-')) localStorage.removeItem(k);
+  });
+  localStorage.removeItem('msa-history');
+  showHistory();
+  showToast('History cleared');
+}
 function backFromHistory(){
   hide('history-section');
   if(prevSection==='dashboard') showDashboard();
