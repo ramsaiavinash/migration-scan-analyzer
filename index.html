@@ -2472,16 +2472,44 @@ async function getSharedHistory(){
     var r = await fetch(PA_GET_HISTORY_URL, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({action: 'getAll'})
+      body: JSON.stringify({})
     });
-    if(r.ok){
-      var data = await r.json();
-      return data.items || [];
+    var txt = await r.text();
+    if(!txt || txt.trim().length === 0){ console.log('Empty response from GetHistory'); return null; }
+    // Try parse as-is
+    var data;
+    try{ data = JSON.parse(txt); }
+    catch(e){
+      // Try to extract items array manually
+      var match = txt.match(/"value"\s*:\s*(\[.*)/s);
+      if(match){
+        try{ 
+          var arr = JSON.parse(match[1].replace(/\}\s*$/, ''));
+          data = {items: arr};
+        }catch(e2){ return null; }
+      } else { return null; }
     }
-    return [];
+    var items = data.items || data.value || [];
+    if(!items.length) return null;
+    return items.map(function(item){
+      return {
+        id: item.ID || Date.now(),
+        waveName: item.Title || '',
+        fileName: item.FileName || '',
+        date: item.Created ? new Date(item.Created).toLocaleString() : '',
+        totalUsers: parseInt(item.TotalUsers) || 0,
+        totalSize: item.TotalSize || '0 GB',
+        totalFiles: parseInt(item.TotalFiles) || 0,
+        totalItems: parseInt(item.TotalItems) || 0,
+        uploadedBy: item.UploadedBy || '',
+        users: [],
+        spFileName: null,
+        source: 'sharepoint'
+      };
+    });
   }catch(e){
     console.log('Get shared history failed:', e.message);
-    return [];
+    return null;
   }
 }
 
