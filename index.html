@@ -2372,6 +2372,29 @@ function openWavesPanel(){
       el.addEventListener('click', function(){
         var eid = this.getAttribute('data-eid');
         closeWavePanel();
+        // Check local history first
+        var localEntry = getHistory().find(function(h){ return String(h.id)===eid; });
+        if(localEntry){
+          loadFromHistory(eid);
+          return;
+        }
+        // Try SP items
+        if(window._spItems){
+          var spEntry = window._spItems.find(function(s){ return String(s.id)===eid; });
+          if(spEntry && spEntry.spFileName){
+            showToast('Loading from SharePoint...');
+            getFileFromSharePoint(spEntry.spFileName).then(function(csvText){
+              if(csvText){
+                var result=Papa.parse(csvText,{header:true,skipEmptyLines:true,dynamicTyping:false});
+                rawRows=result.data; allUsers=buildAllUsers(rawRows);
+                currentWaveName=spEntry.waveName;
+                hide('landing-section');hide('dashboard-section');
+                prevSection='dashboard'; showUserSelect();
+              } else { showToast('Re-upload to view this scan'); }
+            });
+            return;
+          }
+        }
         loadFromHistory(eid);
       });
     });
