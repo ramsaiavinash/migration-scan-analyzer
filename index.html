@@ -2313,14 +2313,16 @@ function openWavesPanel(){
       var hasSession = Object.keys(sessionStore).some(function(k){
         return sessionStore[k].waveName===e.waveName && sessionStore[k].fileName===e.fileName;
       });
-      var available = hasSession||(e.rawData&&e.rawData.length>0);
+      var hasRawStored = !!localStorage.getItem('msa-raw-'+e.id);
+      var hasSP = !!(e.spFileName);
+      var available = hasSession||hasRawStored||hasSP;
       html += '<div class="wave-entry" data-eid="'+String(e.id)+'" style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--surface);border:1px solid var(--border);border-radius:6px;cursor:pointer;margin-bottom:6px;transition:border-color .15s;">';
       html += '<div style="flex:1;min-width:0;">';
       html += '<div style="font-size:11px;color:var(--text-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+e.fileName+'</div>';
       html += '<div style="font-size:10px;color:var(--text-3);margin-top:2px;">'+(e.date||'')+'</div>';
       html += '</div>';
       html += '<div style="text-align:right;margin-left:8px;flex-shrink:0;">';
-      html += '<div style="font-size:10px;font-weight:600;color:'+(available?'var(--success)':'var(--accent)')+';">'+(available?'● Ready':'↑ Re-upload')+'</div>';
+      html += '<div style="font-size:10px;font-weight:600;color:'+(available?'var(--success)':'var(--accent)')+';">'+(available?'● Ready':hasSP?'● In SharePoint':'↑ Re-upload')+'</div>';
       html += '<div style="font-size:10px;color:var(--text-3);">'+(e.totalUsers||0)+' users</div>';
       html += '</div></div>';
     });
