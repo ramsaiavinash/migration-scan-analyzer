@@ -1763,7 +1763,24 @@ function showHistory(){
   show('history-section');
   document.getElementById('header-home-btn').style.display='inline-flex';
   document.getElementById('header-dashboard-btn').style.display='inline-flex';
-  renderHistoryList(getHistory());
+  // Show local history first
+  var localHist = getHistory();
+  renderHistoryList(localHist);
+  // Then merge SP history
+  getSharedHistory().then(function(spItems){
+    if(spItems && spItems.length){
+      var localKeys = localHist.map(function(h){ return h.fileName+h.waveName; });
+      var newItems = spItems.filter(function(sp){
+        return !localKeys.includes(sp.fileName+sp.waveName);
+      });
+      if(newItems.length > 0){
+        var merged = localHist.concat(newItems).sort(function(a,b){
+          return new Date(b.date) - new Date(a.date);
+        });
+        renderHistoryList(merged);
+      }
+    }
+  });
 }
 function renderHistoryList(history, isSP){
   var list=document.getElementById('history-list');
