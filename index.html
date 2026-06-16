@@ -1733,8 +1733,18 @@ function saveToHistory(fileName,waveName,users){
     uploadedBy: entry.uploadedBy,
     users:      entry.users
   };
-  saveToSharePoint(spEntry).then(function(ok){
-    if(ok) showToast('✓ Saved to SharePoint — visible to your team');
+  saveToSharePoint(spEntry).then(function(spResult){
+    if(spResult){
+      showToast('✓ Saved to SharePoint — visible to your team');
+      if(typeof spResult === 'number'){
+        var hist = getHistory();
+        if(hist.length > 0){
+          hist[0].spItemId = spResult;
+          localStorage.setItem('msa-history', JSON.stringify(hist));
+          console.log('SP item ID saved:', spResult);
+        }
+      }
+    }
   });
 }
 function getHistory(){try{var h=JSON.parse(localStorage.getItem('msa-history')||'[]');if(!Array.isArray(h))return[];return h.filter(function(e){return e&&e.waveName&&e.fileName&&e.id;});}catch(e){localStorage.removeItem('msa-history');return[];}}
