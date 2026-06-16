@@ -1770,8 +1770,9 @@ function showHistory(){
   getSharedHistory().then(function(spItems){
     if(spItems && spItems.length){
       var localKeys = localHist.map(function(h){ return h.fileName+h.waveName; });
+      var deletedSP = JSON.parse(localStorage.getItem('msa-deleted-sp') || '[]');
       var newItems = spItems.filter(function(sp){
-        return !localKeys.includes(sp.fileName+sp.waveName);
+        return !localKeys.includes(sp.fileName+sp.waveName) && !deletedSP.includes(String(sp.id));
       });
       if(newItems.length > 0){
         var merged = localHist.concat(newItems).sort(function(a,b){
@@ -1839,6 +1840,10 @@ function deleteHistory(id,e){
         deleteFromSharePoint(spEntry.id);
         // Remove from _spItems cache
         window._spItems = window._spItems.filter(function(s){ return String(s.id)!==String(id); });
+        // Save deleted SP ID to localStorage so it doesn't come back
+        var deletedSP = JSON.parse(localStorage.getItem('msa-deleted-sp') || '[]');
+        deletedSP.push(String(id));
+        localStorage.setItem('msa-deleted-sp', JSON.stringify(deletedSP));
       }
     }
   }
@@ -2168,14 +2173,14 @@ function renderDashboard(){
       window._spItems = spItems;
       var local = getHistory();
       var localKeys = local.map(function(h){ return h.fileName+h.waveName; });
+      var deletedSPids = JSON.parse(localStorage.getItem('msa-deleted-sp') || '[]');
       var newItems = spItems.filter(function(sp){
-        return !localKeys.includes(sp.fileName+sp.waveName);
+        return !localKeys.includes(sp.fileName+sp.waveName) && !deletedSPids.includes(String(sp.id));
       });
       if(newItems.length > 0){
         var merged = local.concat(newItems);
         renderDashSummary(merged);
         if(t) t.textContent = 'Recent scan reports (' + merged.length + ')';
-        // Render all merged wave cards
         renderDashWaveCards(merged);
       }
     }
