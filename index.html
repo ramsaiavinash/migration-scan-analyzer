@@ -2146,14 +2146,8 @@ function renderDashboard(){
         var merged = local.concat(newItems);
         renderDashSummary(merged);
         if(t) t.textContent = 'Recent scan reports (' + merged.length + ')';
-        // Render SP wave cards
-        var grid = document.getElementById('waves-grid');
-        if(grid){
-          newItems.forEach(function(h){
-            var el = buildWaveCard(h);
-            grid.appendChild(el);
-          });
-        }
+        // Render all merged wave cards
+        renderDashWaveCards(merged);
       }
     }
   });
