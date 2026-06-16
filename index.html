@@ -328,7 +328,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
 
-@keyframes spLoader{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}</style>
+</style>
 <script>/*!
  * Chart.js v4.4.1
  * https://www.chartjs.org
@@ -876,7 +876,15 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
       </button>
     </div>
     <div style="text-align:center;font-size:11px;color:var(--text-3);margin-top:12px;">
-      🔒 Your email is stored locally only — ne
+      🔒 Your email is stored locally only — never shared
+    </div>
+  </div>
+</div>
+
+</main>
+<div id="toast"></div>
+
+<script>
 
 // SP List URL for View in SharePoint button
 const SP_LIST_URL = 'https://cognizantonline-my.sharepoint.com/personal/2389039_cognizant_com/Lists/ScanAnalyzerHistory/AllItems.aspx';
@@ -1182,9 +1190,8 @@ function loadFromHistory(id){
 
   // 5. Try SharePoint file
   if(entry.spFileName){
-    showSPLoader(entry.waveName);
+    showToast('Loading from SharePoint...');
     getFileFromSharePoint(entry.spFileName).then(function(csvText){
-      hideSPLoader();
       if(csvText){
         var result=Papa.parse(csvText,{header:true,skipEmptyLines:true,dynamicTyping:false});
         rawRows=result.data;
@@ -1195,7 +1202,6 @@ function loadFromHistory(id){
         prevSection='dashboard';
         showUserSelect();
       } else {
-        hideSPLoader();
         showToast('Please re-upload this scan report to view it');
       }
     });
@@ -2678,11 +2684,7 @@ function checkUserEmail(){
 }
 
 
-
-function showSPLoader(waveName){var el=document.getElementById('sp-loader');if(!el){el=document.createElement('div');el.id='sp-loader';el.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;';el.innerHTML='<div style="width:52px;height:52px;border:4px solid var(--border2);border-top:4px solid var(--accent);border-radius:50%;animation:spLoader 0.8s linear infinite;"></div><div style="text-align:center;"><div style="font-size:16px;font-weight:600;color:var(--text-1);">Loading from SharePoint</div><div id="sp-loader-wave" style="font-size:13px;color:var(--text-3);margin-top:6px;">'+(waveName||'')+'</div></div>';document.body.appendChild(el);}else{var wn=el.querySelector('#sp-loader-wave');if(wn)wn.textContent=waveName||'';el.style.display='flex';}}
-function hideSPLoader(){var el=document.getElementById('sp-loader');if(el)el.style.display='none';}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
-=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
 </script>
 </body>
 </html>
