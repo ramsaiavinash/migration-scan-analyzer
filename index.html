@@ -2181,7 +2181,19 @@ function renderDashboard(){
         var merged = local.concat(newItems);
         renderDashSummary(merged);
         if(t) t.textContent = 'Recent scan reports (' + merged.length + ')';
-        renderDashWaveCards(merged);
+        // Only append NEW SP cards - don't re-render local cards
+        var grid = document.getElementById('dash-waves-grid');
+        if(grid){
+          newItems.forEach(function(h){
+            var tempDiv = document.createElement('div');
+            tempDiv.innerHTML = buildWaveCardHTML(h);
+            var el = tempDiv.firstElementChild;
+            if(el){
+              grid.appendChild(el);
+              attachWaveCardEvents(el);
+            }
+          });
+        }
       }
     }
   });
@@ -2238,7 +2250,7 @@ function renderDashSummary(history){
   }).join('');
 }
 
-function renderDashWaveCards(history){
+function renderDashWaveCards(history, appendOnly){
   var grid = document.getElementById('dash-waves-grid');
   if(!grid) return;
 
