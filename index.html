@@ -2177,10 +2177,10 @@ function renderDashboard(){
       var newItems = spItems.filter(function(sp){
         return !localKeys.includes(sp.fileName+sp.waveName) && !deletedSPids.includes(String(sp.id));
       });
+      var merged = local.concat(newItems);
+      renderDashSummary(merged);
+      if(t) t.textContent = 'Recent scan reports (' + merged.length + ')';
       if(newItems.length > 0){
-        var merged = local.concat(newItems);
-        renderDashSummary(merged);
-        if(t) t.textContent = 'Recent scan reports (' + merged.length + ')';
         renderDashWaveCards(merged);
       }
     }
