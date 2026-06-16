@@ -2477,6 +2477,13 @@ function openUsersPanel(){
       if(!userMap[u]) userMap[u] = [];
       userMap[u].push(h.waveName);
     });
+    if((!h.users||!h.users.length) && h.uploadedBy){
+      if(!userMap[h.uploadedBy]) userMap[h.uploadedBy]=[];
+      if(!userMap[h.uploadedBy].includes(h.waveName)) userMap[h.uploadedBy].push(h.waveName);
+    }(h.users||[]).forEach(function(u){
+      if(!userMap[u]) userMap[u] = [];
+      userMap[u].push(h.waveName);
+    });
   });
 
   var totalUsers = Object.keys(userMap).length;
