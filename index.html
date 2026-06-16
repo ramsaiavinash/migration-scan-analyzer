@@ -2525,7 +2525,20 @@ function openSizePanel(){
   history.forEach(function(h){
     if(!h.waveName) return;
     if(!waveMap[h.waveName]) waveMap[h.waveName] = {totalSize:0, entries:[]};
-    var s = typeof h.totalSize==='number' ? h.totalSize : 0;
+    var s = 0;
+    if(typeof h.totalSize==='number') s = h.totalSize;
+    else if(typeof h.totalSize==='string' && h.totalSize){
+      // Parse string like "39.49 GB" or "245.08 GB"
+      var match = h.totalSize.match(/([\d.]+)\s*(GB|MB|TB|KB)?/i);
+      if(match){
+        var val = parseFloat(match[1]);
+        var unit = (match[2]||'GB').toUpperCase();
+        if(unit==='TB') s = val*1024*1024*1024*1024;
+        else if(unit==='GB') s = val*1024*1024*1024;
+        else if(unit==='MB') s = val*1024*1024;
+        else if(unit==='KB') s = val*1024;
+      }
+    }
     waveMap[h.waveName].totalSize += s;
     waveMap[h.waveName].entries.push(h);
   });
