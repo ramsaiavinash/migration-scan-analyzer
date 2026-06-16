@@ -2587,7 +2587,7 @@ async function getSharedHistory(){
             totalItems: parseInt(item.TotalItems) || 0,
             uploadedBy: item.UploadedBy || '',
             users: [],
-            spFileName: null,
+            spFileName: (item.Title && item.FileName) ? item.Title.replace(/[^a-z0-9]/gi,'_') + '_' + item.FileName : null,
             source: 'sharepoint'
           };
         });
