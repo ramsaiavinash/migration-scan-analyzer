@@ -1998,7 +1998,15 @@ async function saveToSharePoint(entry){
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(body)
     });
-    return r.status === 200 || r.status === 202;
+    if(r.status === 200 || r.status === 202){
+      try{
+        var txt = await r.text();
+        var data = JSON.parse(txt);
+        if(data && data.id) return data.id;
+      }catch(e){}
+      return true;
+    }
+    return false;
   }catch(e){
     console.log('SP save failed:', e.message);
     return false;
