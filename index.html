@@ -2171,6 +2171,8 @@ function renderDashboard(){
   getSharedHistory().then(function(spItems){
     if(spItems && spItems.length){
       window._spItems = spItems;
+      // Sync local history with SP - remove entries deleted by teammates
+      var changed = syncLocalWithSP(spItems);
       var local = getHistory();
       var localKeys = local.map(function(h){ return h.fileName+h.waveName; });
       var deletedSPids = JSON.parse(localStorage.getItem('msa-deleted-sp') || '[]');
@@ -2180,7 +2182,7 @@ function renderDashboard(){
       var merged = local.concat(newItems);
       renderDashSummary(merged);
       if(t) t.textContent = 'Recent scan reports (' + merged.length + ')';
-      if(newItems.length > 0){
+      if(changed || newItems.length > 0){
         renderDashWaveCards(merged);
       }
     }
@@ -2757,6 +2759,25 @@ function checkUserEmail(){
   }
 }
 
+
+
+function syncLocalWithSP(spItems){
+  if(!spItems || !spItems.length) return;
+  var spIds = spItems.map(function(s){ return String(s.id); });
+  var spWaves = spItems.map(function(s){ return s.fileName+s.waveName; });
+  var local = getHistory();
+  var updated = local.filter(function(h){
+    // Keep if has no spItemId (not yet synced) OR spItemId exists in SP
+    if(!h.spItemId) return true;
+    return spIds.includes(String(h.spItemId));
+  });
+  if(updated.length < local.length){
+    console.log('Removed', local.length - updated.length, 'deleted entries from local history');
+    localStorage.setItem('msa-history', JSON.stringify(updated));
+    return true; // history changed
+  }
+  return false;
+}
 
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
 </script>
