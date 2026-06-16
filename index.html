@@ -2762,19 +2762,20 @@ function checkUserEmail(){
 
 
 function syncLocalWithSP(spItems){
-  if(!spItems || !spItems.length) return;
+  if(!spItems || !spItems.length) return false;
+  var spKeys = spItems.map(function(s){ return s.fileName+s.waveName; });
   var spIds = spItems.map(function(s){ return String(s.id); });
-  var spWaves = spItems.map(function(s){ return s.fileName+s.waveName; });
   var local = getHistory();
   var updated = local.filter(function(h){
-    // Keep if has no spItemId (not yet synced) OR spItemId exists in SP
-    if(!h.spItemId) return true;
-    return spIds.includes(String(h.spItemId));
+    // If has spItemId - check by ID
+    if(h.spItemId) return spIds.includes(String(h.spItemId));
+    // Otherwise check by fileName+waveName
+    return spKeys.includes(h.fileName+h.waveName);
   });
   if(updated.length < local.length){
-    console.log('Removed', local.length - updated.length, 'deleted entries from local history');
+    console.log('Removed', local.length - updated.length, 'deleted entries');
     localStorage.setItem('msa-history', JSON.stringify(updated));
-    return true; // history changed
+    return true;
   }
   return false;
 }
