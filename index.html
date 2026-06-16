@@ -749,81 +749,1942 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:10px;">
     <div>
       <h2 style="font-size:18px;font-weight:700;letter-spacing:-.3px;">About ScanAnalyzer</h2>
-      <p style="color:var(--text-2);font-size:12px;margin-top:3px;">Google Drive to OneDrive Migration Analysis Tool &middot; v2.0</p>
+      <p style="color:var(--text-2);font-size:12px;margin-top:3px;">Google Drive → OneDrive Migration Analysis Tool</p>
     </div>
     <button class="btn btn-sm" onclick="hideAbout()">
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Back
     </button>
   </div>
 
+  <!-- What is it -->
   <div class="card" style="margin-bottom:16px;">
-    <div class="card-hdr"><div class="card-title">&#127919; What is ScanAnalyzer?</div></div>
+    <div class="card-hdr"><div class="card-title">🎯 What is ScanAnalyzer?</div></div>
     <div class="card-body">
-      <p style="font-size:13px;color:var(--text-2);line-height:1.9;">ScanAnalyzer is a <strong style="color:var(--text-1);">browser-based migration analysis tool</strong> built for the CHS project team at Cognizant. It eliminates hours of manual Excel work by instantly parsing Microsoft Migration Manager scan reports and delivering a complete per-user breakdown of data size, file counts, formats, and folder structure.<br><br>Every scan is automatically synced to SharePoint so your entire team can access, reload, and track migration waves from anywhere, anytime. No server. No installation. Just open the link and go.</p>
+      <p style="font-size:13px;color:var(--text-2);line-height:1.8;">ScanAnalyzer is a <strong style="color:var(--text-1);">browser-based migration analysis tool</strong> built for Google Drive to OneDrive migration teams. It instantly parses Microsoft Migration Manager scan reports and gives a full per-user breakdown — saving 2-3 hours of manual Excel work per wave.</p>
     </div>
   </div>
 
+  <!-- How it works -->
   <div class="card" style="margin-bottom:16px;">
-    <div class="card-hdr"><div class="card-title">&#9889; How to use</div></div>
+    <div class="card-hdr"><div class="card-title">⚡ How it works</div></div>
     <div class="card-body">
       <div style="display:flex;flex-direction:column;gap:12px;">
-        <div style="display:flex;gap:14px;align-items:flex-start;"><div style="min-width:28px;height:28px;background:var(--accent-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--accent);">1</div><div style="font-size:13px;color:var(--text-2);padding-top:4px;">Export scan report ZIP from <strong style="color:var(--text-1);">Microsoft Migration Manager</strong></div></div>
-        <div style="display:flex;gap:14px;align-items:flex-start;"><div style="min-width:28px;height:28px;background:var(--accent-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--accent);">2</div><div style="font-size:13px;color:var(--text-2);padding-top:4px;">Click <strong style="color:var(--text-1);">Upload New Scan</strong> on the Dashboard and name your wave</div></div>
-        <div style="display:flex;gap:14px;align-items:flex-start;"><div style="min-width:28px;height:28px;background:var(--accent-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--accent);">3</div><div style="font-size:13px;color:var(--text-2);padding-top:4px;">Click any <strong style="color:var(--text-1);">wave card</strong> to see per-user breakdown</div></div>
-        <div style="display:flex;gap:14px;align-items:flex-start;"><div style="min-width:28px;height:28px;background:var(--accent-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--accent);">4</div><div style="font-size:13px;color:var(--text-2);padding-top:4px;">Click a <strong style="color:var(--text-1);">user card</strong> to drill into charts, formats, and full data grid</div></div>
-        <div style="display:flex;gap:14px;align-items:flex-start;"><div style="min-width:28px;height:28px;background:var(--accent-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--accent);">5</div><div style="font-size:13px;color:var(--text-2);padding-top:4px;"><strong style="color:var(--text-1);">Export to Excel</strong> (5 sheets) or generate a migration email</div></div>
-        <div style="display:flex;gap:14px;align-items:flex-start;"><div style="min-width:28px;height:28px;background:var(--accent-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--accent);">6</div><div style="font-size:13px;color:var(--text-2);padding-top:4px;">Wave cards showing <span style="color:var(--success);">&#9679; In SharePoint</span> reload without re-uploading</div></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card" style="margin-bottom:16px;">
-    <div class="card-hdr"><div class="card-title">&#10024; Features</div></div>
-    <div class="card-body">
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;">
-        <div style="background:var(--surface2);border-radius:var(--r-sm);padding:12px;"><div style="font-size:16px;margin-bottom:6px;">&#128202;</div><div style="font-size:12px;font-weight:600;color:var(--text-1);margin-bottom:3px;">Per-User Analysis</div><div style="font-size:11px;color:var(--text-3);line-height:1.6;">Data size, files, formats and folders per user with Heavy/Medium/Normal badge</div></div>
-        <div style="background:var(--surface2);border-radius:var(--r-sm);padding:12px;"><div style="font-size:16px;margin-bottom:6px;">&#127970;</div><div style="font-size:12px;font-weight:600;color:var(--text-1);margin-bottom:3px;">Team Dashboard</div><div style="font-size:11px;color:var(--text-3);line-height:1.6;">All team uploads in one shared dashboard across all waves</div></div>
-        <div style="background:var(--surface2);border-radius:var(--r-sm);padding:12px;"><div style="font-size:16px;margin-bottom:6px;">&#9729;&#65039;</div><div style="font-size:12px;font-weight:600;color:var(--text-1);margin-bottom:3px;">SharePoint Sync</div><div style="font-size:11px;color:var(--text-3);line-height:1.6;">Every scan auto-saved to SharePoint via Power Automate</div></div>
-        <div style="background:var(--surface2);border-radius:var(--r-sm);padding:12px;"><div style="font-size:16px;margin-bottom:6px;">&#128465;&#65039;</div><div style="font-size:12px;font-weight:600;color:var(--text-1);margin-bottom:3px;">Sync Delete</div><div style="font-size:11px;color:var(--text-3);line-height:1.6;">Delete from tool also removes from SharePoint list</div></div>
-        <div style="background:var(--surface2);border-radius:var(--r-sm);padding:12px;"><div style="font-size:16px;margin-bottom:6px;">&#128231;</div><div style="font-size:12px;font-weight:600;color:var(--text-1);margin-bottom:3px;">Email Generator</div><div style="font-size:11px;color:var(--text-3);line-height:1.6;">Auto-generate migration emails per user ready to send</div></div>
-        <div style="background:var(--surface2);border-radius:var(--r-sm);padding:12px;"><div style="font-size:16px;margin-bottom:6px;">&#128229;</div><div style="font-size:12px;font-weight:600;color:var(--text-1);margin-bottom:3px;">Excel Export</div><div style="font-size:11px;color:var(--text-3);line-height:1.6;">5-sheet Excel: Summary, Users, Formats, Folders, Full Data</div></div>
-        <div style="background:var(--surface2);border-radius:var(--r-sm);padding:12px;"><div style="font-size:16px;margin-bottom:6px;">&#128269;</div><div style="font-size:12px;font-weight:600;color:var(--text-1);margin-bottom:3px;">Full Data Grid</div><div style="font-size:11px;color:var(--text-3);line-height:1.6;">Filter, sort, search 250K+ rows with AG Grid</div></div>
-        <div style="background:var(--surface2);border-radius:var(--r-sm);padding:12px;"><div style="font-size:16px;margin-bottom:6px;">&#128274;</div><div style="font-size:12px;font-weight:600;color:var(--text-1);margin-bottom:3px;">Zero Data Transmission</div><div style="font-size:11px;color:var(--text-3);line-height:1.6;">CSV parsing in browser — raw data never leaves your machine</div></div>
-        <div style="background:var(--surface2);border-radius:var(--r-sm);padding:12px;"><div style="font-size:16px;margin-bottom:6px;">&#128100;</div><div style="font-size:12px;font-weight:600;color:var(--text-1);margin-bottom:3px;">User Tracking</div><div style="font-size:11px;color:var(--text-3);line-height:1.6;">Each member identified by email — uploads tagged in SharePoint</div></div>
-        <div style="background:var(--surface2);border-radius:var(--r-sm);padding:12px;"><div style="font-size:16px;margin-bottom:6px;">&#127769;</div><div style="font-size:12px;font-weight:600;color:var(--text-1);margin-bottom:3px;">Light / Dark Mode</div><div style="font-size:11px;color:var(--text-3);line-height:1.6;">Toggle themes — preference saved automatically</div></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card" style="margin-bottom:16px;">
-    <div class="card-hdr"><div class="card-title">&#128279; SharePoint Integration</div></div>
-    <div class="card-body">
-      <p style="font-size:13px;color:var(--text-2);line-height:1.8;margin-bottom:12px;">Every action backed by Power Automate flows connected to Cognizant SharePoint:</p>
-      <div style="display:flex;flex-direction:column;gap:8px;">
-        <div style="display:flex;gap:10px;font-size:12px;color:var(--text-2);align-items:center;"><span style="color:var(--success);">&#9679;</span><strong style="color:var(--text-1);">ScanAnalyzerHistory</strong> list &mdash; wave metadata visible to whole team</div>
-        <div style="display:flex;gap:10px;font-size:12px;color:var(--text-2);align-items:center;"><span style="color:var(--success);">&#9679;</span><strong style="color:var(--text-1);">ScanAnalyzerFiles</strong> folder &mdash; CSV files for reload without re-uploading</div>
-        <div style="display:flex;gap:10px;font-size:12px;color:var(--text-2);align-items:center;"><span style="color:var(--success);">&#9679;</span>5 Power Automate flows: Save, SaveFile, GetFile, GetHistory, DeleteItem</div>
-        <div style="display:flex;gap:10px;font-size:12px;color:var(--text-2);align-items:center;"><span style="color:var(--danger);">&#9888;</span>Always delete from the <strong style="color:var(--text-1);">tool</strong> &mdash; not directly from SharePoint</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-hdr"><div class="card-title">&#128104;&#8205;&#128187; Built by</div></div>
-    <div class="card-body">
-      <div style="display:flex;align-items:center;gap:16px;">
-        <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#7c3aed);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:white;flex-shrink:0;">K</div>
-        <div>
-          <div style="font-size:15px;font-weight:700;color:var(--text-1);">Kanigolla, Rama Sai Avinash</div>
-          <div style="font-size:12px;color:var(--text-3);margin-top:2px;">Programmer Analyst Trainee &middot; CIS Microsoft M365 Professional Services &middot; Cognizant</div>
-          <div style="font-size:12px;color:var(--accent);margin-top:4px;">2389039@cognizant.com</div>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="width:32px;height:32px;background:var(--accent-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--accent);flex-shrink:0;">1</div>
+          <div style="font-size:13px;color:var(--text-2);">Export scan report ZIP from <strong style="color:var(--text-1);">Microsoft Migration Manager</strong></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="width:32px;height:32px;background:var(--accent-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--accent);flex-shrink:0;">2</div>
+          <div style="font-size:13px;color:var(--text-2);">Click <strong style="color:var(--text-1);">Upload Scan Report</strong> → select wave name → select file</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="width:32px;height:32px;background:var(--accent-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--accent);flex-shrink:0;">3</div>
+          <div style="font-size:13px;color:var(--text-2);">Wave card created → click it → select a user → view full <strong style="color:var(--text-1);">dashboard, charts, and insights</strong></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="width:32px;height:32px;background:var(--accent-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--accent);flex-shrink:0;">4</div>
+          <div style="font-size:13px;color:var(--text-2);">Export to <strong style="color:var(--text-1);">Excel</strong> or generate <strong style="color:var(--text-1);">client email</strong> in one click</div>
         </div>
       </div>
-      <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border1);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-        <div style="font-size:11px;color:var(--text-3);">ScanAnalyzer v2.0 &middot; June 2026 &middot; CHS Project &middot; Google Drive to OneDrive Migration</div>
-        <div style="font-size:11px;color:var(--text-3);">Chart.js &middot; PapaParse &middot; AG Grid &middot; SheetJS &middot; JSZip &middot; Power Automate</div>
+    </div>
+  </div>
+
+  <!-- Features -->
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-hdr"><div class="card-title">📊 Key Features</div></div>
+    <div class="card-body">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;">
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Per-user data breakdown</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>4-tier risk badges (Normal / Medium / Medium-High / Heavy)</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Google Workspace conversion highlights</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>File format breakdown with charts</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Excel export with 5 sheets</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Client email generator</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Full data grid — filter, sort, export CSV</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Supports multi-user scan reports</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>SharePoint history tracking</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Light / Dark mode</div>
       </div>
     </div>
   </div>
 
-</div>>
+  <!-- Privacy -->
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-hdr"><div class="card-title">🔒 Privacy & Security</div></div>
+    <div class="card-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div style="background:var(--success-bg);border:1px solid var(--success-border);border-radius:var(--r-sm);padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:var(--success);margin-bottom:4px;">✅ What stays on your laptop</div>
+          <div style="font-size:11px;color:var(--text-2);line-height:1.6;">Raw scan data · File paths · User details · Browser history</div>
+        </div>
+        <div style="background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:var(--r-sm);padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:4px;">📤 What saves to SharePoint</div>
+          <div style="font-size:11px;color:var(--text-2);line-height:1.6;">Wave name · File name · User count · Total size · Total files</div>
+        </div>
+      </div>
+      <p style="font-size:12px;color:var(--text-3);margin-top:12px;">No scan file content ever leaves the browser. GitHub Pages only serves the HTML file — it has no server, no database, and cannot receive any data.</p>
+    </div>
+  </div>
+
+  <!-- Tech -->
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-hdr"><div class="card-title">⚙️ Technology</div></div>
+    <div class="card-body">
+      <div style="display:flex;flex-wrap:wrap;gap:8px;">
+        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">HTML5 + CSS3 + JavaScript</span>
+        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">Chart.js 4.4.1</span>
+        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">AG Grid Community 31.3.2</span>
+        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">PapaParse 5.4.1</span>
+        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">JSZip 3.10.1</span>
+        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">SheetJS 0.18.5</span>
+        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">Power Automate</span>
+        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">SharePoint List</span>
+        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">GitHub Pages (hosting)</span>
+        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">3.3 MB self-contained</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Version -->
+  <div style="text-align:center;padding:16px;color:var(--text-3);font-size:11px;">
+    ScanAnalyzer v1.0 · Built by Kanigolla, Rama Sai Avinash (Cognizant) · June 2026
+  </div>
+</div>
+
+
+
+<!-- EMAIL MODAL -->
+<div class="modal-overlay" id="email-modal" style="display:none;">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-icon">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </div>
+      <div>
+        <div class="modal-title">Welcome to ScanAnalyzer</div>
+        <div class="modal-sub">Enter your Cognizant email to get started</div>
+      </div>
+    </div>
+    <input id="user-email-input" type="email" placeholder="e.g. yourname@cognizant.com"
+      style="width:100%;padding:10px 14px;border:1.5px solid var(--border2);border-radius:var(--r-sm);font-size:14px;background:var(--surface2);color:var(--text-1);outline:none;font-family:inherit;transition:border-color .15s;margin-top:16px;"
+      onkeydown="if(event.key==='Enter')confirmUserEmail()"
+      oninput="updateEmailConfirm(this.value)">
+    <div id="email-error" style="color:var(--danger);font-size:11px;margin-top:6px;display:none;">Please enter a valid Cognizant email</div>
+    <div class="modal-footer">
+      <button class="btn btn-primary btn-sm" id="email-confirm-btn" onclick="confirmUserEmail()" disabled style="opacity:.5;cursor:not-allowed;width:100%;justify-content:center;">
+        Continue →
+      </button>
+    </div>
+    <div style="text-align:center;font-size:11px;color:var(--text-3);margin-top:12px;">
+      🔒 Your email is stored locally only — never shared
+    </div>
+  </div>
+</div>
+
+</main>
+<div id="toast"></div>
+
+<script>
+
+// SP List URL for View in SharePoint button
+const SP_LIST_URL = 'https://cognizantonline-my.sharepoint.com/personal/2389039_cognizant_com/Lists/ScanAnalyzerHistory/AllItems.aspx';
+const PA_SAVE_URL = 'https://defaultde08c40719b9427d9fe8edf254300c.a7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/b5aa8b13fca648e3970b24d968bcc632/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Z2_vHjhXLvyav59_KrnekMgfh3e3eJ07y_Kph08hxKg';
+const PA_SAVE_FILE_URL = 'https://defaultde08c40719b9427d9fe8edf254300c.a7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/d2a8fb4866fb4ce980ba281c8f2cd98c/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=GQu77VNpZX9KCEdEAiY19kvKkRxDKuOOFxOw8h_8Ufk';
+const PA_GET_FILE_URL = 'https://defaultde08c40719b9427d9fe8edf254300c.a7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/1399fc2ef7a244589085784ce7722e54/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=CZjl9z1jKKSTCt3rXbIPOe2PfpAoy7cnkrBgkPkJHN0';
+
+// ── THEME ────────────────────────────────
+function toggleTheme(){
+  const h=document.documentElement,d=h.getAttribute('data-theme')==='dark';
+  h.setAttribute('data-theme',d?'light':'dark');
+  document.getElementById('theme-knob').textContent=d?'☀️':'🌙';
+  localStorage.setItem('msa-theme',d?'light':'dark');
+  if(gridApi)refreshGridTheme();
+  if(globalStats){renderDonut(globalStats);renderBar(globalStats);}
+}
+(function(){
+  const t=localStorage.getItem('msa-theme')||'light';
+  document.documentElement.setAttribute('data-theme',t);
+  window.addEventListener('DOMContentLoaded',()=>{
+    document.getElementById('theme-knob').textContent=t==='dark'?'🌙':'☀️';
+    renderWaveCards();
+    checkUserEmail();
+    updateHeaderEmail();
+  });
+})();
+function isDark(){return document.documentElement.getAttribute('data-theme')==='dark';}
+
+// ── CONSTANTS ─────────────────────────────
+const PALETTE=['#4F46E5','#7C3AED','#059669','#D97706','#DC2626','#0891B2','#EC4899','#84CC16','#F97316','#6366F1','#14B8A6','#A855F7'];
+const AVATAR_COLORS=['linear-gradient(135deg,#4F46E5,#7C3AED)','linear-gradient(135deg,#F97316,#EC4899)','linear-gradient(135deg,#059669,#0891B2)','linear-gradient(135deg,#D97706,#DC2626)','linear-gradient(135deg,#6366F1,#7C3AED)','linear-gradient(135deg,#14B8A6,#4F46E5)'];
+const EXT_CAT={
+  gworkspace:new Set(['gdoc','gsheet','gslide','gform','gdraw','gsite','gjam','gmap','gscript','gshortcut']),
+  document:new Set(['pdf','doc','docx','xls','xlsx','xlsm','ppt','pptx','txt','rtf','odt','ods','odp','msg','eml','pages','numbers','key','csv']),
+  image:new Set(['jpg','jpeg','png','gif','svg','webp','bmp','tiff','tif','ico','heic','raw','cr2','nef','psd','ai','eps','snag']),
+  video:new Set(['mp4','avi','wmv','mov','mkv','flv','webm','m4v','mpg','mpeg','3gp']),
+  archive:new Set(['zip','rar','7z','tar','gz','bz2','xz','cab','iso','dmg','pst','ost']),
+  code:new Set(['py','pyc','js','ts','html','htm','css','java','c','cpp','cs','rb','php','go','rs','swift','kt','sh','bash','json','xml','yaml','yml','sql','r','m','ipynb']),
+  system:new Set(['exe','dll','sys','msi','bat','cmd','vbs','com','scr','inf','lnk','url','deploy','dl_']),
+  data:new Set(['db','sqlite','mdb','accdb','log','dat','bak','tmp'])
+};
+const GW_CONVERSION={
+  gdoc:{icon:'📄',converts:'Google Doc → Word (.docx)',color:'#4F46E5'},
+  gsheet:{icon:'📊',converts:'Google Sheet → Excel (.xlsx)',color:'#059669'},
+  gslide:{icon:'📽️',converts:'Google Slide → PowerPoint (.pptx)',color:'#D97706'},
+  gform:{icon:'📋',converts:'Google Form → Microsoft Forms',color:'#7C3AED'},
+  gdraw:{icon:'🎨',converts:'Google Drawing → Export as PDF/PNG first',color:'#0891B2'},
+  gsite:{icon:'🌐',converts:'Google Site → SharePoint (separate project)',color:'#DC2626'},
+  gjam:{icon:'🎵',converts:'Google Jamboard → Whiteboard (manual)',color:'#EA580C'},
+  gscript:{icon:'⚙️',converts:'Apps Script → Power Automate (manual rebuild)',color:'#6B7280'},
+  gshortcut:{icon:'🔗',converts:'Google Shortcut → skipped during migration',color:'#9CA3AF'},
+};
+const CAT_LABEL={gworkspace:'Google Workspace',document:'Document',image:'Image',video:'Video',archive:'Archive',code:'Code',system:'System',data:'Data',other:'Other'};
+const CAT_COLOR={gworkspace:'#4285F4',document:'#4F46E5',image:'#059669',video:'#7C3AED',archive:'#D97706',code:'#0891B2',system:'#DC2626',data:'#EC4899',other:'#9CA3AF'};
+function getCategory(ext){const e=(ext||'').toLowerCase();for(const[c,s]of Object.entries(EXT_CAT)){if(s.has(e))return c;}return 'other';}
+
+// ── STATE ──────────────────────────────────
+let rawRows=[],allUsers={},globalStats=null,currentWaveName='';
+const sessionStore={}; // keeps parsed data in memory during session
+let donutChart=null,barChart=null,barChartMode='size';
+let allFormatsData=[],sortMode='size',sortDir={};
+let gridApi=null,viewTab='all',prevSection='landing';
+
+function fmt(b){if(!b)return'0 B';if(b>=1e12)return(b/1e12).toFixed(2)+' TB';if(b>=1e9)return(b/1e9).toFixed(2)+' GB';if(b>=1e6)return(b/1e6).toFixed(1)+' MB';if(b>=1e3)return(b/1e3).toFixed(0)+' KB';return b+' B';}
+function fmtN(n){return Number(n).toLocaleString();}
+function show(id){document.getElementById(id).style.display='block';}
+function hide(id){document.getElementById(id).style.display='none';}
+function tick(ms=30){return new Promise(r=>setTimeout(r,ms));}
+
+// ── WAVE DETECTION ─────────────────────────
+function detectWaveName(filename){
+  const f = filename.toLowerCase();
+  if(f.includes('pilot')) return 'Pilot Wave';
+  const wm = f.match(/wave[\s_-]?(\d+)/i);
+  if(wm) return 'Wave ' + wm[1];
+  const wm2 = f.match(/w(\d+)/i);
+  if(wm2) return 'Wave ' + wm2[1];
+  const dm = f.match(/(\d{4}[-_]\d{2}[-_]\d{2})/);
+  if(dm) return 'Scan ' + dm[1];
+  return 'Scan Report';
+}
+function getWaveIcon(name){
+  if(name.toLowerCase().includes('pilot')) return '🚀';
+  const m = name.match(/\d+/);
+  if(m){const n=parseInt(m[0]);if(n===1)return '1️⃣';if(n===2)return '2️⃣';if(n===3)return '3️⃣';if(n===4)return '4️⃣';if(n===5)return '5️⃣';}
+  return '📊';
+}
+
+// ── FILE UPLOAD ─────────────────────────────
+function setProgress(pct,label,stats){
+  document.getElementById('progress-bar').style.width=pct+'%';
+  document.getElementById('progress-label').textContent=label;
+  if(stats!==undefined)document.getElementById('progress-stats').textContent=stats;
+}
+
+async function handleFile(file){
+  if(!file) return;
+  hide('landing-section');
+  hide('dashboard-section');
+  show('progress-section');
+  document.getElementById('progress-filename').textContent=file.name+' — '+fmt(file.size);
+  setProgress(10,'Reading file…','');
+  let csvText='';
+  try{
+    if(file.name.toLowerCase().endsWith('.zip')){
+      setProgress(25,'Extracting ZIP…','');
+      const zip=await JSZip.loadAsync(file);
+      const csvFile=Object.values(zip.files).find(f=>f.name.toLowerCase().endsWith('.csv'));
+      if(!csvFile)throw new Error('No CSV found inside ZIP.');
+      setProgress(45,'Extracting CSV…',csvFile.name);
+      csvText=await csvFile.async('text');
+    }else{csvText=await file.text();}
+    setProgress(65,'Parsing rows…','');await tick();
+    const result=Papa.parse(csvText,{header:true,skipEmptyLines:true,dynamicTyping:false});
+    rawRows=result.data;
+    setProgress(85,'Building user breakdown…',fmtN(rawRows.length)+' rows');await tick();
+    allUsers=buildAllUsers(rawRows);
+    if(!currentWaveName) currentWaveName=detectWaveName(file.name);
+    setProgress(100,'Done!','');
+    // Save to session store for instant reload
+    const sessionKey = currentWaveName+'_'+file.name;
+    sessionStore[sessionKey]={rawRows:[...rawRows],waveName:currentWaveName,fileName:file.name};
+    saveToHistory(file.name,currentWaveName,allUsers);
+    // Save CSV to SharePoint for team access
+    setProgress(95,'Saving to SharePoint...','');
+    var spFileName = await saveFileToSharePoint(file.name, currentWaveName, csvText);
+    if(spFileName){
+      // Store SP filename in history entry
+      var hist = getHistory();
+      if(hist.length > 0){ hist[0].spFileName = spFileName; localStorage.setItem('msa-history', JSON.stringify(hist)); }
+    }
+    await tick(300);
+    hide('progress-section');
+    showDashboard();
+    showToast('Scan uploaded! View in Dashboard');
+  }catch(err){
+    hide('progress-section');show('landing-section');
+    showToast('Error: '+err.message);
+  }
+  // reset file input
+  document.getElementById('hero-file-input').value='';
+  // Don't reset currentWaveName here - needed for session store key
+}
+
+// ── BUILD USERS ─────────────────────────────
+function buildAllUsers(rows){
+  const uMap={};
+  rows.forEach(r=>{const u=r.SourcePath||'Unknown';if(!uMap[u])uMap[u]=[];uMap[u].push(r);});
+  const result={};
+  for(const[user,uRows]of Object.entries(uMap)){result[user]=analyzeRows(uRows,user);}
+  return result;
+}
+function analyzeRows(rows,userName){
+  const files=rows.filter(r=>(r.SourceType||'').toLowerCase()==='file');
+  const folders=rows.filter(r=>(r.SourceType||'').toLowerCase()==='folder');
+  const totalSize=files.reduce((s,r)=>s+(parseInt(r.SourceSize)||0),0);
+  const initials=userName.includes('@')?userName.split('@')[0].slice(0,2).toUpperCase():userName.slice(0,2).toUpperCase();
+  const extMap={};
+  files.forEach(r=>{let ext=(r.SourceExtension||'').replace(/^\./,'').toLowerCase().trim()||'(none)';if(!extMap[ext])extMap[ext]={count:0,size:0};extMap[ext].count++;extMap[ext].size+=parseInt(r.SourceSize)||0;});
+  const extList=Object.entries(extMap).map(([ext,d])=>({ext,count:d.count,size:d.size,avg:d.count?Math.round(d.size/d.count):0,category:getCategory(ext)})).sort((a,b)=>b.size-a.size);
+
+  // ── PATH LENGTH & SPECIAL CHARACTER VALIDATION ──
+  // OneDrive path limit: 400 characters total
+  // Source: https://support.microsoft.com/en-us/office/restrictions-and-limitations-in-onedrive-64883a5d-228e-48f5-b3d2-eb39e07630fa
+  // Special chars not allowed in OneDrive/SharePoint file names
+  var SPECIAL_PATH_RE = /[\*\?"<>\|]/g;   // chars not allowed in path segments
+
+
+  // Get all available path-related column names from first row
+  var sampleRow = files[0] || {};
+  var availableCols = Object.keys(sampleRow);
+  
+  // Detect which column has the full path
+  // Migration Manager uses: FullPath, ItemPath, SourcePath (not user), Path
+  var pathCol = '';
+  ['FullPath','ItemPath','Path','FilePath'].forEach(function(col){
+    if(availableCols.indexOf(col) > -1 && !pathCol) pathCol = col;
+  });
+  
+
+  return{
+    userName, initials, rows, files, folders,
+    totalSize, totalItems:rows.length,
+    totalFiles:files.length, totalFolders:folders.length,
+    extList, uniqueFormats:extList.length
+  };
+}
+
+// ── USER SELECT ──────────────────────────────
+function showUserSelect(){
+  prevSection='dashboard';
+  hide('progress-section');hide('landing-section');hide('app-section');
+  hide('history-section');hide('dashboard-section');
+  // Show both Home and Dashboard in header
+  document.getElementById('header-home-btn').style.display='inline-flex';
+  document.getElementById('header-dashboard-btn').style.display='inline-flex';
+  show('user-select-section');
+  const users=Object.values(allUsers||{}).sort(function(a,b){return b.totalSize-a.totalSize;});
+  if(!users.length){show('landing-section');hide('user-select-section');showToast('No users found in scan report');return;}
+  const totalSize=users.reduce((s,u)=>s+u.totalSize,0);
+  const icon=getWaveIcon(currentWaveName);
+  const isPilot=currentWaveName.toLowerCase().includes('pilot');
+
+  document.getElementById('bc-wave').textContent=currentWaveName;
+  document.getElementById('wave-info-icon').textContent=icon;
+  document.getElementById('wave-info-title').textContent=currentWaveName+' — Scan Report';
+  document.getElementById('wave-info-sub').textContent=users.length+' user'+(users.length>1?'s':'')+' found in this scan report';
+  document.getElementById('wave-info-stats').innerHTML=`<div class="wi-stat"><div class="wi-stat-val">${users.length}</div><div class="wi-stat-label">Users</div></div><div class="wi-stat"><div class="wi-stat-val">${fmt(totalSize)}</div><div class="wi-stat-label">Total size</div></div><div class="wi-stat"><div class="wi-stat-val">${fmtN(rawRows.length)}</div><div class="wi-stat-label">Items</div></div>`;
+
+  document.getElementById('users-grid').innerHTML=users.map((u,i)=>{
+    const isHeavy     = u.totalSize > 50e9  && u.totalFiles > 100000;
+    const isMediumHigh = (u.totalSize > 50e9  || u.totalFiles > 100000) && !isHeavy;
+    const isMedium     = !isHeavy && !isMediumHigh && (u.totalSize > 10e9 || u.totalFiles > 25000);
+    const badge = isHeavy ? 'badge-heavy">Heavy' : isMediumHigh ? 'badge-medium-high">Medium-High' : isMedium ? 'badge-medium">Medium' : 'badge-normal">Normal';
+    const ac=AVATAR_COLORS[i%AVATAR_COLORS.length];
+    return`<div class="user-card" data-idx="${i}" onclick="selectUserByIndex(this.getAttribute('data-idx'))">
+      <span class="uc-rank">#${i+1}</span>
+      <div class="user-card-top">
+        <div class="uc-avatar" style="background:${ac}">${u.initials}</div>
+        <div><div class="uc-name">${u.userName}</div><span class="uc-badge ${badge}</span></div>
+      </div>
+      <div class="uc-stats">
+        <div class="uc-stat"><div class="uc-stat-label">Data size</div><div class="uc-stat-val">${fmt(u.totalSize)}</div></div>
+        <div class="uc-stat"><div class="uc-stat-label">Files</div><div class="uc-stat-val">${fmtN(u.totalFiles)}</div></div>
+        <div class="uc-stat"><div class="uc-stat-label">Formats</div><div class="uc-stat-val">${u.uniqueFormats}</div></div>
+        <div class="uc-stat"><div class="uc-stat-label">Folders</div><div class="uc-stat-val">${fmtN(u.totalFolders)}</div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function selectUserByIndex(idx){
+  const users=Object.values(allUsers).sort((a,b)=>b.totalSize-a.totalSize);
+  if(users[idx]) selectUser(users[idx].userName);
+}
+function selectUser(userName){
+  globalStats=allUsers[userName];
+  renderApp(globalStats);
+}
+
+// ── WAVE CARDS ON LANDING ───────────────────
+
+function loadFromHistory(id){
+  var history=getHistory();
+  const entry=history.find(h=>h.id==id);
+  if(!entry){ showToast('Entry not found'); return; }
+
+  // 1. Try session store using waveName+fileName key
+  const sessionKey=entry.waveName+'_'+entry.fileName;
+  if(sessionStore[sessionKey]){
+    rawRows=sessionStore[sessionKey].rawRows;
+    allUsers=buildAllUsers(rawRows);
+    currentWaveName=entry.waveName;
+    hide('landing-section');
+    hide('dashboard-section');
+    prevSection='dashboard';
+    showUserSelect();
+    return;
+  }
+
+  // 2. Try any session store entry matching waveName
+  const anyKey=Object.keys(sessionStore).find(k=>sessionStore[k].waveName===entry.waveName);
+  if(anyKey){
+    rawRows=sessionStore[anyKey].rawRows;
+    allUsers=buildAllUsers(rawRows);
+    currentWaveName=entry.waveName;
+    hide('landing-section');
+    hide('dashboard-section');
+    prevSection='dashboard';
+    showUserSelect();
+    return;
+  }
+
+  // 3. Try separate localStorage rawData key
+  try{
+    var stored = localStorage.getItem('msa-raw-'+entry.id);
+    if(stored){
+      var parsed = JSON.parse(stored);
+      if(parsed && parsed.length){
+        rawRows=parsed;
+        allUsers=buildAllUsers(rawRows);
+        currentWaveName=entry.waveName;
+        hide('landing-section');
+        hide('dashboard-section');
+        prevSection='dashboard';
+        showUserSelect();
+        return;
+      }
+    }
+  }catch(e){}
+
+  // 4. Try legacy rawData on entry itself
+  if(entry.rawData&&entry.rawData.length){
+    rawRows=entry.rawData;
+    allUsers=buildAllUsers(rawRows);
+    currentWaveName=entry.waveName;
+    hide('landing-section');
+    hide('dashboard-section');
+    prevSection='dashboard';
+    showUserSelect();
+    return;
+  }
+
+  // 5. Try SharePoint file
+  if(entry.spFileName){
+    showToast('Loading from SharePoint...');
+    getFileFromSharePoint(entry.spFileName).then(function(csvText){
+      if(csvText){
+        var result=Papa.parse(csvText,{header:true,skipEmptyLines:true,dynamicTyping:false});
+        rawRows=result.data;
+        allUsers=buildAllUsers(rawRows);
+        currentWaveName=entry.waveName;
+        try{localStorage.setItem('msa-raw-'+entry.id,JSON.stringify(rawRows));}catch(e){}
+        hide('landing-section');hide('dashboard-section');
+        prevSection='dashboard';
+        showUserSelect();
+      } else {
+        showToast('Please re-upload this scan report to view it');
+      }
+    });
+    return;
+  }
+  // 6. Nothing available
+  showToast('Please re-upload this scan report to view it');
+}
+
+// ── APP ──────────────────────────────────────
+function renderApp(s){
+  hide('user-select-section');show('app-section');
+  // Show both Home and Dashboard in header
+  document.getElementById('header-home-btn').style.display='inline-flex';
+  document.getElementById('header-dashboard-btn').style.display='inline-flex';
+  switchMainTab('dashboard');
+
+  const i=Object.keys(allUsers).indexOf(s.userName);
+  const ac=AVATAR_COLORS[i%AVATAR_COLORS.length];
+  document.getElementById('cup-avatar').style.background=ac;
+  document.getElementById('cup-avatar').textContent=s.initials;
+  document.getElementById('cup-name').textContent=s.userName;
+  document.getElementById('bc-wave2').textContent=currentWaveName;
+  document.getElementById('bc-user').textContent=s.userName;
+  document.getElementById('m-total-size').textContent=fmt(s.totalSize);
+  document.getElementById('m-total-items').textContent=fmtN(s.totalItems)+' total items';
+  document.getElementById('m-total-files').textContent=fmtN(s.totalFiles);
+  document.getElementById('m-total-folders').textContent=fmtN(s.totalFolders)+' folders';
+  document.getElementById('m-formats').textContent=s.uniqueFormats;
+  document.getElementById('m-time').textContent='~'+Math.max(1,Math.round((s.totalSize/1e9)/10))+' hrs';
+  allFormatsData=s.extList;
+  document.getElementById('format-count-sub').textContent=fmtN(s.uniqueFormats)+' unique extensions across '+fmtN(s.totalFiles)+' files';
+  document.getElementById('fmt-search').value='';
+  document.getElementById('fmt-category').value='';
+  sortMode='size';sortDir={};
+  ['sb-size','sb-count','sb-name'].forEach(id=>document.getElementById(id).classList.remove('active-sort'));
+  document.getElementById('sb-size').classList.add('active-sort');
+  renderFormatsTable(allFormatsData);
+  renderGWBanner(s);
+  renderDonut(s);renderBar(s);renderEmail(s);
+  if(gridApi){gridApi.destroy();gridApi=null;}
+  document.getElementById('grid-search').value='';
+  viewTab='all';
+  document.querySelectorAll('.viewer-tab').forEach((b,i)=>b.classList.toggle('active',i===0));
+  hide('email-section');
+}
+
+function switchMainTab(tab){
+  ['dashboard','formats','data'].forEach(function(t){
+    var content = document.getElementById('content-'+t);
+    var tabBtn = document.getElementById('tab-'+t);
+    if(content) content.style.display = t===tab ? 'block' : 'none';
+    if(tabBtn) tabBtn.classList.toggle('active', t===tab);
+  });
+  if(tab==='data'&&globalStats&&!gridApi){initGrid(globalStats.rows);}
+}
+
+// ── CHARTS ───────────────────────────────────
+function chartTc(){return isDark()?'#A0AEC0':'#4A5568';}
+function chartGc(){return isDark()?'#2D3748':'#EDF2F7';}
+function ttOpts(){return{backgroundColor:isDark()?'#1E2433':'#fff',titleColor:isDark()?'#F7FAFC':'#1A202C',bodyColor:isDark()?'#A0AEC0':'#4A5568',borderColor:isDark()?'#2D3748':'#E2E8F0',borderWidth:1};}
+
+function renderGWBanner(s){
+  const gwItems=s.extList.filter(e=>e.category==='gworkspace');
+  const banner=document.getElementById('gw-banner');
+  if(!gwItems.length){banner.style.display='none';return;}
+  banner.style.display='block';
+  const totalGW=gwItems.reduce((t,e)=>t+e.count,0);
+  document.getElementById('gw-total-badge').textContent=fmtN(totalGW)+' Google Workspace files';
+  document.getElementById('gw-conversion-rows').innerHTML=gwItems.map(item=>{
+    const gw=GW_CONVERSION[item.ext]||{icon:'📁',converts:'Google file (review needed)',color:'#6B7280'};
+    return`<div class="gw-item"><span class="gw-item-icon">${gw.icon}</span><div><div class="gw-item-ext">.${item.ext.toUpperCase()} <span class="gw-item-count">· ${fmtN(item.count)} files</span></div><div class="gw-item-converts" style="color:${gw.color};">${gw.converts}</div></div></div>`;
+  }).join('');
+}
+
+function renderDonut(s){
+  if(donutChart)donutChart.destroy();
+  const top8=s.extList.slice(0,8),othersSize=s.extList.slice(8).reduce((a,e)=>a+e.size,0);
+  const labels=[...top8.map(e=>'.'+e.ext.toUpperCase()),'Others'];
+  const data=[...top8.map(e=>e.size),othersSize];
+  const colors=[...PALETTE.slice(0,8),'#718096'];
+  const ttLabel=function(ctx){const pct=s.totalSize>0?((ctx.raw/s.totalSize)*100).toFixed(1):'0.0';return '  '+fmt(ctx.raw)+' ('+pct+'%)';};
+  donutChart=new Chart(document.getElementById('donut-chart').getContext('2d'),{
+    type:'doughnut',
+    data:{labels,datasets:[{data,backgroundColor:colors,borderWidth:0,hoverOffset:6}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{display:false},tooltip:{...ttOpts(),callbacks:{label:ttLabel}}}}
+  });
+  document.getElementById('donut-legend').innerHTML=labels.map((l,i)=>`<div class="legend-item"><div class="legend-dot" style="background:${colors[i]}"></div><span style="flex:1;color:var(--text-2)">${l}</span><span style="font-weight:700;font-size:12px">${fmt(data[i])}</span></div>`).join('');
+}
+
+function renderBar(s){
+  if(barChart)barChart.destroy();
+  const top10=s.extList.slice(0,10);
+  const values=barChartMode==='size'?top10.map(e=>Math.round(e.size/1e9*100)/100):top10.map(e=>e.count);
+  barChart=new Chart(document.getElementById('bar-chart').getContext('2d'),{
+    type:'bar',
+    data:{labels:top10.map(e=>'.'+e.ext.toUpperCase()),datasets:[{data:values,backgroundColor:PALETTE.slice(0,10).map(c=>c+'BB'),borderColor:PALETTE.slice(0,10),borderWidth:1.5,borderRadius:5,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{...ttOpts(),callbacks:{label:ctx=>'  '+(barChartMode==='size'?ctx.raw+' GB':fmtN(ctx.raw)+' files')}}},scales:{x:{grid:{display:false},ticks:{color:chartTc(),font:{size:10},autoSkip:false,maxRotation:35}},y:{grid:{color:chartGc()},border:{dash:[4,4]},ticks:{color:chartTc(),font:{size:11},callback:v=>barChartMode==='size'?v+'GB':fmtN(v)}}}}
+  });
+}
+function switchChartTab(mode){barChartMode=mode;document.querySelectorAll('.ctab').forEach((b,i)=>b.classList.toggle('active',(i===0&&mode==='size')||(i===1&&mode==='count')));if(globalStats)renderBar(globalStats);}
+
+// ── FORMATS TABLE ─────────────────────────────
+function filterFormats(){
+  const q=document.getElementById('fmt-search').value.toLowerCase().trim();
+  const cat=document.getElementById('fmt-category').value;
+  let data=allFormatsData;
+  if(q)data=data.filter(r=>r.ext.toLowerCase().includes(q));
+  if(cat)data=data.filter(r=>r.category===cat);
+  renderFormatsTable(data);
+}
+function sortFormats(mode){
+  if(sortMode===mode){sortDir[mode]=!sortDir[mode];}else{sortMode=mode;}
+  ['size','count','name'].forEach(m=>{const b=document.getElementById('sb-'+m);b.classList.toggle('active-sort',m===mode);});
+  filterFormats();
+}
+function renderFormatsTable(data){
+  const dir=sortDir[sortMode]?-1:1;
+  const sorted=[...data].sort((a,b)=>sortMode==='size'?dir*(b.size-a.size):sortMode==='count'?dir*(b.count-a.count):dir*a.ext.localeCompare(b.ext));
+  document.getElementById('fmt-count-label').textContent=fmtN(sorted.length)+' formats shown';
+  const maxSize=sorted[0]?.size||1;
+  document.getElementById('all-formats-body').innerHTML=sorted.map(item=>{
+    const pct=globalStats&&globalStats.totalSize>0?((item.size/globalStats.totalSize)*100).toFixed(1):'0.0';
+    const barW=Math.max(2,Math.round((item.size/maxSize)*100));
+    const cc=CAT_COLOR[item.category]||'#9CA3AF';
+    const cl=CAT_LABEL[item.category]||'Other';
+    return`<tr>
+      <td><span class="ext-pill">.${item.ext}</span></td>
+      <td style="text-align:right;padding-left:8px;"><span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;background:${cc}22;color:${cc};border:1px solid ${cc}44">${cl}</span></td>
+      <td>${fmtN(item.count)}</td>
+      <td><div style="font-weight:600">${fmt(item.size)}</div><div class="bar-track"><div class="bar-fill-grad" style="width:${barW}%"></div></div></td>
+      <td>${fmt(item.avg)}</td>
+      <td style="text-align:left;padding-left:8px;">${pct}%</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('no-results').style.display=sorted.length?'none':'block';
+}
+
+// ── DATA GRID ──────────────────────────────────
+function switchViewTab(tab){
+  viewTab=tab;
+  document.querySelectorAll('.viewer-tab').forEach((b,i)=>b.classList.toggle('active',['all','files','folders'][i]===tab));
+  const data=tab==='files'?globalStats.files:tab==='folders'?globalStats.folders:globalStats.rows;
+  if(gridApi){gridApi.setGridOption('rowData',data);updateRowCount();}
+  document.getElementById('grid-search').value='';
+  if(gridApi)gridApi.setGridOption('quickFilterText','');
+}
+
+// ── CUSTOM SET FILTER (replaces enterprise agSetColumnFilter) ──────────────
+class SetFilter {
+  init(params) {
+    this.params = params;
+    this.selectedValues = new Set();
+    this.allValues = [];
+    this.filterActive = false;
+
+    // Get all unique values from row data
+    var allRows = [];
+    params.api.forEachNode(function(node) { allRows.push(node.data); });
+    var unique = new Set(allRows.map(function(row) {
+      var val = row[params.colDef.field];
+      return (val === null || val === undefined || val === '') ? '(Blanks)' : String(val);
+    }));
+    this.allValues = Array.from(unique).sort();
+    this.selectedValues = new Set(this.allValues); // all selected by default
+
+    // Build UI
+    this.gui = document.createElement('div');
+    this.gui.style.cssText = 'padding:8px;min-width:180px;max-width:280px;font-family:-apple-system,sans-serif;font-size:12px;';
+
+    // Search box
+    var searchWrap = document.createElement('div');
+    searchWrap.style.cssText = 'position:relative;margin-bottom:8px;';
+    this.searchInput = document.createElement('input');
+    this.searchInput.type = 'text';
+    this.searchInput.placeholder = 'Search...';
+    this.searchInput.style.cssText = 'width:100%;padding:5px 8px;border:1px solid #CBD5E0;border-radius:4px;font-size:12px;outline:none;box-sizing:border-box;';
+    var self = this;
+    this.searchInput.addEventListener('input', function() { self.renderList(); });
+    searchWrap.appendChild(this.searchInput);
+    this.gui.appendChild(searchWrap);
+
+    // Select all / Deselect all buttons
+    var btnRow = document.createElement('div');
+    btnRow.style.cssText = 'display:flex;gap:6px;margin-bottom:6px;';
+    var selAll = document.createElement('button');
+    selAll.textContent = 'Select All';
+    selAll.style.cssText = 'flex:1;padding:3px 6px;font-size:11px;cursor:pointer;border:1px solid #CBD5E0;border-radius:3px;background:#F7FAFC;';
+    selAll.onclick = function() {
+      self.selectedValues = new Set(self.getFilteredValues());
+      self.renderList();
+      self.params.filterChangedCallback();
+    };
+    var deselAll = document.createElement('button');
+    deselAll.textContent = 'Clear';
+    deselAll.style.cssText = 'flex:1;padding:3px 6px;font-size:11px;cursor:pointer;border:1px solid #CBD5E0;border-radius:3px;background:#F7FAFC;';
+    deselAll.onclick = function() {
+      self.selectedValues = new Set();
+      self.renderList();
+      self.params.filterChangedCallback();
+    };
+    btnRow.appendChild(selAll);
+    btnRow.appendChild(deselAll);
+    this.gui.appendChild(btnRow);
+
+    // Count label
+    this.countLabel = document.createElement('div');
+    this.countLabel.style.cssText = 'font-size:10px;color:#9AA5B4;margin-bottom:4px;';
+    this.gui.appendChild(this.countLabel);
+
+    // List container
+    this.listContainer = document.createElement('div');
+    this.listContainer.style.cssText = 'max-height:200px;overflow-y:auto;border:1px solid #E2E8F0;border-radius:4px;';
+    this.gui.appendChild(this.listContainer);
+
+    this.renderList();
+  }
+
+  getFilteredValues() {
+    var q = (this.searchInput ? this.searchInput.value : '').toLowerCase();
+    if (!q) return this.allValues;
+    return this.allValues.filter(function(v) { return v.toLowerCase().includes(q); });
+  }
+
+  renderList() {
+    var self = this;
+    var filtered = this.getFilteredValues();
+    this.countLabel.textContent = filtered.length + ' of ' + this.allValues.length + ' values';
+    this.listContainer.innerHTML = '';
+    filtered.forEach(function(val) {
+      var row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;gap:7px;padding:5px 8px;cursor:pointer;border-bottom:1px solid #F0F4F8;';
+      row.onmouseover = function() { this.style.background='#F0EFFF'; };
+      row.onmouseout = function() { this.style.background=''; };
+      var cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.checked = self.selectedValues.has(val);
+      cb.style.cssText = 'cursor:pointer;accent-color:#5B5BD6;';
+      cb.addEventListener('change', function() {
+        if (this.checked) self.selectedValues.add(val);
+        else self.selectedValues.delete(val);
+        self.filterActive = self.selectedValues.size !== self.allValues.length;
+        self.params.filterChangedCallback();
+      });
+      var label = document.createElement('span');
+      label.textContent = val;
+      label.style.cssText = 'font-size:12px;color:#1A202C;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
+      if (val === '(Blanks)') label.style.color = '#9AA5B4';
+      row.appendChild(cb);
+      row.appendChild(label);
+      row.addEventListener('click', function(e) {
+        if (e.target !== cb) { cb.checked = !cb.checked; cb.dispatchEvent(new Event('change')); }
+      });
+      self.listContainer.appendChild(row);
+    });
+  }
+
+  getGui() { return this.gui; }
+
+  doesFilterPass(params) {
+    if (!this.filterActive) return true;
+    var val = params.data[this.params.colDef.field];
+    var strVal = (val === null || val === undefined || val === '') ? '(Blanks)' : String(val);
+    return this.selectedValues.has(strVal);
+  }
+
+  isFilterActive() { return this.filterActive; }
+
+  getModel() {
+    if (!this.filterActive) return null;
+    return { values: Array.from(this.selectedValues) };
+  }
+
+  setModel(model) {
+    if (model && model.values) {
+      this.selectedValues = new Set(model.values);
+      this.filterActive = true;
+    } else {
+      this.selectedValues = new Set(this.allValues);
+      this.filterActive = false;
+    }
+    if (this.listContainer) this.renderList();
+  }
+
+  destroy() {}
+}
+
+function initGrid(data){
+  if(!data.length)return;
+  const el=document.getElementById('data-grid');
+  el.className='grid-wrap '+(isDark()?'ag-theme-alpine-dark':'ag-theme-alpine');
+
+  // Build column definitions with Excel-like features
+  const cols=Object.keys(data[0]).map(function(key){
+    // Determine filter type based on column name/content
+    const isNumeric = key.toLowerCase().includes('size') || key.toLowerCase().includes('count') || key.toLowerCase().includes('number');
+    const isDate = key.toLowerCase().includes('date') || key.toLowerCase().includes('time');
+
+    return {
+      field: key,
+      headerName: key,
+      sortable: true,
+      resizable: true,
+      editable: true,
+      minWidth: 80,
+      width: Math.min(220, Math.max(100, key.length * 9 + 20)),
+      filter: isNumeric ? 'agNumberColumnFilter' : SetFilter,
+      filterParams: isNumeric ? {
+        buttons: ['reset','apply'],
+        closeOnApply: true,
+        filterOptions: ['equals','notEqual','greaterThan','greaterThanOrEqual','lessThan','lessThanOrEqual','inRange'],
+      } : {
+        buttons: ['reset','apply'],
+        closeOnApply: true,
+      },
+      floatingFilter: false,
+      cellStyle: function(params){
+        if(key==='SourceSize'||key==='DestinationSize'){
+          const v=parseInt(params.value);
+          if(v>1e9)return{color:isDark()?'#FC8181':'#DC2626',fontWeight:'600'};
+          if(v>1e8)return{color:isDark()?'#FCD34D':'#D97706'};
+        }
+        if(key==='Status'){
+          const lc=(params.value||'').toLowerCase();
+          if(lc==='success')return{color:isDark()?'#34D399':'#059669',fontWeight:'500'};
+          if(lc==='failed')return{color:isDark()?'#FC8181':'#DC2626',fontWeight:'500'};
+        }
+        return null;
+      },
+      valueFormatter: function(params){
+        if((key==='SourceSize'||key==='DestinationSize') && params.value){
+          const v=parseInt(params.value);
+          if(!isNaN(v)) return fmt(v)+' ('+params.value+')';
+        }
+        return params.value;
+      },
+      tooltipValueGetter: function(params){ return params.value; }
+    };
+  });
+
+  // Pin first column (SourcePath) like Excel freeze pane
+  if(cols.length > 0){
+    cols[0].pinned = 'left';
+    cols[0].lockPinned = false;
+  }
+
+  gridApi=agGrid.createGrid(el,{
+    columnDefs: cols,
+    rowData: data,
+    defaultColDef:{
+      sortable: true,
+      filter: true,
+      resizable: true,
+      editable: true,
+      floatingFilter: false,
+      minWidth: 80,
+    },
+    animateRows: true,
+    pagination: true,
+    paginationPageSize: 100,
+    paginationPageSizeSelector: [50,100,250,500,1000],
+    enableCellTextSelection: true,
+    rowSelection: 'multiple',
+    suppressRowClickSelection: true,
+    suppressMovableColumns: false,
+    suppressMenuHide: false,
+    onGridReady: function(){ updateRowCount(); },
+    onFilterChanged: function(){ updateRowCount(); },
+    onPaginationChanged: function(){ updateRowCount(); },
+    onSortChanged: function(){ updateRowCount(); },
+    onCellValueChanged: function(params){
+      showToast('Cell updated: '+params.colDef.field);
+    },
+  });
+  updateRowCount();
+}
+
+function autoSizeGridColumns(){
+  if(!gridApi)return;
+  try{const allCols=gridApi.getColumns();if(allCols)gridApi.autoSizeColumns(allCols.map(function(col){return col.getId();}));}catch(e){}
+}
+
+function resetGridColumns(){
+  if(!gridApi)return;
+  gridApi.resetColumnState();
+  showToast('Columns reset');
+}
+
+function clearAllGridFilters(){
+  if(!gridApi)return;
+  gridApi.setFilterModel(null);
+  updateRowCount();
+  showToast('All filters cleared');
+}
+
+function exportGridCSV(){
+  if(!gridApi)return;
+  gridApi.exportDataAsCsv({
+    fileName:'ScanData_'+currentWaveName.replace(/\s+/g,'_')+'_'+new Date().toISOString().slice(0,10)+'.csv',
+    allColumns: false,
+    onlySelected: false,
+  });
+  showToast('CSV exported');
+}
+
+function changePageSize(val){
+  if(!gridApi||!val)return;
+  const size=parseInt(val);
+  if(size===0){
+    gridApi.setGridOption('pagination',false);
+  } else {
+    gridApi.setGridOption('pagination',true);
+    gridApi.setGridOption('paginationPageSize',size);
+  }
+  updateRowCount();
+}
+
+function updateRowCount(){
+  if(!gridApi)return;
+  const displayed=gridApi.getDisplayedRowCount();
+  const total=(viewTab==='files'?globalStats.files:viewTab==='folders'?globalStats.folders:globalStats.rows).length;
+  document.getElementById('grid-row-count').textContent=displayed===total?fmtN(total)+' rows':fmtN(displayed)+' of '+fmtN(total)+' rows';
+  document.getElementById('viewer-sub').textContent=Object.keys((globalStats.rows[0]||{})).length+' columns · '+fmtN(total)+' rows · click any cell to edit';
+}
+function gridSearch(q){if(gridApi){gridApi.setGridOption('quickFilterText',q);updateRowCount();}}
+function clearGridSearch(){document.getElementById('grid-search').value='';if(gridApi){gridApi.setGridOption('quickFilterText','');updateRowCount();}}
+function refreshGridTheme(){const el=document.getElementById('data-grid');el.className='grid-wrap '+(isDark()?'ag-theme-alpine-dark':'ag-theme-alpine');}
+
+// ── EMAIL ──────────────────────────────────────
+function renderEmail(s){
+  const estH=Math.max(1,Math.round((s.totalSize/1e9)/10));
+  const rows=s.extList.slice(0,15).map(function(i){
+    return '  .'+i.ext.toUpperCase().padEnd(12)+'| '+fmtN(i.count).padStart(8)+' files | '+fmt(i.size).padStart(10);
+  }).join('\n');
+  const subj=currentWaveName+' - Scan Report & File Inventory | '+s.userName;
+  const line='──────────────────────────────────────────────';
+  const body=[
+    'Hello,',
+    '',
+    'In '+currentWaveName+' we have completed the scan for the following user.',
+    'Please find the full file inventory below.',
+    '',
+    'Could you please share this report with the user and confirm which data needs to be migrated to OneDrive?',
+    '',
+    line,
+    'Wave: '+currentWaveName,
+    'User Name: '+s.userName,
+    'Total Data Size: '+fmt(s.totalSize),
+    'Total Items: '+fmtN(s.totalItems)+' ('+fmtN(s.totalFiles)+' files, '+fmtN(s.totalFolders)+' folders)',
+    'Unique File Formats: '+s.uniqueFormats,
+    'Estimated Migration Time: ~'+estH+' hours',
+    line,
+    '',
+    'File Format Breakdown (Top 15 by size):',
+    '',
+    '  Extension     |    Count    |       Size',
+    '  '+line.slice(0,41),
+    rows,
+    '  '+line.slice(0,41),
+    '',
+    'Please review the full list of '+s.uniqueFormats+' file formats with the user and confirm:',
+    '  1. Which file types should be included in the migration',
+    '  2. Any data that can be cleaned up at the source before migration',
+    '',
+    'Thanks & Regards,',
+    '[Your Name]',
+    '[Your Team]'
+  ].join('\n');
+  document.getElementById('email-subject-display').value=subj;
+  document.getElementById('email-body-display').value=body;
+}
+function toggleEmail(){const el=document.getElementById('email-section');el.style.display=(el.style.display==='none'||!el.style.display)?'block':'none';if(el.style.display==='block')el.scrollIntoView({behavior:'smooth',block:'start'});}
+function copyEmail(){var s=document.getElementById('email-subject-display').value||document.getElementById('email-subject-display').textContent;var b=document.getElementById('email-body-display').value||document.getElementById('email-body-display').textContent;var txt='Subject: '+s+'\n\n'+b;navigator.clipboard.writeText(txt).then(function(){showToast('✓ Email copied to clipboard');}).catch(function(){showToast('Copy failed');});}
+
+// ── HISTORY ─────────────────────────────────────
+function saveToHistory(fileName,waveName,users){
+  if(!fileName||!waveName||!users)return;
+  var history=getHistory();
+  var totalSizeBytes = Object.values(users).reduce(function(s,u){return s+u.totalSize;},0);
+  var entry={
+    id:Date.now(),
+    fileName:fileName,
+    waveName:waveName,
+    date:new Date().toLocaleString(),
+    totalUsers:Object.keys(users).length,
+    totalSize:totalSizeBytes,
+    totalFiles:Object.values(users).reduce(function(s,u){return s+u.totalFiles;},0),
+    totalItems:Object.values(users).reduce(function(s,u){return s+u.totalItems;},0),
+    users:Object.keys(users).slice(0,8),
+    totalUsersCount:Object.keys(users).length,
+    uploadedBy: getUserEmail() || '2389039@cognizant.com',
+    rawData:rawRows
+  };
+  // Remove duplicate entries for same file
+  history=history.filter(function(h){return h.fileName!==fileName||h.waveName!==waveName;});
+  // Save rawData separately by entry id to avoid 5MB limit
+  var entryId = entry.id;
+  try{
+    localStorage.setItem('msa-raw-'+entryId, JSON.stringify(rawRows));
+  }catch(e){
+    console.log('Raw data too large for localStorage:', e.message);
+  }
+  // Save history without rawData in main history key
+  var entrySlim = Object.assign({}, entry, {rawData: undefined});
+  history.unshift(entrySlim);
+  history=history.slice(0,15);
+  // Clean up old raw data keys not in history
+  try{
+    var histIds = history.map(function(h){return String(h.id);});
+    Object.keys(localStorage).forEach(function(k){
+      if(k.startsWith('msa-raw-') && !histIds.includes(k.replace('msa-raw-',''))){
+        localStorage.removeItem(k);
+      }
+    });
+  }catch(e){}
+  try{
+    localStorage.setItem('msa-history',JSON.stringify(history));
+  }catch(e){
+    try{localStorage.setItem('msa-history',JSON.stringify(history.slice(0,5)));}catch(e2){}
+  }
+  // Also save to SharePoint (async - don't block UI)
+  var spEntry = {
+    waveName:   waveName,
+    fileName:   fileName,
+    totalUsers: entry.totalUsers,
+    totalSize:  parseFloat((totalSizeBytes/1e9).toFixed(2)),
+    totalFiles: entry.totalFiles,
+    totalItems: entry.totalItems,
+    uploadedBy: entry.uploadedBy,
+    users:      entry.users
+  };
+  saveToSharePoint(spEntry).then(function(spResult){
+    if(spResult){
+      showToast('✓ Saved to SharePoint — visible to your team');
+      if(typeof spResult === 'number'){
+        var hist = getHistory();
+        if(hist.length > 0){
+          hist[0].spItemId = spResult;
+          localStorage.setItem('msa-history', JSON.stringify(hist));
+          console.log('SP item ID saved:', spResult);
+        }
+      }
+    }
+  });
+}
+function getHistory(){try{var h=JSON.parse(localStorage.getItem('msa-history')||'[]');if(!Array.isArray(h))return[];return h.filter(function(e){return e&&e.waveName&&e.fileName&&e.id;});}catch(e){localStorage.removeItem('msa-history');return[];}}
+
+function showHistory(){
+  // Track which section we came from
+  if(document.getElementById('dashboard-section').style.display !== 'none') prevSection='dashboard';
+  else if(document.getElementById('app-section').style.display !== 'none') prevSection='app';
+  else prevSection='landing';
+  hide('landing-section');hide('user-select-section');hide('app-section');
+  hide('email-section');hide('dashboard-section');
+  show('history-section');
+  document.getElementById('header-home-btn').style.display='inline-flex';
+  document.getElementById('header-dashboard-btn').style.display='inline-flex';
+  renderHistoryList(getHistory());
+}
+function renderHistoryList(history, isSP){
+  var list=document.getElementById('history-list');
+  // Remove loading indicator
+  var loading = document.getElementById('sp-loading');
+  if(loading) loading.remove();
+  if(!history||!history.length){
+    if(!isSP) list.innerHTML='<div style="text-align:center;padding:56px 20px;color:var(--text-3);"><div style="font-size:48px;margin-bottom:16px;">📂</div><div style="font-size:15px;font-weight:600;margin-bottom:8px;">No history yet</div><div style="font-size:13px;">Upload a scan report to get started</div></div>';
+    return;
+  }
+  var html='<div class="hist-grid">';
+  history.forEach(function(h){
+    if(!h||!h.waveName)return;
+    var icon=getWaveIcon(h.waveName||'');
+    var spBadge=h.source==='sharepoint'||h.uploadedBy!==getUserEmail()?'<span style="font-size:10px;color:#0078D4;font-weight:600;margin-left:6px;padding:1px 6px;background:#E3F2FF;border-radius:10px;">👥 '+( h.uploadedBy||'Team')+'</span>':'';
+    var sizeStr=typeof h.totalSize==='number'?fmt(h.totalSize):(h.totalSize||'0');
+    html+='<div class="hist-card">';
+    html+='<div class="hc-top">';
+    html+='<div><div class="hc-title">'+icon+' '+h.waveName+' — '+h.fileName+spBadge+'</div>';
+    html+='<div class="hc-date">'+(h.date||'')+'</div></div>';
+    html+='<button class="hc-del" onclick="deleteHistory('+String(h.id)+',event)"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button>';
+    html+='</div>';
+    html+='<div class="hc-stats">';
+    html+='<div class="hc-stat"><div class="hc-stat-val">'+(h.totalUsers||0)+'</div><div class="hc-stat-label">Users</div></div>';
+    html+='<div class="hc-stat"><div class="hc-stat-val">'+sizeStr+'</div><div class="hc-stat-label">Total size</div></div>';
+    html+='<div class="hc-stat"><div class="hc-stat-val">'+(h.totalFiles?fmtN(h.totalFiles):'0')+'</div><div class="hc-stat-label">Files</div></div>';
+    html+='</div>';
+    html+='<div class="hc-users">';
+    if(h.users&&h.users.length){
+      h.users.forEach(function(u){html+='<span class="hc-user-tag">'+u+'</span>';});
+      if((h.totalUsersCount||0)>8) html+='<span class="hc-user-tag">+'+(h.totalUsersCount-8)+' more</span>';
+    }
+    html+='</div></div>';
+  });
+  html+='</div>';
+  list.innerHTML=html;
+}
+function deleteHistory(id,e){
+  e.stopPropagation();
+  if(!confirm('Delete this scan report from history?'))return;
+  // Delete raw data too
+  localStorage.removeItem('msa-raw-'+id);
+  // Delete from SharePoint if has SP item ID
+  var entry = getHistory().find(function(x){ return x.id===id || String(x.id)===String(id); });
+  if(entry && entry.spItemId) deleteFromSharePoint(entry.spItemId);
+  // Delete from localStorage
+  var h=getHistory().filter(function(x){return x.id!==id;});
+  localStorage.setItem('msa-history',JSON.stringify(h));
+  // Also delete from SharePoint if it has SP id
+  var entry = getHistory().find(function(x){return x.id===id;});
+  if(entry && entry.spId){
+    deleteFromSharePoint(entry.spId);
+  }
+  showHistory();
+  renderWaveCards();
+  showToast('Entry deleted');
+}
+function clearAllHistory(){
+  if(!confirm('Clear all scan history?'))return;
+  // Clear all raw data keys too
+  Object.keys(localStorage).forEach(function(k){
+    if(k.startsWith('msa-raw-')) localStorage.removeItem(k);
+  });
+  localStorage.removeItem('msa-history');
+  showHistory();
+  showToast('History cleared');
+}
+function backFromHistory(){
+  hide('history-section');
+  if(prevSection==='dashboard') showDashboard();
+  else show('landing-section');
+}
+
+// ── NAV ──────────────────────────────────────────
+function backToUsers(){hide('app-section');hide('email-section');if(gridApi){gridApi.destroy();gridApi=null;}showUserSelect();}
+
+function goBackToNav(){
+  // Go back to dashboard if that's where scan was loaded from, else home
+  if(prevSection==='dashboard'){
+    hide('user-select-section');hide('app-section');
+    if(gridApi){gridApi.destroy();gridApi=null;}
+    showDashboard();
+  } else {
+    goHome();
+  }
+}
+
+function goHome(){
+  ['user-select-section','app-section','history-section','dashboard-section'].forEach(hide);
+  show('landing-section');
+  // Header: hide Home btn (we're on home), show Dashboard btn
+  document.getElementById('header-home-btn').style.display='none';
+  document.getElementById('header-dashboard-btn').style.display='inline-flex';
+  globalStats=null;
+  currentWaveName='';
+  if(gridApi){gridApi.destroy();gridApi=null;}
+  if(donutChart){donutChart.destroy();donutChart=null;}
+  if(barChart){barChart.destroy();barChart=null;}
+}
+
+// ── WAVE MODAL ─────────────────────────────────
+const WAVE_OPTIONS=[
+  {name:'Pilot Wave', icon:'🚀', color:'linear-gradient(135deg,#4F46E5,#7C3AED)'},
+  {name:'Wave 1',     icon:'1️⃣', color:'linear-gradient(135deg,#059669,#0891B2)'},
+  {name:'Wave 2',     icon:'2️⃣', color:'linear-gradient(135deg,#D97706,#EA580C)'},
+  {name:'Wave 3',     icon:'3️⃣', color:'linear-gradient(135deg,#4F46E5,#7C3AED)'},
+  {name:'Wave 4',     icon:'4️⃣', color:'linear-gradient(135deg,#DC2626,#EC4899)'},
+  {name:'Wave 5',     icon:'5️⃣', color:'linear-gradient(135deg,#7C3AED,#0891B2)'},
+  {name:'Wave 6',     icon:'6️⃣', color:'linear-gradient(135deg,#059669,#4F46E5)'},
+  {name:'Wave 7',     icon:'7️⃣', color:'linear-gradient(135deg,#D97706,#DC2626)'},
+];
+let selectedWaveName='';
+
+function openWaveModal(){
+  selectedWaveName='';
+  document.getElementById('custom-wave-input').value='';
+  disableWaveConfirm();
+  document.getElementById('wave-modal').style.display='flex';
+  setTimeout(function(){document.getElementById('custom-wave-input').focus();},100);
+}
+
+function selectWaveOption(name){
+  selectedWaveName=name;
+  // Reset all buttons
+  WAVE_OPTIONS.forEach(w=>{
+    const btn=document.getElementById('wopt-'+w.name.replace(/\s/g,'-'));
+    if(btn){btn.classList.remove('selected');}
+  });
+  // Highlight selected
+  const sel=document.getElementById('wopt-'+name.replace(/\s/g,'-'));
+  if(sel){sel.classList.add('selected');}
+  document.getElementById('custom-wave-input').value='';
+  enableWaveConfirm();
+}
+
+function updateCustomWave(val){
+  if(val.trim()){
+    selectedWaveName=val.trim();
+    // Deselect preset buttons
+    WAVE_OPTIONS.forEach(w=>{
+      const btn=document.getElementById('wopt-'+w.name.replace(/\s/g,'-'));
+      if(btn){btn.classList.remove('selected');}
+    });
+    enableWaveConfirm();
+  } else {
+    if(!WAVE_OPTIONS.find(w=>w.name===selectedWaveName)){
+      selectedWaveName='';
+      disableWaveConfirm();
+    }
+  }
+}
+
+function enableWaveConfirm(){
+  var btn=document.getElementById('wave-confirm-btn');
+  btn.disabled=false;btn.style.opacity='1';btn.style.cursor='pointer';
+}
+function disableWaveConfirm(){
+  var btn=document.getElementById('wave-confirm-btn');
+  btn.disabled=true;btn.style.opacity='0.5';btn.style.cursor='not-allowed';
+}
+
+function closeWaveModal(){
+  document.getElementById('wave-modal').style.display='none';
+  selectedWaveName='';
+  currentWaveName='';
+}
+
+function confirmWaveAndUpload(){
+  if(!selectedWaveName)return;
+  document.getElementById('wave-modal').style.display='none';
+  // Override wave name detection with user selection
+  currentWaveName=selectedWaveName;
+  document.getElementById('hero-file-input').click();
+}
+
+// ── EXPORT EXCEL ──────────────────────────────
+function exportToExcel(){
+  if(!globalStats)return;
+  const btn=document.getElementById('export-btn');
+  if(btn){btn.textContent='Preparing…';btn.disabled=true;}
+  setTimeout(function(){
+    try{
+      const wb=XLSX.utils.book_new();
+      const s=globalStats;
+      function mkSheet(rows){
+        if(!rows||!rows.length)return XLSX.utils.aoa_to_sheet([['No data']]);
+        const sh=XLSX.utils.json_to_sheet(rows);
+        sh['!freeze']={xSplit:0,ySplit:1};
+        sh['!cols']=Object.keys(rows[0]||{}).map(function(k){return{wch:Math.min(40,Math.max(12,k.length+4))};});
+        return sh;
+      }
+      XLSX.utils.book_append_sheet(wb,mkSheet(s.rows),'Raw Scan Data');
+      var sumData=[['Extension','Category','File Count','Total Size (Bytes)','Total Size (GB)','Avg Size (MB)','% of Total']];
+      s.extList.forEach(function(ex){
+        sumData.push(['.'+ex.ext.toUpperCase(),CAT_LABEL[ex.category]||'Other',ex.count,ex.size,+(ex.size/1e9).toFixed(3),+(ex.avg/1e6).toFixed(2),+((ex.size/s.totalSize)*100).toFixed(2)]);
+      });
+      var sumSh=XLSX.utils.aoa_to_sheet(sumData);
+      sumSh['!cols']=[{wch:16},{wch:16},{wch:14},{wch:22},{wch:18},{wch:18},{wch:14}];
+      sumSh['!freeze']={xSplit:0,ySplit:1};
+      XLSX.utils.book_append_sheet(wb,sumSh,'Format Summary');
+      if(s.files&&s.files.length) XLSX.utils.book_append_sheet(wb,mkSheet(s.files),'Files Only');
+      if(s.folders&&s.folders.length) XLSX.utils.book_append_sheet(wb,mkSheet(s.folders),'Folders Only');
+      var ovSh=XLSX.utils.aoa_to_sheet([
+        ['Wave',currentWaveName],
+        ['User',s.userName],
+        ['Total Size (GB)',+(s.totalSize/1e9).toFixed(2)],
+        ['Total Items',s.totalItems],
+        ['Files',s.totalFiles],
+        ['Folders',s.totalFolders],
+        ['Formats',s.uniqueFormats],
+        ['Badge',s.totalSize>50e9&&s.totalFiles>100000?'Heavy':s.totalSize>50e9||s.totalFiles>100000?'Medium-High':s.totalSize>10e9||s.totalFiles>25000?'Medium':'Normal'],
+        ['Generated',new Date().toLocaleString()]
+      ]);
+      ovSh['!cols']=[{wch:28},{wch:40}];
+      XLSX.utils.book_append_sheet(wb,ovSh,'Overview');
+      var fname='ScanReport_'+currentWaveName.replace(/[^a-z0-9]/gi,'_')+'_'+s.userName.replace(/[^a-z0-9]/gi,'_').slice(0,20)+'_'+new Date().toISOString().slice(0,10)+'.xlsx';
+      XLSX.writeFile(wb,fname);
+      showToast('Excel downloaded');
+    }catch(err){
+      showToast('Export failed: '+err.message);
+    }
+    if(btn){
+      btn.innerHTML='<svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg> Export Excel';
+      btn.disabled=false;
+    }
+  },80);
+}
+
+// ── POWER AUTOMATE + SHAREPOINT INTEGRATION
+
+// Save history via Power Automate Flow (no CORS issues)
+async function saveToSharePoint(entry){
+  try{
+    var body = {
+      waveName:   entry.waveName,
+      fileName:   entry.fileName,
+      totalUsers: entry.totalUsers,
+      totalSize:  parseFloat(entry.totalSize).toFixed(2)+' GB',
+      totalFiles: entry.totalFiles,
+      totalItems: entry.totalItems||0,
+      uploadedBy: entry.uploadedBy||'Team',
+      date:       new Date().toLocaleString()
+    };
+    var r = await fetch('https://defaultde08c40719b9427d9fe8edf254300c.a7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/b5aa8b13fca648e3970b24d968bcc632/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Z2_vHjhXLvyav59_KrnekMgfh3e3eJ07y_Kph08hxKg', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(body)
+    });
+    if(r.status === 200 || r.status === 202){
+      try{
+        var txt = await r.text();
+        var data = JSON.parse(txt);
+        if(data && data.id) return data.id;
+      }catch(e){}
+      return true;
+    }
+    return false;
+  }catch(e){
+    console.log('SP save failed:', e.message);
+    return false;
+  }
+}
+
+// ── QUICK RE-UPLOAD ──────────────────────────────
+var reuploadWaveName = '';
+var reuploadHistoryId = '';
+
+async function handleReupload(file){
+  if(!file) return;
+  currentWaveName = reuploadWaveName;
+  hide('landing-section');
+  hide('dashboard-section');
+  show('progress-section');
+  document.getElementById('progress-filename').textContent = file.name + ' — ' + fmt(file.size);
+  setProgress(10,'Reading file...','');
+  var csvText = '';
+  try{
+    if(file.name.toLowerCase().endsWith('.zip')){
+      setProgress(25,'Extracting ZIP...','');
+      var zip = await JSZip.loadAsync(file);
+      var csvFile = Object.values(zip.files).find(function(f){ return f.name.toLowerCase().endsWith('.csv'); });
+      if(!csvFile) throw new Error('No CSV found inside ZIP.');
+      setProgress(45,'Extracting CSV...',csvFile.name);
+      csvText = await csvFile.async('text');
+    } else {
+      csvText = await file.text();
+    }
+    setProgress(65,'Parsing rows...',''); await tick();
+    var result = Papa.parse(csvText,{header:true,skipEmptyLines:true,dynamicTyping:false});
+    rawRows = result.data;
+    setProgress(85,'Building user breakdown...',fmtN(rawRows.length)+' rows'); await tick();
+    allUsers = buildAllUsers(rawRows);
+    // Save to session store
+    var sessionKey = currentWaveName + '_' + file.name;
+    sessionStore[sessionKey] = {rawRows:[...rawRows], waveName:currentWaveName, fileName:file.name};
+    setProgress(95,'Saving to SharePoint...','');
+    var spFileName2 = await saveFileToSharePoint(file.name, currentWaveName, csvText);
+    if(spFileName2){
+      var hist2 = getHistory();
+      if(hist2.length > 0){ hist2[0].spFileName = spFileName2; localStorage.setItem('msa-history', JSON.stringify(hist2)); }
+    }
+    setProgress(100,'Done!',''); await tick(300);
+    hide('progress-section');
+    showDashboard();
+    showToast('Re-uploaded successfully!');
+  } catch(err){
+    hide('progress-section');
+    show('landing-section');
+    showToast('Error: ' + err.message);
+  }
+  // Reset file input so same file can be selected again
+  var ri = document.getElementById('reupload-file-input');
+  if(ri) ri.value = '';
+}
+
+function showAbout(){
+  // Track which section we came from
+  if(document.getElementById('dashboard-section').style.display!=='none') prevSection='dashboard';
+  else if(document.getElementById('user-select-section').style.display!=='none') prevSection='users';
+  else if(document.getElementById('app-section').style.display!=='none') prevSection='app';
+  else if(document.getElementById('history-section').style.display!=='none') prevSection='history';
+  else prevSection='landing';
+  hide('landing-section');hide('user-select-section');hide('app-section');
+  hide('history-section');hide('email-section');hide('dashboard-section');
+  show('about-section');
+}
+
+function hideAbout(){
+  hide('about-section');
+  if(prevSection==='dashboard') showDashboard();
+  else if(prevSection==='users') showUserSelect();
+  else if(prevSection==='app') { show('app-section'); }
+  else if(prevSection==='history') showHistory();
+  else showLanding();
+}
+
+
+
+
+
+// ── DASHBOARD ──────────────────────────────────────────
+
+function showDashboard(){
+  hide('landing-section');
+  hide('user-select-section');
+  hide('app-section');
+  hide('history-section');
+  hide('about-section');
+  show('dashboard-section');
+  // Header: hide Dashboard btn (we're on dashboard), show Home btn
+  document.getElementById('header-home-btn').style.display='inline-flex';
+  document.getElementById('header-dashboard-btn').style.display='none';
+  renderDashboard();
+}
+
+function showLanding(){
+  hide('dashboard-section');
+  hide('user-select-section');
+  hide('app-section');
+  hide('history-section');
+  hide('about-section');
+  show('landing-section');
+  document.getElementById('header-home-btn').style.display='none';
+  document.getElementById('header-dashboard-btn').style.display='inline-flex';
+  closeWavePanel();
+}
+
+function renderDashboard(){
+  var history = getHistory();
+  renderDashSummary(history);
+  renderDashWaveCards(history);
+  var t = document.getElementById('dash-waves-title');
+  if(t) t.textContent = 'Recent scan reports (' + history.length + ')';
+  // Load team history from SharePoint in background - only once
+  getSharedHistory().then(function(spItems){
+    if(spItems && spItems.length){
+      var local = getHistory();
+      var localKeys = local.map(function(h){ return h.fileName+h.waveName; });
+      var newItems = spItems.filter(function(sp){
+        return !localKeys.includes(sp.fileName+sp.waveName);
+      });
+      if(newItems.length > 0){
+        var merged = local.concat(newItems);
+        renderDashSummary(merged);
+        if(t) t.textContent = 'Recent scan reports (' + merged.length + ')';
+      }
+    }
+  });
+}
+
+function renderDashSummary(history){
+  var el = document.getElementById('dash-summary');
+  if(!el) return;
+
+  // Count unique wave names
+  var uniqueWaves = [...new Set(history.map(function(h){ return h.waveName; }))];
+  var totalUsers = 0;
+  var totalSize = 0;
+  var totalFiles = 0;
+
+  // Sum ALL entries across ALL waves
+  history.forEach(function(h){
+    totalUsers += parseInt(h.totalUsers)||0;
+    if(typeof h.totalSize === 'number'){
+      totalSize += h.totalSize;
+    } else if(typeof h.totalSize === 'string'){
+      var match = h.totalSize.match(/([\d.]+)\s*(GB|MB|KB|TB)?/i);
+      if(match){
+        var val = parseFloat(match[1]);
+        var unit = (match[2]||'').toUpperCase();
+        if(unit==='TB') totalSize += val*1e12;
+        else if(unit==='GB') totalSize += val*1e9;
+        else if(unit==='MB') totalSize += val*1e6;
+        else if(unit==='KB') totalSize += val*1e3;
+        else totalSize += val;
+      }
+    }
+    totalFiles += parseInt(h.totalFiles)||0;
+  });
+
+  var cards = [
+    {label:'Total Waves', value: uniqueWaves.length, accent:true, onclick:'openWavesPanel()'},
+    {label:'Total Users', value: totalUsers, accent:true, onclick:'openUsersPanel()'},
+    {label:'Total Size',  value: fmt(totalSize), accent:true, onclick:'openSizePanel()'},
+    {label:'Total Files', value: fmtN(totalFiles), accent:true, onclick:'openFilesPanel()'},
+  ];
+
+  el.innerHTML = cards.map(function(card){
+    var style = card.accent
+      ? 'background:var(--accent-bg);border:1px solid var(--accent-border);cursor:pointer;'
+      : 'background:var(--surface);border:1px solid var(--border);';
+    var hover = card.accent ? 'onmouseover="this.style.opacity=0.85" onmouseout="this.style.opacity=1"' : '';
+    var click = card.onclick ? 'onclick="'+card.onclick+'"' : '';
+    return '<div style="'+style+'border-radius:var(--r-md);padding:18px;text-align:center;transition:all .2s;" '+hover+' '+click+'>'
+      +'<div style="font-size:26px;font-weight:800;color:'+(card.accent?'var(--accent)':'var(--text-1)')+';">'+card.value+'</div>'
+      +'<div style="font-size:12px;color:var(--text-2);margin-top:5px;">'+card.label+'</div>'
+      +(card.accent?'<div style="font-size:10px;color:var(--accent);margin-top:3px;">Click to view →</div>':'')
+      +'</div>';
+  }).join('');
+}
+
+function renderDashWaveCards(history){
+  var grid = document.getElementById('dash-waves-grid');
+  if(!grid) return;
+
+  if(!history||!history.length){
+    grid.innerHTML = '<div class="waves-empty"><div class="waves-empty-icon">📂</div><div class="waves-empty-title">No scan reports yet</div><div class="waves-empty-sub">Upload your first scan report from the Home page</div></div>';
+    return;
+  }
+
+  var html = '';
+  history.forEach(function(h){
+    if(!h||!h.waveName) return;
+    var isPilot = (h.waveName||'').toLowerCase().includes('pilot');
+    var icon = getWaveIcon(h.waveName||'Scan');
+    var hasSession = Object.keys(sessionStore).some(function(k){
+      return sessionStore[k].waveName===h.waveName && sessionStore[k].fileName===h.fileName;
+    });
+    var hasRawStored = !!localStorage.getItem('msa-raw-'+h.id);
+    var hasSP = !!(h.spFileName);
+    var available = hasSession||hasRawStored||hasSP;
+    var sessionText = hasSession?'In session':hasSP?'In SharePoint':hasRawStored?'Available':'Re-upload to view';
+    var sessionColor = available?'var(--success)':'var(--accent)';
+    var dot = available?'●':'↑';
+    var sizeStr = typeof h.totalSize==='number'?fmt(h.totalSize):(h.totalSize||'0');
+    html += '<div class="wave-card" data-hid="'+String(h.id)+'">';
+    html += '<div class="wave-card-stripe"></div>';
+    html += '<div class="wave-card-header"><div>';
+    html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">';
+    html += '<span style="font-size:18px;">'+icon+'</span>';
+    html += '<span class="wave-badge '+(isPilot?'wave-badge-pilot':'wave-badge-wave')+'">'+h.waveName+'</span>';
+    html += '</div>';
+    html += '<div class="wave-date">'+(h.date||'')+'</div>';
+    html += '</div></div>';
+    html += '<div class="wave-filename">'+(h.fileName||'')+'</div>';
+    html += '<div class="wave-stats">';
+    html += '<div class="wave-stat"><div class="wave-stat-val">'+(h.totalUsers||0)+'</div><div class="wave-stat-label">Users</div></div>';
+    html += '<div class="wave-stat"><div class="wave-stat-val">'+sizeStr+'</div><div class="wave-stat-label">Total size</div></div>';
+    html += '<div class="wave-stat"><div class="wave-stat-val">'+(h.totalFiles?fmtN(h.totalFiles):'0')+'</div><div class="wave-stat-label">Files</div></div>';
+    html += '</div>';
+    html += '<div class="wave-card-footer">';
+    html += '<span style="font-size:10px;font-weight:600;color:'+sessionColor+';">'+dot+' '+sessionText+'</span>';
+    html += '<div class="wave-card-arr"><svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2.5"><polyline points="9 18 15 12 9 6"/></svg></div>';
+    html += '</div></div>';
+  });
+  grid.innerHTML = html;
+
+  // Click handlers
+  grid.querySelectorAll('.wave-card').forEach(function(el){
+    el.addEventListener('click', function(){
+      var hid = this.getAttribute('data-hid');
+      var hist = getHistory();
+      var entry = hist.find(function(h){ return String(h.id)===hid; });
+      if(!entry){ loadFromHistory(hid); return; }
+      var hasSession = Object.keys(sessionStore).some(function(k){
+        return sessionStore[k].waveName===entry.waveName && sessionStore[k].fileName===entry.fileName;
+      });
+      var hasRaw = !!localStorage.getItem('msa-raw-'+entry.id);
+      var hasSP = !!(entry.spFileName);
+      if(hasSession||hasRaw||hasSP){
+        loadFromHistory(hid);
+      } else {
+        reuploadWaveName = entry.waveName;
+        reuploadHistoryId = hid;
+        document.getElementById('reupload-file-input').value = '';
+        document.getElementById('reupload-file-input').click();
+      }
+    });
+  });
+}
+
+// Wave side panel
+function openWavesPanel(){
+  var history = getHistory();
+  // Group by wave name
+  var waveMap = {};
+  history.forEach(function(h){
+    if(!h.waveName) return;
+    if(!waveMap[h.waveName]) waveMap[h.waveName] = [];
+    waveMap[h.waveName].push(h);
+  });
+
+  var title = document.getElementById('wave-panel-title');
+  var sub = document.getElementById('wave-panel-sub');
+  var list = document.getElementById('wave-panel-list');
+  if(title) title.textContent = 'All Waves';
+  var waveCount = Object.keys(waveMap).length;
+  if(sub) sub.textContent = waveCount + ' unique wave' + (waveCount!==1?'s':'') + ' uploaded';
+
+  var html = '';
+  Object.keys(waveMap).forEach(function(wname){
+    var entries = waveMap[wname];
+    var icon = getWaveIcon(wname);
+    var totalSize = 0;
+    var totalFiles = 0;
+    var totalUsers = 0;
+    entries.forEach(function(e){
+      if(typeof e.totalSize==='number') totalSize+=e.totalSize;
+      totalFiles+=parseInt(e.totalFiles)||0;
+      totalUsers+=parseInt(e.totalUsers)||0;
+    });
+    html += '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-md);padding:14px;margin-bottom:10px;">';
+    html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">';
+    html += '<span style="font-size:20px;">'+icon+'</span>';
+    html += '<div>';
+    html += '<div style="font-size:13px;font-weight:700;color:var(--text-1);">'+wname+'</div>';
+    html += '<div style="font-size:11px;color:var(--text-2);">'+entries.length+' scan report'+(entries.length!==1?'s':'')+'</div>';
+    html += '</div></div>';
+    // List each scan file
+    entries.forEach(function(e){
+      var hasSession = Object.keys(sessionStore).some(function(k){
+        return sessionStore[k].waveName===e.waveName && sessionStore[k].fileName===e.fileName;
+      });
+      var available = hasSession||(e.rawData&&e.rawData.length>0);
+      html += '<div class="wave-entry" data-eid="'+String(e.id)+'" style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--surface);border:1px solid var(--border);border-radius:6px;cursor:pointer;margin-bottom:6px;transition:border-color .15s;">';
+      html += '<div style="flex:1;min-width:0;">';
+      html += '<div style="font-size:11px;color:var(--text-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+e.fileName+'</div>';
+      html += '<div style="font-size:10px;color:var(--text-3);margin-top:2px;">'+(e.date||'')+'</div>';
+      html += '</div>';
+      html += '<div style="text-align:right;margin-left:8px;flex-shrink:0;">';
+      html += '<div style="font-size:10px;font-weight:600;color:'+(available?'var(--success)':'var(--accent)')+';">'+(available?'● Ready':'↑ Re-upload')+'</div>';
+      html += '<div style="font-size:10px;color:var(--text-3);">'+(e.totalUsers||0)+' users</div>';
+      html += '</div></div>';
+    });
+    html += '</div>';
+  });
+
+  if(list){
+    list.innerHTML = html;
+    list.querySelectorAll('.wave-entry').forEach(function(el){
+      el.addEventListener('mouseover', function(){ this.style.borderColor='var(--accent)'; });
+      el.addEventListener('mouseout', function(){ this.style.borderColor='var(--border)'; });
+      el.addEventListener('click', function(){
+        var eid = this.getAttribute('data-eid');
+        closeWavePanel();
+        loadFromHistory(eid);
+      });
+    });
+  }
+  document.getElementById('wave-panel-overlay').style.display = 'block';
+  document.getElementById('wave-panel').style.display = 'block';
+}
+
+function closeWavePanel(){
+  document.getElementById('wave-panel-overlay').style.display = 'none';
+  document.getElementById('wave-panel').style.display = 'none';
+}
+
+// Keep old renderWaveCards for compatibility (used after upload)
+function renderWaveCards(){
+  // After upload, switch to dashboard view
+  if(document.getElementById('dashboard-section').style.display !== 'none'){
+    renderDashboard();
+  }
+}
+
+
+// ── DASHBOARD SIDE PANELS ──────────────────────────────
+
+function openUsersPanel(){
+  var history = getHistory();
+  var title = document.getElementById('wave-panel-title');
+  var sub = document.getElementById('wave-panel-sub');
+  var list = document.getElementById('wave-panel-list');
+
+  // Collect all unique users across all waves
+  var userMap = {};
+  history.forEach(function(h){
+    if(!h.waveName) return;
+    (h.users||[]).forEach(function(u){
+      if(!userMap[u]) userMap[u] = [];
+      userMap[u].push(h.waveName);
+    });
+  });
+
+  var totalUsers = Object.keys(userMap).length;
+  if(title) title.textContent = 'All Users';
+  if(sub) sub.textContent = totalUsers + ' unique user' + (totalUsers!==1?'s':'') + ' across all waves';
+
+  var html = '';
+  Object.keys(userMap).sort().forEach(function(user){
+    var waves = [...new Set(userMap[user])];
+    var initials = user.includes('@') ? user.split('@')[0].slice(0,2).toUpperCase() : user.slice(0,2).toUpperCase();
+    html += '<div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-sm);margin-bottom:8px;">';
+    html += '<div style="width:34px;height:34px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;flex-shrink:0;">'+initials+'</div>';
+    html += '<div style="flex:1;min-width:0;">';
+    html += '<div style="font-size:12px;font-weight:600;color:var(--text-1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+user+'</div>';
+    html += '<div style="font-size:10px;color:var(--text-3);margin-top:2px;">'+waves.join(', ')+'</div>';
+    html += '</div></div>';
+  });
+
+  if(!html) html = '<div style="text-align:center;padding:32px;color:var(--text-3);">No users found</div>';
+  if(list) list.innerHTML = html;
+  document.getElementById('wave-panel-overlay').style.display = 'block';
+  document.getElementById('wave-panel').style.display = 'block';
+}
+
+function openSizePanel(){
+  var history = getHistory();
+  var title = document.getElementById('wave-panel-title');
+  var sub = document.getElementById('wave-panel-sub');
+  var list = document.getElementById('wave-panel-list');
+
+  // Group by wave name, sum sizes
+  var waveMap = {};
+  history.forEach(function(h){
+    if(!h.waveName) return;
+    if(!waveMap[h.waveName]) waveMap[h.waveName] = {totalSize:0, entries:[]};
+    var s = typeof h.totalSize==='number' ? h.totalSize : 0;
+    waveMap[h.waveName].totalSize += s;
+    waveMap[h.waveName].entries.push(h);
+  });
+
+  var totalSize = Object.values(waveMap).reduce(function(a,w){ return a+w.totalSize; }, 0);
+  if(title) title.textContent = 'Size Breakdown';
+  if(sub) sub.textContent = 'Total: ' + fmt(totalSize) + ' across ' + Object.keys(waveMap).length + ' wave(s)';
+
+  // Sort by size desc
+  var sorted = Object.entries(waveMap).sort(function(a,b){ return b[1].totalSize - a[1].totalSize; });
+  var maxSize = sorted[0] ? sorted[0][1].totalSize : 1;
+
+  var html = '';
+  sorted.forEach(function(entry){
+    var wname = entry[0];
+    var data = entry[1];
+    var icon = getWaveIcon(wname);
+    var pct = maxSize > 0 ? Math.round((data.totalSize/maxSize)*100) : 0;
+    html += '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-md);padding:14px;margin-bottom:10px;">';
+    html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">';
+    html += '<div style="display:flex;align-items:center;gap:8px;">';
+    html += '<span style="font-size:18px;">'+icon+'</span>';
+    html += '<span style="font-size:13px;font-weight:700;color:var(--text-1);">'+wname+'</span>';
+    html += '</div>';
+    html += '<span style="font-size:13px;font-weight:700;color:var(--accent);">'+fmt(data.totalSize)+'</span>';
+    html += '</div>';
+    html += '<div style="height:6px;background:var(--border);border-radius:3px;">';
+    html += '<div style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,var(--accent),#7C3AED);border-radius:3px;transition:width .4s ease;"></div>';
+    html += '</div>';
+    html += '<div style="font-size:10px;color:var(--text-3);margin-top:4px;">'+data.entries.length+' scan report'+(data.entries.length!==1?'s':'')+'</div>';
+    html += '</div>';
+  });
+
+  if(!html) html = '<div style="text-align:center;padding:32px;color:var(--text-3);">No data found</div>';
+  if(list) list.innerHTML = html;
+  document.getElementById('wave-panel-overlay').style.display = 'block';
+  document.getElementById('wave-panel').style.display = 'block';
+}
+
+function openFilesPanel(){
+  var history = getHistory();
+  var title = document.getElementById('wave-panel-title');
+  var sub = document.getElementById('wave-panel-sub');
+  var list = document.getElementById('wave-panel-list');
+
+  // Group by wave name, sum files
+  var waveMap = {};
+  history.forEach(function(h){
+    if(!h.waveName) return;
+    if(!waveMap[h.waveName]) waveMap[h.waveName] = {totalFiles:0, entries:[]};
+    waveMap[h.waveName].totalFiles += parseInt(h.totalFiles)||0;
+    waveMap[h.waveName].entries.push(h);
+  });
+
+  var totalFiles = Object.values(waveMap).reduce(function(a,w){ return a+w.totalFiles; }, 0);
+  if(title) title.textContent = 'Files Breakdown';
+  if(sub) sub.textContent = fmtN(totalFiles) + ' total files across ' + Object.keys(waveMap).length + ' wave(s)';
+
+  // Sort by files desc
+  var sorted = Object.entries(waveMap).sort(function(a,b){ return b[1].totalFiles - a[1].totalFiles; });
+  var maxFiles = sorted[0] ? sorted[0][1].totalFiles : 1;
+
+  var html = '';
+  sorted.forEach(function(entry){
+    var wname = entry[0];
+    var data = entry[1];
+    var icon = getWaveIcon(wname);
+    var pct = maxFiles > 0 ? Math.round((data.totalFiles/maxFiles)*100) : 0;
+    html += '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-md);padding:14px;margin-bottom:10px;">';
+    html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">';
+    html += '<div style="display:flex;align-items:center;gap:8px;">';
+    html += '<span style="font-size:18px;">'+icon+'</span>';
+    html += '<span style="font-size:13px;font-weight:700;color:var(--text-1);">'+wname+'</span>';
+    html += '</div>';
+    html += '<span style="font-size:13px;font-weight:700;color:var(--accent);">'+fmtN(data.totalFiles)+' files</span>';
+    html += '</div>';
+    html += '<div style="height:6px;background:var(--border);border-radius:3px;">';
+    html += '<div style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,#059669,#0891B2);border-radius:3px;transition:width .4s ease;"></div>';
+    html += '</div>';
+    html += '<div style="font-size:10px;color:var(--text-3);margin-top:4px;">'+data.entries.length+' scan report'+(data.entries.length!==1?'s':'')+'</div>';
+    html += '</div>';
+  });
+
+  if(!html) html = '<div style="text-align:center;padding:32px;color:var(--text-3);">No data found</div>';
+  if(list) list.innerHTML = html;
+  document.getElementById('wave-panel-overlay').style.display = 'block';
+  document.getElementById('wave-panel').style.display = 'block';
+}
+
+
+
+
+// ── SHAREPOINT SHARED HISTORY ──────────────────────────────
+
+const PA_GET_HISTORY_URL = 'https://defaultde08c40719b9427d9fe8edf254300c.a7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/c4677404fd344066871738c713b652b6/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=APWjPhY30V_JSCCI-AzLSCk_T8Ywh7V9xh7ra4wg9bI';
+const PA_DELETE_URL = 'https://defaultde08c40719b9427d9fe8edf254300c.a7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/ce62a3c86066423ba0365df564761c46/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=YSzls2LjJukSuazVrsP75TAY-9Ff2X-xrq0C8mHeZ_I';
+
+async function getSharedHistory(){
+  try{
+    var r = await fetch(PA_GET_HISTORY_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({action: 'getAll'})
+    });
+    if(r.ok){
+      var data = await r.json();
+      return data.items || [];
+    }
+    return [];
+  }catch(e){
+    console.log('Get shared history failed:', e.message);
+    return [];
+  }
+}
+
+
+
+// ── SHARED HISTORY FROM SHAREPOINT ─────────────────────────
+
+async function getSharedHistory(){
+  try{
+    var r = await fetch(PA_GET_HISTORY_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({})
+    });
+    if(r.ok){
+      var data = await r.json();
+      if(data.items && data.items.length){
+        return data.items.map(function(item){
+          return {
+            id: item.ID || Date.now(),
+            waveName: item.Title || '',
+            fileName: item.FileName || '',
+            date: item.Created ? new Date(item.Created).toLocaleString() : '',
+            totalUsers: parseInt(item.TotalUsers) || 0,
+            totalSize: item.TotalSize || '0 GB',
+            totalFiles: parseInt(item.TotalFiles) || 0,
+            totalItems: parseInt(item.TotalItems) || 0,
+            uploadedBy: item.UploadedBy || '',
+            users: [],
+            spFileName: null,
+            source: 'sharepoint'
+          };
+        });
+      }
+    }
+    return null;
+  }catch(e){
+    console.log('Get shared history failed:', e.message);
+    return null;
+  }
+}
+
+
+// ── SHAREPOINT FILE STORAGE ─────────────────────────────────
+
+
+async function deleteFromSharePoint(itemId){
+  if(!itemId) return;
+  try{
+    await fetch(PA_DELETE_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({itemId: itemId})
+    });
+    console.log('Deleted from SharePoint:', itemId);
+  }catch(e){
+    console.log('SP delete failed:', e.message);
+  }
+}
+
+async function saveFileToSharePoint(fileName, waveName, csvText){
+  try{
+    var fileContent = btoa(unescape(encodeURIComponent(csvText)));
+    var spFileName = waveName.replace(/[^a-z0-9]/gi,'_') + '_' + fileName;
+    var r = await fetch(PA_SAVE_FILE_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        fileName: spFileName,
+        fileContent: fileContent,
+        waveName: waveName
+      })
+    });
+    if(r.ok){
+      console.log('File saved to SharePoint:', spFileName);
+      return spFileName;
+    }
+    return null;
+  }catch(e){
+    console.log('File save failed:', e.message);
+    return null;
+  }
+}
+
+async function getFileFromSharePoint(spFileName){
+  try{
+    var r = await fetch(PA_GET_FILE_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({fileName: spFileName})
+    });
+    if(r.ok){
+      var data = await r.json();
+      if(data.fileContent){
+        var csvText = decodeURIComponent(escape(atob(data.fileContent)));
+        return csvText;
+      }
+    }
+    return null;
+  }catch(e){
+    console.log('File get failed:', e.message);
+    return null;
+  }
+}
+
+
+// ── USER EMAIL ─────────────────────────────────────────────
+
+function getUserEmail(){
+  return localStorage.getItem('msa-user-email') || '';
+}
+
+function setUserEmail(email){
+  localStorage.setItem('msa-user-email', email);
+}
+
+function updateEmailConfirm(val){
+  var btn = document.getElementById('email-confirm-btn');
+  var err = document.getElementById('email-error');
+  var valid = val.trim().length > 3 && val.includes('@');
+  btn.disabled = !valid;
+  btn.style.opacity = valid ? '1' : '0.5';
+  btn.style.cursor = valid ? 'pointer' : 'not-allowed';
+  err.style.display = 'none';
+}
+
+function confirmUserEmail(){
+  var val = document.getElementById('user-email-input').value.trim();
+  if(!val || !val.includes('@')){
+    document.getElementById('email-error').style.display = 'block';
+    return;
+  }
+  setUserEmail(val);
+  document.getElementById('email-modal').style.display = 'none';
+  updateHeaderEmail();
+  showToast('Welcome, ' + val + '! 👋');
+}
+
+
+function changeUserEmail(){
+  document.getElementById('user-email-input').value = getUserEmail();
+  updateEmailConfirm(getUserEmail());
+  document.getElementById('email-modal').style.display = 'flex';
+  setTimeout(function(){ document.getElementById('user-email-input').focus(); }, 100);
+}
+
+function updateHeaderEmail(){
+  var email = getUserEmail();
+  var el = document.getElementById('header-email-display');
+  if(el && email){
+    el.textContent = email.split('@')[0];
+  }
+}
+
+function checkUserEmail(){
+  var email = getUserEmail();
+  if(!email){
+    document.getElementById('email-modal').style.display = 'flex';
+    setTimeout(function(){ document.getElementById('user-email-input').focus(); }, 100);
+  }
+}
+
+
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+</script>
+</body>
+</html>
