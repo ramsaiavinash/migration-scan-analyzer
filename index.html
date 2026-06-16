@@ -404,13 +404,13 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
     <span class="logo-sub">Google Drive → OneDrive</span>
   </div>
   <div class="header-right">
-    <button class="btn btn-sm btn-ghost" id="header-home-btn" style="display:none;" onclick="goHome()">
+    <button class="btn btn-sm btn-ghost" id="header-home-btn" style="display:none;" onclick="if(typeof goHome!=='undefined')goHome()">
       <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home
     </button>
-    <button class="btn btn-sm btn-ghost" id="header-dashboard-btn" onclick="showDashboard()">
+    <button class="btn btn-sm btn-ghost" id="header-dashboard-btn" onclick="if(typeof showDashboard!=='undefined')showDashboard()">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard
     </button>
-    <button class="btn btn-sm btn-ghost" onclick="showAbout()">
+    <button class="btn btn-sm btn-ghost" onclick="if(typeof showAbout!=='undefined')showAbout()">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>About
     </button>
     <button class="btn btn-sm btn-ghost" id="user-email-btn" onclick="changeUserEmail()" title="Change email" style="font-size:11px;padding:5px 8px;">
