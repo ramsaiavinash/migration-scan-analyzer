@@ -328,7 +328,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
 
-@keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}</style>
+</style>
 <script>/*!
  * Chart.js v4.4.1
  * https://www.chartjs.org
@@ -404,13 +404,13 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
     <span class="logo-sub">Google Drive → OneDrive</span>
   </div>
   <div class="header-right">
-    <button class="btn btn-sm btn-ghost" id="header-home-btn" style="display:none;" onclick="if(typeof goHome!=='undefined')goHome()">
+    <button class="btn btn-sm btn-ghost" id="header-home-btn" style="display:none;" onclick="goHome()">
       <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home
     </button>
-    <button class="btn btn-sm btn-ghost" id="header-dashboard-btn" onclick="if(typeof showDashboard!=='undefined')showDashboard()">
+    <button class="btn btn-sm btn-ghost" id="header-dashboard-btn" onclick="showDashboard()">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard
     </button>
-    <button class="btn btn-sm btn-ghost" onclick="if(typeof showAbout!=='undefined')showAbout()">
+    <button class="btn btn-sm btn-ghost" onclick="showAbout()">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>About
     </button>
     <button class="btn btn-sm btn-ghost" id="user-email-btn" onclick="changeUserEmail()" title="Change email" style="font-size:11px;padding:5px 8px;">
@@ -749,71 +749,105 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:10px;">
     <div>
       <h2 style="font-size:18px;font-weight:700;letter-spacing:-.3px;">About ScanAnalyzer</h2>
-      <p style="color:var(--text-2);font-size:12px;margin-top:3px;">Google Drive to OneDrive Migration Tool v2.0</p>
+      <p style="color:var(--text-2);font-size:12px;margin-top:3px;">Google Drive → OneDrive Migration Analysis Tool</p>
     </div>
-    <button class="btn btn-sm" onclick="hideAbout()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Back</button>
+    <button class="btn btn-sm" onclick="hideAbout()">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Back
+    </button>
   </div>
+
+  <!-- What is it -->
   <div class="card" style="margin-bottom:16px;">
-    <div class="card-hdr"><div class="card-title">What is ScanAnalyzer?</div></div>
-    <div class="card-body"><p style="font-size:13px;color:var(--text-2);line-height:1.9;">ScanAnalyzer is a <strong style="color:var(--text-1);">browser-based migration analysis tool</strong> built for the CHS project team at Cognizant. It instantly parses Microsoft Migration Manager scan reports and delivers a complete per-user breakdown of data size, file counts, formats and folder structure - saving 2-3 hours of manual Excel work per wave.<br><br>Every scan is automatically synced to SharePoint so your entire team can access, reload and track migration waves from anywhere. No server. No installation. Just open the link and go.</p></div>
+    <div class="card-hdr"><div class="card-title">🎯 What is ScanAnalyzer?</div></div>
+    <div class="card-body">
+      <p style="font-size:13px;color:var(--text-2);line-height:1.8;">ScanAnalyzer is a <strong style="color:var(--text-1);">browser-based migration analysis tool</strong> built for Google Drive to OneDrive migration teams. It instantly parses Microsoft Migration Manager scan reports and gives a full per-user breakdown — saving 2-3 hours of manual Excel work per wave.</p>
+    </div>
   </div>
+
+  <!-- How it works -->
   <div class="card" style="margin-bottom:16px;">
-    <div class="card-hdr"><div class="card-title">How to use</div></div>
+    <div class="card-hdr"><div class="card-title">⚡ How it works</div></div>
     <div class="card-body">
       <div style="display:flex;flex-direction:column;gap:12px;">
-        <div style="display:flex;gap:14px;align-items:flex-start;"><div style="min-width:28px;height:28px;background:var(--accent-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--accent);">1</div><div style="font-size:13px;color:var(--text-2);padding-top:4px;">Export scan report ZIP from <strong style="color:var(--text-1);">Microsoft Migration Manager</strong></div></div>
-        <div style="display:flex;gap:14px;align-items:flex-start;"><div style="min-width:28px;height:28px;background:var(--accent-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--accent);">2</div><div style="font-size:13px;color:var(--text-2);padding-top:4px;">Click <strong style="color:var(--text-1);">Upload New Scan</strong> on Dashboard and name your wave</div></div>
-        <div style="display:flex;gap:14px;align-items:flex-start;"><div style="min-width:28px;height:28px;background:var(--accent-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--accent);">3</div><div style="font-size:13px;color:var(--text-2);padding-top:4px;">Click any <strong style="color:var(--text-1);">wave card</strong> to see per-user breakdown</div></div>
-        <div style="display:flex;gap:14px;align-items:flex-start;"><div style="min-width:28px;height:28px;background:var(--accent-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--accent);">4</div><div style="font-size:13px;color:var(--text-2);padding-top:4px;">Click a <strong style="color:var(--text-1);">user card</strong> to see charts, formats and full data grid</div></div>
-        <div style="display:flex;gap:14px;align-items:flex-start;"><div style="min-width:28px;height:28px;background:var(--accent-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--accent);">5</div><div style="font-size:13px;color:var(--text-2);padding-top:4px;"><strong style="color:var(--text-1);">Export to Excel</strong> (5 sheets) or generate migration email</div></div>
-        <div style="display:flex;gap:14px;align-items:flex-start;"><div style="min-width:28px;height:28px;background:var(--accent-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--accent);">6</div><div style="font-size:13px;color:var(--text-2);padding-top:4px;">Wave cards showing <span style="color:var(--success);">In SharePoint</span> reload without re-uploading</div></div>
-      </div>
-    </div>
-  </div>
-  <div class="card" style="margin-bottom:16px;">
-    <div class="card-hdr"><div class="card-title">Features</div></div>
-    <div class="card-body">
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;">
-        <div style="background:var(--surface2);border-radius:var(--r-sm);padding:12px;"><div style="font-size:12px;font-weight:600;color:var(--text-1);margin-bottom:3px;">Per-User Analysis</div><div style="font-size:11px;color:var(--text-3);line-height:1.6;">Data size, files, formats and folders per user with Heavy/Medium/Normal badge</div></div>
-        <div style="background:var(--surface2);border-radius:var(--r-sm);padding:12px;"><div style="font-size:12px;font-weight:600;color:var(--text-1);margin-bottom:3px;">Team Dashboard</div><div style="font-size:11px;color:var(--text-3);line-height:1.6;">All team uploads in one shared dashboard across all waves</div></div>
-        <div style="background:var(--surface2);border-radius:var(--r-sm);padding:12px;"><div style="font-size:12px;font-weight:600;color:var(--text-1);margin-bottom:3px;">SharePoint Sync</div><div style="font-size:11px;color:var(--text-3);line-height:1.6;">Every scan auto-saved to SharePoint via Power Automate</div></div>
-        <div style="background:var(--surface2);border-radius:var(--r-sm);padding:12px;"><div style="font-size:12px;font-weight:600;color:var(--text-1);margin-bottom:3px;">Sync Delete</div><div style="font-size:11px;color:var(--text-3);line-height:1.6;">Delete from tool also removes from SharePoint list</div></div>
-        <div style="background:var(--surface2);border-radius:var(--r-sm);padding:12px;"><div style="font-size:12px;font-weight:600;color:var(--text-1);margin-bottom:3px;">Email Generator</div><div style="font-size:11px;color:var(--text-3);line-height:1.6;">Auto-generate migration emails per user ready to send</div></div>
-        <div style="background:var(--surface2);border-radius:var(--r-sm);padding:12px;"><div style="font-size:12px;font-weight:600;color:var(--text-1);margin-bottom:3px;">Excel Export</div><div style="font-size:11px;color:var(--text-3);line-height:1.6;">5-sheet Excel: Summary, Users, Formats, Folders, Full Data</div></div>
-        <div style="background:var(--surface2);border-radius:var(--r-sm);padding:12px;"><div style="font-size:12px;font-weight:600;color:var(--text-1);margin-bottom:3px;">Full Data Grid</div><div style="font-size:11px;color:var(--text-3);line-height:1.6;">Filter, sort, search 250K+ rows with AG Grid</div></div>
-        <div style="background:var(--surface2);border-radius:var(--r-sm);padding:12px;"><div style="font-size:12px;font-weight:600;color:var(--text-1);margin-bottom:3px;">Zero Data Transmission</div><div style="font-size:11px;color:var(--text-3);line-height:1.6;">CSV parsing in browser - raw data never leaves your machine</div></div>
-        <div style="background:var(--surface2);border-radius:var(--r-sm);padding:12px;"><div style="font-size:12px;font-weight:600;color:var(--text-1);margin-bottom:3px;">User Tracking</div><div style="font-size:11px;color:var(--text-3);line-height:1.6;">Each member identified by email - uploads tagged in SharePoint</div></div>
-        <div style="background:var(--surface2);border-radius:var(--r-sm);padding:12px;"><div style="font-size:12px;font-weight:600;color:var(--text-1);margin-bottom:3px;">Light / Dark Mode</div><div style="font-size:11px;color:var(--text-3);line-height:1.6;">Toggle themes - preference saved automatically</div></div>
-      </div>
-    </div>
-  </div>
-  <div class="card" style="margin-bottom:16px;">
-    <div class="card-hdr"><div class="card-title">SharePoint Integration</div></div>
-    <div class="card-body">
-      <div style="display:flex;flex-direction:column;gap:8px;">
-        <div style="font-size:12px;color:var(--text-2);">ScanAnalyzerHistory list - wave metadata visible to whole team</div>
-        <div style="font-size:12px;color:var(--text-2);">ScanAnalyzerFiles folder - CSV files for reload without re-uploading</div>
-        <div style="font-size:12px;color:var(--text-2);">5 Power Automate flows: Save, SaveFile, GetFile, GetHistory, DeleteItem</div>
-        <div style="font-size:12px;color:var(--danger);">Always delete from the tool - not directly from SharePoint</div>
-      </div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-hdr"><div class="card-title">Built by</div></div>
-    <div class="card-body">
-      <div style="display:flex;align-items:center;gap:16px;">
-        <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#7c3aed);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:white;flex-shrink:0;">K</div>
-        <div>
-          <div style="font-size:15px;font-weight:700;color:var(--text-1);">Kanigolla, Rama Sai Avinash</div>
-          <div style="font-size:12px;color:var(--text-3);margin-top:2px;">Programmer Analyst Trainee - CIS Microsoft M365 Professional Services - Cognizant</div>
-          <div style="font-size:12px;color:var(--accent);margin-top:4px;">2389039@cognizant.com</div>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="width:32px;height:32px;background:var(--accent-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--accent);flex-shrink:0;">1</div>
+          <div style="font-size:13px;color:var(--text-2);">Export scan report ZIP from <strong style="color:var(--text-1);">Microsoft Migration Manager</strong></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="width:32px;height:32px;background:var(--accent-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--accent);flex-shrink:0;">2</div>
+          <div style="font-size:13px;color:var(--text-2);">Click <strong style="color:var(--text-1);">Upload Scan Report</strong> → select wave name → select file</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="width:32px;height:32px;background:var(--accent-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--accent);flex-shrink:0;">3</div>
+          <div style="font-size:13px;color:var(--text-2);">Wave card created → click it → select a user → view full <strong style="color:var(--text-1);">dashboard, charts, and insights</strong></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="width:32px;height:32px;background:var(--accent-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--accent);flex-shrink:0;">4</div>
+          <div style="font-size:13px;color:var(--text-2);">Export to <strong style="color:var(--text-1);">Excel</strong> or generate <strong style="color:var(--text-1);">client email</strong> in one click</div>
         </div>
       </div>
-      <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border1);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-        <div style="font-size:11px;color:var(--text-3);">ScanAnalyzer v2.0 - June 2026 - CHS Project - Google Drive to OneDrive Migration</div>
-        <div style="font-size:11px;color:var(--text-3);">Chart.js - PapaParse - AG Grid - SheetJS - JSZip - Power Automate</div>
+    </div>
+  </div>
+
+  <!-- Features -->
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-hdr"><div class="card-title">📊 Key Features</div></div>
+    <div class="card-body">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;">
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Per-user data breakdown</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>4-tier risk badges (Normal / Medium / Medium-High / Heavy)</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Google Workspace conversion highlights</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>File format breakdown with charts</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Excel export with 5 sheets</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Client email generator</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Full data grid — filter, sort, export CSV</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Supports multi-user scan reports</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>SharePoint history tracking</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Light / Dark mode</div>
       </div>
     </div>
+  </div>
+
+  <!-- Privacy -->
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-hdr"><div class="card-title">🔒 Privacy & Security</div></div>
+    <div class="card-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div style="background:var(--success-bg);border:1px solid var(--success-border);border-radius:var(--r-sm);padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:var(--success);margin-bottom:4px;">✅ What stays on your laptop</div>
+          <div style="font-size:11px;color:var(--text-2);line-height:1.6;">Raw scan data · File paths · User details · Browser history</div>
+        </div>
+        <div style="background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:var(--r-sm);padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:4px;">📤 What saves to SharePoint</div>
+          <div style="font-size:11px;color:var(--text-2);line-height:1.6;">Wave name · File name · User count · Total size · Total files</div>
+        </div>
+      </div>
+      <p style="font-size:12px;color:var(--text-3);margin-top:12px;">No scan file content ever leaves the browser. GitHub Pages only serves the HTML file — it has no server, no database, and cannot receive any data.</p>
+    </div>
+  </div>
+
+  <!-- Tech -->
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-hdr"><div class="card-title">⚙️ Technology</div></div>
+    <div class="card-body">
+      <div style="display:flex;flex-wrap:wrap;gap:8px;">
+        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">HTML5 + CSS3 + JavaScript</span>
+        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">Chart.js 4.4.1</span>
+        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">AG Grid Community 31.3.2</span>
+        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">PapaParse 5.4.1</span>
+        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">JSZip 3.10.1</span>
+        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">SheetJS 0.18.5</span>
+        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">Power Automate</span>
+        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">SharePoint List</span>
+        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">GitHub Pages (hosting)</span>
+        <span style="font-size:11px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text-2);">3.3 MB self-contained</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Version -->
+  <div style="text-align:center;padding:16px;color:var(--text-3);font-size:11px;">
+    ScanAnalyzer v1.0 · Built by Kanigolla, Rama Sai Avinash (Cognizant) · June 2026
   </div>
 </div>
 
@@ -842,10 +876,16 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
       </button>
     </div>
     <div style="text-align:center;font-size:11px;color:var(--text-3);margin-top:12px;">
-      🔒 Your email is stored locally only — never 
+      🔒 Your email is stored locally only — never shared
+    </div>
+  </div>
+</div>
+
+</main>
+<div id="toast"></div>
 
 <script>
-<script>
+
 // SP List URL for View in SharePoint button
 const SP_LIST_URL = 'https://cognizantonline-my.sharepoint.com/personal/2389039_cognizant_com/Lists/ScanAnalyzerHistory/AllItems.aspx';
 const PA_SAVE_URL = 'https://defaultde08c40719b9427d9fe8edf254300c.a7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/b5aa8b13fca648e3970b24d968bcc632/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Z2_vHjhXLvyav59_KrnekMgfh3e3eJ07y_Kph08hxKg';
@@ -1150,10 +1190,8 @@ function loadFromHistory(id){
 
   // 5. Try SharePoint file
   if(entry.spFileName){
-    // Show loading screen
-    showSPLoader(entry.waveName);
+    showToast('Loading from SharePoint...');
     getFileFromSharePoint(entry.spFileName).then(function(csvText){
-      hideSPLoader();
       if(csvText){
         var result=Papa.parse(csvText,{header:true,skipEmptyLines:true,dynamicTyping:false});
         rawRows=result.data;
@@ -2646,31 +2684,7 @@ function checkUserEmail(){
 }
 
 
-
-function showSPLoader(waveName){
-  var el = document.getElementById('sp-loader');
-  if(!el){
-    el = document.createElement('div');
-    el.id = 'sp-loader';
-    el.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;';
-    el.innerHTML = '<div style="width:48px;height:48px;border:4px solid var(--border2);border-top:4px solid var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;"></div><div style="text-align:center;"><div style="font-size:16px;font-weight:600;color:var(--text-1);">Loading from SharePoint</div><div style="font-size:13px;color:var(--text-3);margin-top:6px;">' + (waveName||'') + '</div></div>';
-    document.body.appendChild(el);
-  } else {
-    el.style.display = 'flex';
-  }
-}
-
-function hideSPLoader(){
-  var el = document.getElementById('sp-loader');
-  if(el) el.style.display = 'none';
-}
-
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
-;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
-
-
-</script>
-</script>
 </script>
 </body>
 </html>
