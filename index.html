@@ -2136,6 +2136,7 @@ function renderDashboard(){
   // Load team history from SharePoint in background - only once
   getSharedHistory().then(function(spItems){
     if(spItems && spItems.length){
+      window._spItems = spItems;
       var local = getHistory();
       var localKeys = local.map(function(h){ return h.fileName+h.waveName; });
       var newItems = spItems.filter(function(sp){
@@ -2145,6 +2146,14 @@ function renderDashboard(){
         var merged = local.concat(newItems);
         renderDashSummary(merged);
         if(t) t.textContent = 'Recent scan reports (' + merged.length + ')';
+        // Render SP wave cards
+        var grid = document.getElementById('waves-grid');
+        if(grid){
+          newItems.forEach(function(h){
+            var el = buildWaveCard(h);
+            grid.appendChild(el);
+          });
+        }
       }
     }
   });
@@ -2274,6 +2283,14 @@ function renderDashWaveCards(history){
 // Wave side panel
 function openWavesPanel(){
   var history = getHistory();
+  // Include SP items not in local
+  if(window._spItems && window._spItems.length){
+    var localKeys = history.map(function(h){ return h.fileName+h.waveName; });
+    var newItems = window._spItems.filter(function(sp){
+      return !localKeys.includes(sp.fileName+sp.waveName);
+    });
+    history = history.concat(newItems);
+  }
   // Group by wave name
   var waveMap = {};
   history.forEach(function(h){
