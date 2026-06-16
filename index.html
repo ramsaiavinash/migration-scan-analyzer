@@ -1189,7 +1189,11 @@ function loadFromHistory(id){
   }
 
   // 5. Try SharePoint file
-  if(entry.spFileName){
+  if(entry.spFileName || entry.source==='sharepoint'){
+    if(!entry.spFileName && entry.source==='sharepoint'){
+      showToast('No file saved for this entry - please re-upload');
+      return;
+    }
     showToast('Loading from SharePoint...');
     getFileFromSharePoint(entry.spFileName).then(function(csvText){
       if(csvText){
@@ -2222,9 +2226,9 @@ function renderDashWaveCards(history){
       return sessionStore[k].waveName===h.waveName && sessionStore[k].fileName===h.fileName;
     });
     var hasRawStored = !!localStorage.getItem('msa-raw-'+h.id);
-    var hasSP = !!(h.spFileName);
+    var hasSP = !!(h.spFileName) || h.source==='sharepoint';
     var available = hasSession||hasRawStored||hasSP;
-    var sessionText = hasSession?'In session':hasSP?'In SharePoint':hasRawStored?'Available':'Re-upload to view';
+    var sessionText = hasSession?'In session':h.spFileName?'In SharePoint':h.source==='sharepoint'?'In SharePoint':hasRawStored?'Available':'Re-upload to view';
     var sessionColor = available?'var(--success)':'var(--accent)';
     var dot = available?'●':'↑';
     var sizeStr = typeof h.totalSize==='number'?fmt(h.totalSize):(h.totalSize||'0');
@@ -2256,12 +2260,32 @@ function renderDashWaveCards(history){
       var hid = this.getAttribute('data-hid');
       var hist = getHistory();
       var entry = hist.find(function(h){ return String(h.id)===hid; });
-      if(!entry){ loadFromHistory(hid); return; }
+      if(!entry){
+        // SP item not in local history - try loading by wave name from SP
+        if(window._spItems){
+          var spEntry = window._spItems.find(function(s){ return String(s.id)===hid; });
+          if(spEntry && spEntry.spFileName){
+            showToast('Loading from SharePoint...');
+            getFileFromSharePoint(spEntry.spFileName).then(function(csvText){
+              if(csvText){
+                var result=Papa.parse(csvText,{header:true,skipEmptyLines:true,dynamicTyping:false});
+                rawRows=result.data; allUsers=buildAllUsers(rawRows);
+                currentWaveName=spEntry.waveName;
+                hide('landing-section');hide('dashboard-section');
+                prevSection='dashboard'; showUserSelect();
+              } else { showToast('Re-upload to view this scan'); }
+            });
+            return;
+          }
+        }
+        showToast('Entry not found - please re-upload');
+        return;
+      }
       var hasSession = Object.keys(sessionStore).some(function(k){
         return sessionStore[k].waveName===entry.waveName && sessionStore[k].fileName===entry.fileName;
       });
       var hasRaw = !!localStorage.getItem('msa-raw-'+entry.id);
-      var hasSP = !!(entry.spFileName);
+      var hasSP = !!(entry.spFileName) || entry.source==='sharepoint';
       if(hasSession||hasRaw||hasSP){
         loadFromHistory(hid);
       } else {
