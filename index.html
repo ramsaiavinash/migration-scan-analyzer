@@ -1821,18 +1821,26 @@ function renderHistoryList(history, isSP){
 function deleteHistory(id,e){
   e.stopPropagation();
   if(!confirm('Delete this scan report from history?'))return;
-  // Delete raw data too
+  // Delete raw data
   localStorage.removeItem('msa-raw-'+id);
-  // Delete from SharePoint if has SP item ID
-  var entry = getHistory().find(function(x){ return x.id===id || String(x.id)===String(id); });
-  if(entry && entry.spItemId) deleteFromSharePoint(entry.spItemId);
-  // Delete from localStorage
-  var h=getHistory().filter(function(x){return x.id!==id;});
-  localStorage.setItem('msa-history',JSON.stringify(h));
-  // Also delete from SharePoint if it has SP id
-  var entry = getHistory().find(function(x){return x.id===id;});
-  if(entry && entry.spId){
-    deleteFromSharePoint(entry.spId);
+  // Check local history
+  var entry = getHistory().find(function(x){ return String(x.id)===String(id); });
+  if(entry){
+    // Delete from SharePoint list
+    if(entry.spItemId) deleteFromSharePoint(entry.spItemId);
+    // Delete from localStorage
+    var h = getHistory().filter(function(x){ return String(x.id)!==String(id); });
+    localStorage.setItem('msa-history', JSON.stringify(h));
+  } else {
+    // SP only item - delete from SharePoint list using SP item ID
+    if(window._spItems){
+      var spEntry = window._spItems.find(function(s){ return String(s.id)===String(id); });
+      if(spEntry){
+        deleteFromSharePoint(spEntry.id);
+        // Remove from _spItems cache
+        window._spItems = window._spItems.filter(function(s){ return String(s.id)!==String(id); });
+      }
+    }
   }
   showHistory();
   renderWaveCards();
