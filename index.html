@@ -2333,6 +2333,12 @@ function renderDashWaveCards(history){
 // Wave side panel
 function openWavesPanel(){
   var history = getHistory();
+  // Merge SP items
+  if(window._spItems && window._spItems.length){
+    var localKeys = history.map(function(h){ return h.fileName+h.waveName; });
+    var spNew = window._spItems.filter(function(s){ return !localKeys.includes(s.fileName+s.waveName); });
+    if(spNew.length) history = history.concat(spNew);
+  }
   // Include SP items not in local
   if(window._spItems && window._spItems.length){
     var localKeys = history.map(function(h){ return h.fileName+h.waveName; });
@@ -2453,6 +2459,12 @@ function renderWaveCards(){
 
 function openUsersPanel(){
   var history = getHistory();
+  // Merge SP items
+  if(window._spItems && window._spItems.length){
+    var localKeys = history.map(function(h){ return h.fileName+h.waveName; });
+    var spNew = window._spItems.filter(function(s){ return !localKeys.includes(s.fileName+s.waveName); });
+    if(spNew.length) history = history.concat(spNew);
+  }
   var title = document.getElementById('wave-panel-title');
   var sub = document.getElementById('wave-panel-sub');
   var list = document.getElementById('wave-panel-list');
@@ -2491,6 +2503,12 @@ function openUsersPanel(){
 
 function openSizePanel(){
   var history = getHistory();
+  // Merge SP items
+  if(window._spItems && window._spItems.length){
+    var localKeys = history.map(function(h){ return h.fileName+h.waveName; });
+    var spNew = window._spItems.filter(function(s){ return !localKeys.includes(s.fileName+s.waveName); });
+    if(spNew.length) history = history.concat(spNew);
+  }
   var title = document.getElementById('wave-panel-title');
   var sub = document.getElementById('wave-panel-sub');
   var list = document.getElementById('wave-panel-list');
@@ -2542,6 +2560,12 @@ function openSizePanel(){
 
 function openFilesPanel(){
   var history = getHistory();
+  // Merge SP items
+  if(window._spItems && window._spItems.length){
+    var localKeys = history.map(function(h){ return h.fileName+h.waveName; });
+    var spNew = window._spItems.filter(function(s){ return !localKeys.includes(s.fileName+s.waveName); });
+    if(spNew.length) history = history.concat(spNew);
+  }
   var title = document.getElementById('wave-panel-title');
   var sub = document.getElementById('wave-panel-sub');
   var list = document.getElementById('wave-panel-list');
