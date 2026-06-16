@@ -2322,7 +2322,7 @@ function openWavesPanel(){
       html += '<div style="font-size:10px;color:var(--text-3);margin-top:2px;">'+(e.date||'')+'</div>';
       html += '</div>';
       html += '<div style="text-align:right;margin-left:8px;flex-shrink:0;">';
-      html += '<div style="font-size:10px;font-weight:600;color:'+(available?'var(--success)':'var(--accent)')+';">'+(available?'● Ready':hasSP?'● In SharePoint':'↑ Re-upload')+'</div>';
+      html += '<div style="font-size:10px;font-weight:600;color:'+(available?'var(--success)':'var(--accent)')+';">'+(hasSession?'● In session':hasSP?'● In SharePoint':hasRawStored?'● Ready':'↑ Re-upload')+'</div>';
       html += '<div style="font-size:10px;color:var(--text-3);">'+(e.totalUsers||0)+' users</div>';
       html += '</div></div>';
     });
