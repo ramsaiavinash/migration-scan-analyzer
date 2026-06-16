@@ -2533,10 +2533,10 @@ function openSizePanel(){
       if(match){
         var val = parseFloat(match[1]);
         var unit = (match[2]||'GB').toUpperCase();
-        if(unit==='TB') s = val*1024*1024*1024*1024;
-        else if(unit==='GB') s = val*1024*1024*1024;
-        else if(unit==='MB') s = val*1024*1024;
-        else if(unit==='KB') s = val*1024;
+        if(unit==='TB') s = val*1000*1000*1000*1000;
+        else if(unit==='GB') s = val*1000*1000*1000;
+        else if(unit==='MB') s = val*1000*1000;
+        else if(unit==='KB') s = val*1000;
       }
     }
     waveMap[h.waveName].totalSize += s;
